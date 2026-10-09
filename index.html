@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8"><meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MORRC · McGill Ortho Resident Research Curriculum</title>
+<meta name="description" content="An interactive research-methods and critical-appraisal curriculum for McGill orthopaedic surgery residents, R1 to R5.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-root="" data-page="home">
+<main id="main">
+  <div class="hero">
+    <div class="wrap">
+      <div class="kicker">McGill Orthopaedics · Resident Research Committee</div>
+      <h1>MORRC: McGill Ortho Resident Research Curriculum</h1>
+      <p class="lead">Eighteen self-paced, interactive modules that take you from framing your first clinical question as an R1 to presenting your own project at Research Day as an R5. Every example is orthopaedic, and every quiz teaches as well as tests.</p>
+      <div class="btn-row">
+        <a class="btn" href="modules/f1.html">Start with F1: Asking the right question</a>
+        <a class="btn secondary" href="#catalogue">Browse all modules</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="block" id="about">
+    <div class="wrap">
+      <h2>Why MORRC?</h2>
+      <p class="sub">Our goal is to make every McGill orthopaedic resident a confident consumer of evidence and a competent producer of it.</p>
+      <div class="grid cols-2">
+        <div class="card">
+          <h3 style="margin-top:0">By the end of residency you should be able to…</h3>
+          <ul>
+            <li>frame a focused, answerable clinical question;</li>
+            <li>choose and defend a study design;</li>
+            <li>critically appraise any orthopaedic paper for bias and clinical relevance;</li>
+            <li>take a project from protocol to publication with integrity.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0">How it is built</h3>
+          <ul>
+            <li><strong>Real orthopaedic papers</strong>, not abstractions: appraisal is learned by doing.</li>
+            <li><strong>Retrieval practice</strong>: every quiz answer comes with an explanation.</li>
+            <li><strong>Spiral design</strong>: bias, precision and clinical importance return with more depth each year.</li>
+            <li><strong>Linked to your work</strong>: journal club, Research Day and your own project. Maps to the CanMEDS Scholar role and CBD.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout blue" style="margin-top:20px">
+        <strong>How modules work</strong>
+        Each module takes about 60–90 minutes: a 20–30 minute core lesson, an interactive case, and a 12-item quiz. Get at least 10 of 12 correct (83%) to pass the quiz and complete the module; attempts are unlimited and question order is shuffled each time. Nothing is locked, so you can work out of sequence. Senior residents can test out of a module by passing its quiz on the first attempt.
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="tiers" style="padding-top:0">
+    <div class="wrap">
+      <h2>Three tiers, R1 to R5</h2>
+      <p class="sub">About 8–10 hours of module time per year, paced around journal club and Research Day.</p>
+      <div class="grid cols-3" id="tier-cards"></div>
+    </div>
+  </section>
+
+  <section class="block" id="catalogue" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div class="wrap">
+      <h2>Module catalogue</h2>
+      <p class="sub">Filter by tier or by your residency level. Modules marked “Coming soon” are being written and peer-reviewed by the committee.</p>
+      <div class="filters" role="group" aria-label="Filter modules" id="filters"></div>
+      <div class="grid cols-3" id="module-grid"></div>
+    </div>
+  </section>
+
+  <section class="block" id="progress">
+    <div class="wrap">
+      <h2>My progress</h2>
+      <p class="sub">Saved privately in this browser on this device. Resident logins, a committee dashboard and a leaderboard will come with the MORRC server.</p>
+      <div class="grid cols-3">
+        <div class="card">
+          <h3 style="margin-top:0">Profile</h3>
+          <form id="profile-form">
+            <label class="field">Display name (optional)
+              <input name="displayName" maxlength="40" placeholder="e.g., Dr A. Resident or a nickname">
+            </label>
+            <label class="field">Residency level
+              <select name="level">
+                <option value="">Select…</option>
+                <option>R1</option><option>R2</option><option>R3</option><option>R4</option><option>R5</option>
+              </select>
+            </label>
+            <button class="btn small" type="submit">Save profile</button>
+            <span id="profile-saved" class="small muted" aria-live="polite"></span>
+          </form>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0">Overall completion</h3>
+          <div class="stat" id="overall-pct">0%</div>
+          <div class="small muted" id="overall-count" style="margin:6px 0 10px">0 of 18 modules complete</div>
+          <div class="progress-bar" aria-hidden="true"><span id="overall-bar" style="width:0%"></span></div>
+          <div id="tier-progress" style="margin-top:14px"></div>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0">Leaderboard preview</h3>
+          <p class="small muted">When logins launch, the leaderboard will be visible only to signed-in McGill ortho residents and faculty. It will show <strong>completion % only</strong>, never quiz scores. This is the row others would see for you:</p>
+          <div id="lb-row" class="example" style="margin:8px 0"></div>
+          <p class="small muted">Use a nickname above if you prefer. Being listed will be opt-in.</p>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <div class="btn-row" style="justify-content:space-between">
+          <h3 style="margin:0">Module-by-module</h3>
+          <div class="btn-row">
+            <button class="btn small secondary" id="export-btn" type="button">Export my progress (JSON)</button>
+            <button class="btn small secondary" id="reset-btn" type="button">Reset progress</button>
+          </div>
+        </div>
+        <p class="small muted">Quiz scores below are visible only to you.</p>
+        <div class="tbl-wrap"><table class="prog-table" id="prog-table">
+          <thead><tr><th>Module</th><th>Level</th><th>Status</th><th>Interactive</th><th>Best quiz score</th><th>Attempts</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="assets/js/catalogue.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/home.js"></script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F3. Bias, confounding and chance · MORRC</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-module="F3">
+<main id="main">
+<div class="module-hero"><div class="wrap">
+  <div><span class="tag t1">Tier 1 · Foundations</span><span class="tag lvl">R1–R2</span><span class="tag">~75–90 min</span></div>
+  <h1>F3. Bias, confounding and chance</h1>
+  <p class="muted" style="margin:0 0 8px">Before believing any result, rule out the three alternative explanations: chance, bias and confounding.</p>
+  <div id="module-status"></div>
+</div></div>
+<div class="wrap layout">
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol>
+  <li><a href="#objectives">Objectives</a></li>
+  <li><a href="#three">Three rival explanations</a></li>
+  <li><a href="#bias">The bias taxonomy</a></li>
+  <li><a href="#confounding">Confounding</a></li>
+  <li><a href="#dags">Introduction to DAGs</a></li>
+  <li><a href="#rtm">Regression to the mean and placebo</a></li>
+  <li><a href="#chance">Chance</a></li>
+  <li><a href="#tools">Protections and RoB 2</a></li>
+  <li><a href="#interactive">Interactive: Spot-the-bias</a></li>
+  <li><a href="#quiz">Quiz</a></li>
+  <li><a href="#refs">References</a></li>
+</ol></nav>
+<div class="content">
+
+<section id="objectives"><h2>Learning objectives</h2>
+<ul class="objectives">
+  <li>Define selection, performance, detection, attrition and reporting bias.</li>
+  <li>Recognize confounding, and confounding by indication in particular.</li>
+  <li>Distinguish bias (systematic error) from chance (random error).</li>
+  <li>Describe how randomization, blinding and adjustment address each.</li>
+</ul>
+<p class="small muted">Prerequisites: F1 and F2 (recommended).</p>
+</section>
+
+<section id="three"><h2>1. Three rival explanations for any result</h2>
+<p>When a study reports that treatment A is better than B, the difference could be <strong>real</strong>, or it could be due to:</p>
+<ul>
+  <li><strong>Chance (random error)</strong>: the play of chance in who happened to be sampled. It shrinks as sample size grows and is quantified by confidence intervals and p-values.</li>
+  <li><strong>Bias (systematic error)</strong>: a flaw in design, conduct or analysis that pushes results consistently in one direction. It does <em>not</em> shrink with sample size: a huge biased study is precisely wrong.</li>
+  <li><strong>Confounding</strong>: a mixing of effects, where a third factor linked to both treatment and outcome creates or hides an association. Many classify it as a type of bias; it is singled out because it dominates observational research.</li>
+</ul>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th></th><th>Precise (little random error)</th><th>Imprecise (much random error)</th></tr></thead><tbody>
+<tr><th>Unbiased</th><td>Ideal: large, well-conducted trial</td><td>Right on average but wide CI: small, well-conducted trial</td></tr>
+<tr><th>Biased</th><td>Most dangerous: large registry study with uncontrolled confounding gives a narrow CI around the wrong answer</td><td>Small, flawed study</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="bias"><h2>2. The bias taxonomy</h2>
+<p>The Cochrane framework groups biases in comparative studies into five families. Each one, with an orthopaedic example and its main protection:</p>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Bias</th><th>What goes wrong</th><th>Orthopaedic example</th><th>Main protection</th></tr></thead><tbody>
+<tr><td><strong>Selection</strong></td><td>Groups differ systematically at baseline because of how patients were allocated or selected</td><td>Surgeon knows the next allocation is the new implant and enrols a younger, healthier patient</td><td>Randomization with <em>concealed</em> allocation (central web-based); in observational studies, careful definition of the source population</td></tr>
+<tr><td><strong>Performance</strong></td><td>Groups receive different care apart from the intervention, or behave differently because they know their group</td><td>The new-procedure group gets extra physiotherapy; patients who know they received the “new” treatment report more improvement</td><td>Blinding of patients and care providers where possible; standardized co-interventions</td></tr>
+<tr><td><strong>Detection</strong> (measurement)</td><td>Outcomes are assessed differently between groups</td><td>Unblinded surgeon judges radiographic union or collects pain scores</td><td>Blinded outcome assessors or adjudication committees; objective or self-completed outcomes</td></tr>
+<tr><td><strong>Attrition</strong></td><td>Missing outcome data differ between groups and are related to the outcome</td><td>Patients with poor results stop attending clinic and are excluded</td><td>Complete follow-up; intention-to-treat analysis; sensible handling of missing data</td></tr>
+<tr><td><strong>Reporting</strong></td><td>Results are selectively reported on the basis of their findings</td><td>Registered primary outcome (12-month function) replaced by a significant secondary outcome</td><td>Prospective registration; published protocol and statistical analysis plan</td></tr>
+</tbody></table></div>
+<div class="callout blue"><strong>Loss to follow-up: a rough guide</strong>A common rule of thumb is that less than 5% loss is unlikely to matter much and more than 20% is a serious threat. What really matters is whether losses differ between groups and could be related to the outcome. Test this with a worst-case sensitivity analysis: would the conclusion change if all the missing patients in one group did poorly?</div>
+</section>
+
+<section id="confounding"><h2>3. Confounding</h2>
+<p>A <strong>confounder</strong> is associated with the exposure, independently affects the outcome, and is not on the causal pathway between them.</p>
+<div class="example"><div class="label">Worked example: confounding by indication</div>
+<p>A chart review finds older adults treated with volar plating for distal radius fractures had better PRWE scores than those treated in a cast. But surgeons tend to offer plating to fitter, more active patients. <strong>Fitness</strong> influences both the treatment chosen and the functional outcome, so plated patients may have done better regardless of the plate. This is <strong>confounding by indication</strong>: the reason for treatment is itself prognostic. It is the dominant threat in observational studies of surgery, and can run either way (sicker patients may be steered <em>toward</em> or <em>away from</em> surgery).</p></div>
+<h3>Handling confounding</h3>
+<ul>
+  <li><strong>At the design stage:</strong> randomization (balances known and unknown confounders), restriction (e.g., only independent walkers), matching.</li>
+  <li><strong>At the analysis stage:</strong> stratification, multivariable regression, propensity scores (module A2). These handle only confounders that were <em>measured, and measured well</em>; <strong>residual and unmeasured confounding</strong> always remains a possibility in observational research.</li>
+</ul>
+<h3>Effect modification is different</h3>
+<p>An <strong>effect modifier</strong> changes the size of a real effect across subgroups (a treatment that helps smokers more than non-smokers, say). Confounding is a nuisance to remove; effect modification is a finding to describe, if it's credible. Subgroup credibility is covered in A4 and A6.</p>
+</section>
+
+<section id="dags"><h2>4. Introduction to causal diagrams (DAGs)</h2>
+<p>A directed acyclic graph draws your assumptions about what causes what. It tells you what to adjust for and what to leave alone.</p>
+<figure style="margin:10px 0">
+<svg viewBox="0 0 560 210" role="img" aria-label="DAG: Fitness causes both Plating and Function; Plating causes Union, which causes Function" style="width:100%;max-width:560px">
+<defs><marker id="ar" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 z" fill="#344054"/></marker></defs>
+<g font-family="system-ui,Arial" font-size="14">
+<rect x="210" y="10" width="140" height="40" rx="8" fill="#fff6db" stroke="#9a6700"/><text x="280" y="35" text-anchor="middle">Fitness (confounder)</text>
+<rect x="20" y="150" width="130" height="40" rx="8" fill="#fdecee" stroke="#c8102e"/><text x="85" y="175" text-anchor="middle">Plating (exposure)</text>
+<rect x="215" y="150" width="130" height="40" rx="8" fill="#eef4fa" stroke="#1f5f99"/><text x="280" y="175" text-anchor="middle">Union (mediator)</text>
+<rect x="410" y="150" width="130" height="40" rx="8" fill="#e7f5ec" stroke="#1e7d3a"/><text x="475" y="175" text-anchor="middle">Function (outcome)</text>
+<line x1="250" y1="50" x2="110" y2="148" stroke="#344054" stroke-width="2" marker-end="url(#ar)"/>
+<line x1="310" y1="50" x2="450" y2="148" stroke="#344054" stroke-width="2" marker-end="url(#ar)"/>
+<line x1="150" y1="170" x2="212" y2="170" stroke="#344054" stroke-width="2" marker-end="url(#ar)"/>
+<line x1="345" y1="170" x2="407" y2="170" stroke="#344054" stroke-width="2" marker-end="url(#ar)"/>
+</g></svg>
+<figcaption class="small muted">Fitness opens a “back-door” path (Plating ← Fitness → Function), so adjust for it. Union is a <em>mediator</em>: adjusting for it would remove part of the effect of plating you want to estimate.</figcaption>
+</figure>
+<p>Two rules for now: <strong>adjust for common causes</strong> of exposure and outcome (confounders); <strong>don't adjust for mediators</strong> (when you want the total effect) or for <strong>colliders</strong> (common <em>effects</em> of exposure and outcome), because doing so can create bias. Free tools such as DAGitty help you draw and check DAGs.</p>
+</section>
+
+<section id="rtm"><h2>5. Regression to the mean, natural history and placebo effects in surgery</h2>
+<p><strong>Regression to the mean:</strong> patients with fluctuating conditions (back pain, tendinopathy, degenerative knee pain) tend to present, and be enrolled, when symptoms are at their worst. On remeasurement they tend to be closer to their usual level, even untreated. Add <strong>natural history</strong> (many conditions improve with time) and an uncontrolled before–after study will almost always “show” improvement.</p>
+<p><strong>Placebo effects in surgery</strong> can be large, especially for subjective outcomes like pain. Sham-controlled trials have repeatedly shown this in orthopaedics:</p>
+<ul>
+  <li>Arthroscopic lavage or debridement for knee osteoarthritis was no better than a sham procedure (Moseley et al., NEJM 2002).</li>
+  <li>Arthroscopic partial meniscectomy for a degenerative tear was no better than sham surgery (FIDELITY; Sihvonen et al., NEJM 2013).</li>
+  <li>Subacromial decompression gave no clinically important benefit over investigational arthroscopy alone (CSAW; Beard et al., Lancet 2018).</li>
+</ul>
+<p>A systematic review of placebo-controlled surgical trials (Wartolowska et al., BMJ 2014) found that patients in sham arms often improved substantially, and in many trials as much as those having the real operation.</p>
+<div class="callout green"><strong>Implication for your own research</strong>A before–after case series can't tell you whether an operation works. You need a concurrent control group, and for subjective outcomes, ideally blinding of patients and assessors.</div>
+</section>
+
+<section id="chance"><h2>6. Chance</h2>
+<p>Random error is quantified, not eliminated. A <strong>95% confidence interval</strong> shows the range of effects compatible with the data. A <strong>p-value</strong> is the probability of data at least this extreme <em>if there were no true effect</em>; it is not the probability that the result is due to chance. Three practical points:</p>
+<ul>
+  <li>Small studies are imprecise: “no significant difference” in a small trial often means “we don't know”, not “no difference”.</li>
+  <li><strong>Multiplicity</strong>: test 20 independent outcomes with no true effects and, on average, one will reach p &lt; 0.05.</li>
+  <li>Chance and bias are independent problems: a tiny p-value says nothing about bias.</li>
+</ul>
+<p class="small muted">Module F4 (Biostatistics essentials I) covers p-values, CIs and power in depth.</p>
+</section>
+
+<section id="tools"><h2>7. Protections, and the RoB 2 tool</h2>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Tool</th><th>Mainly protects against</th><th>Does <em>not</em> protect against</th></tr></thead><tbody>
+<tr><td>Randomization (with concealment)</td><td>Selection bias; confounding (known and unknown)</td><td>Anything after allocation: performance, detection, attrition, reporting bias</td></tr>
+<tr><td>Blinding of patients and providers</td><td>Performance bias; expectation effects</td><td>Selection bias; attrition</td></tr>
+<tr><td>Blinding of outcome assessors</td><td>Detection bias</td><td>Performance bias</td></tr>
+<tr><td>Complete follow-up; intention-to-treat</td><td>Attrition bias; bias from crossovers</td><td>Confounding in observational designs</td></tr>
+<tr><td>Registration and published protocol</td><td>Reporting bias</td><td>Conduct problems</td></tr>
+<tr><td>Restriction, matching, adjustment, propensity scores</td><td>Measured confounding</td><td>Unmeasured or poorly measured confounding</td></tr>
+<tr><td>Larger sample size</td><td>Chance</td><td>Any bias</td></tr>
+</tbody></table></div>
+<p>The Cochrane <strong>RoB 2</strong> tool (Sterne et al., BMJ 2019) assesses randomized trials across five domains, judged per outcome: (1) the randomization process; (2) deviations from intended interventions; (3) missing outcome data; (4) measurement of the outcome; (5) selection of the reported result. Each domain is rated low risk, some concerns, or high risk. For non-randomized studies, the companion tool is <strong>ROBINS-I</strong>. You will use both in Tier 2.</p>
+</section>
+
+<section id="interactive"><h2>8. Interactive: Spot-the-bias</h2>
+<p>Three short <strong>fictional teaching abstracts</strong>, written for MORRC to contain typical flaws found in real orthopaedic papers. Tag every problem you can find, then reveal the expert annotation.</p>
+<div id="spot-app"></div>
+</section>
+
+<section id="quiz"><h2>9. End-of-module quiz</h2>
+<div id="quiz-app"></div>
+</section>
+
+<section id="refs"><h2>References and further reading</h2>
+<ol class="refs">
+  <li>Sterne JAC, Savović J, Page MJ, et al. RoB 2: a revised tool for assessing risk of bias in randomised trials. <em>BMJ</em>. 2019;366:l4898.</li>
+  <li>Sterne JAC, Hernán MA, Reeves BC, et al. ROBINS-I: a tool for assessing risk of bias in non-randomised studies of interventions. <em>BMJ</em>. 2016;355:i4919.</li>
+  <li>Higgins JPT, Thomas J, Chandler J, et al., eds. <em>Cochrane Handbook for Systematic Reviews of Interventions</em> (current version). Cochrane. Chapter 8: Assessing risk of bias in a randomized trial.</li>
+  <li>Moseley JB, O'Malley K, Petersen NJ, et al. A controlled trial of arthroscopic surgery for osteoarthritis of the knee. <em>N Engl J Med</em>. 2002;347:81-8.</li>
+  <li>Sihvonen R, Paavola M, Malmivaara A, et al. Arthroscopic partial meniscectomy versus sham surgery for a degenerative meniscal tear. <em>N Engl J Med</em>. 2013;369:2515-24.</li>
+  <li>Beard DJ, Rees JL, Cook JA, et al. Arthroscopic subacromial decompression for subacromial shoulder pain (CSAW). <em>Lancet</em>. 2018;391:329-38.</li>
+  <li>Wartolowska K, Judge A, Hopewell S, et al. Use of placebo controls in the evaluation of surgery: systematic review. <em>BMJ</em>. 2014;348:g3253.</li>
+  <li>Hernán MA, Robins JM. <em>Causal Inference: What If</em>. Chapman &amp; Hall/CRC; 2020. (Free online; chapters on confounding and DAGs.)</li>
+  <li>Guyatt G, Rennie D, Meade MO, Cook DJ, eds. <em>Users' Guides to the Medical Literature</em>. 3rd ed. JAMA/McGraw-Hill; 2015.</li>
+</ol>
+</section>
+<p id="next-module" class="small"></p>
+</div></div>
+</main>
+<script src="../assets/js/catalogue.js"></script>
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script src="../assets/js/module.js"></script>
+<script src="../assets/js/content/f3.js"></script>
+<script>
+  MORRC.initModulePage();
+  MORRC.mountSpotBias(document.getElementById("spot-app"), MORRC.F3.spot);
+  MORRC.mountQuiz(document.getElementById("quiz-app"), MORRC.F3.quiz);
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coming soon · MORRC</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../">
+<main id="main">
+<div class="module-hero"><div class="wrap narrow" id="cs-hero"></div></div>
+<div class="wrap narrow" style="padding:28px 20px 60px" id="cs-body"></div>
+</main>
+<script src="../assets/js/catalogue.js"></script>
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script>
+(function(){
+  const h = MORRC.h;
+  const id = new URLSearchParams(location.search).get("id");
+  const m = MORRC.getModule(id);
+  if(!m){
+    document.getElementById("cs-hero").innerHTML = `<h1>Module not found</h1><p><a href="../index.html#catalogue">Back to the catalogue</a></p>`;
+    return;
+  }
+  if(m.status==="live"){ location.replace("../"+m.url); return; }
+  const tier = MORRC.TIERS.find(t=>t.id===m.tier);
+  document.title = `${m.id}. ${m.title} (coming soon) · MORRC`;
+  document.getElementById("cs-hero").innerHTML = `
+    <div><span class="tag t${m.tier}">${h(tier.name)}</span><span class="tag lvl">${h(m.level)}</span><span class="tag soon">Coming soon</span></div>
+    <h1>${m.id}. ${h(m.title)}</h1>
+    <p class="muted" style="margin:0">This module is being written and peer-reviewed by the MORRC committee. Here is what it will cover.</p>`;
+  document.getElementById("cs-body").innerHTML = `
+    <div class="card"><h2 style="font-size:22px">Learning objectives</h2><p>Residents will be able to:</p>
+      <ul class="objectives">${m.objectives.map(o=>`<li>${h(o)}</li>`).join("")}</ul>
+      <h3>Key topics</h3><p>${h(m.topics)}</p>
+      <h3>Interactive element</h3><p>${h(m.interactive)}</p>
+      <h3>Tier capstone</h3><p>${h(tier.capstone)}</p>
+    </div>
+    <div class="callout blue" style="margin-top:20px"><strong>In the meantime</strong>Modules F1–F3 are available now. Every module will have a 20–30 minute core lesson, an interactive case, and a 12-item quiz with a pass mark of 10 of 12 correct (83%).</div>
+    <div class="btn-row" style="margin-top:16px"><a class="btn" href="../index.html#catalogue">Back to the catalogue</a><a class="btn secondary" href="f1.html">Start F1</a></div>`;
+})();
+</script>
+</body>
+</html>
