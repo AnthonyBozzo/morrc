@@ -15,7 +15,7 @@
   <div id="module-status"></div>
 </div></div>
 <div class="wrap layout">
-<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#what">What prediction models do</a></li><li><a href="#performance">Discrimination, calibration and clinical utility</a></li><li><a href="#overfit">Overfitting, sample size and common pitfalls</a></li><li><a href="#metastases">Worked context: survival models in skeletal metastases</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#what">What prediction models do</a></li><li><a href="#performance">Discrimination, calibration and clinical utility</a></li><li><a href="#overfit">Overfitting, sample size and common pitfalls</a></li><li><a href="#metastases">Worked context: survival models in skeletal metastases</a></li><li><a href="#dca">Worked example: does the model help decisions?</a></li><li><a href="#fairness">Imaging deep learning, fairness and dataset shift</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
 <div class="content">
 
 <section id="objectives"><h2>Learning objectives</h2>
@@ -73,7 +73,31 @@
 <p class="small muted">Look up the published development and external-validation studies of these tools and compare their reported calibration. That makes a good journal-club exercise.</p>
 </section>
 
-<section id="interactive"><h2>5. Interactive</h2>
+<section id="dca"><h2>5. Worked example: does the model help decisions?</h2>
+<p>Discrimination and calibration don't tell you whether using a model leads to better decisions. <strong>Net benefit</strong>, the quantity plotted in decision curve analysis, does. At a threshold probability <em>p<sub>t</sub></em> (the risk at which you would act), it counts true positives and penalizes false positives by the odds of the threshold:</p>
+<p style="text-align:center"><strong>Net benefit = TP/n − (FP/n) × p<sub>t</sub>/(1 − p<sub>t</sub>)</strong></p>
+<p class="small muted"><strong>Illustrative numbers</strong> for teaching.</p>
+<div class="example"><div class="label">Predicting a complication after surgery</div>
+1,000 patients; 200 (20%) develop the complication. A clinician would start a preventive intervention at a predicted risk of 10% or more, so p<sub>t</sub> = 0.10 and the penalty weight is 0.10/0.90 = 0.111.
+<ul>
+  <li><strong>Model</strong> (flags 580 patients above 10%: 180 true positives, 400 false positives): 180/1000 − (400/1000) × 0.111 = 0.180 − 0.044 = <strong>0.136</strong>.</li>
+  <li><strong>Treat everyone:</strong> 200/1000 − (800/1000) × 0.111 = 0.200 − 0.089 = <strong>0.111</strong>.</li>
+  <li><strong>Treat no one:</strong> <strong>0</strong>.</li>
+</ul>
+At this threshold the model beats both default strategies: the difference of about 0.024 is equivalent to about 24 extra true positives per 1,000 patients with no increase in false positives. A decision curve repeats this across a range of reasonable thresholds.</div>
+</section>
+
+<section id="fairness"><h2>6. Imaging deep learning, fairness and dataset shift</h2>
+<ul>
+  <li><strong>Deep learning on radiographs</strong> can match or assist clinicians in tasks such as fracture detection (e.g., Lindsey et al., PNAS 2018). Ask whether the study tested the model the way it will be used (as an aid to clinicians, on consecutive patients) or only on curated images.</li>
+  <li><strong>Generalization:</strong> Zech and colleagues (PLoS Med 2018) showed that a chest-radiograph model performed worse at hospitals it hadn't been trained on, partly because it could recognize which hospital an image came from. External validation at new sites is essential.</li>
+  <li><strong>Dataset shift:</strong> performance drifts when the population, scanners, implants, coding practices or treatments change after development. Deployed models need monitoring and periodic recalibration.</li>
+  <li><strong>Fairness:</strong> models can encode existing inequities. Obermeyer and colleagues (Science 2019) showed that an algorithm using health-care costs as a proxy for health need systematically underestimated the needs of Black patients. Check performance and calibration within subgroups (sex, age, ethnicity, socioeconomic status) and whether the outcome label is a fair proxy for what matters.</li>
+</ul>
+<div class="callout blue"><strong>Appraisal shortcut</strong>For any AI paper, ask: What exactly is predicted, for whom, and at what moment? Was it externally validated? Is calibration shown? Is there evidence that it changes decisions or outcomes? Then work through TRIPOD+AI and the JAMA Users' Guide (Liu et al. 2019).</div>
+</section>
+
+<section id="interactive"><h2>7. Interactive</h2>
 <h3>Discrimination vs calibration demo</h3>
 <p class="small muted">A simulated (fictional) cohort of 1,000 patients with a seeded random generator, so everyone sees the same data. Move the sliders to miscalibrate the model and watch what happens to the AUC.</p>
 <div id="cal-app"></div>
@@ -82,7 +106,7 @@
 <div id="model-app"></div>
 </section>
 
-<section id="quiz"><h2>6. End-of-module quiz</h2>
+<section id="quiz"><h2>8. End-of-module quiz</h2>
 <div id="quiz-app"></div>
 </section>
 
@@ -94,6 +118,9 @@
 <li>Vickers AJ, Elkin EB. Decision curve analysis: a novel method for evaluating prediction models. <em>Med Decis Making</em>. 2006;26:565-74.</li>
 <li>Riley RD, Ensor J, Snell KIE, et al. Calculating the sample size required for developing a clinical prediction model. <em>BMJ</em>. 2020;368:m441.</li>
 <li>Liu Y, Chen PC, Krause J, Peng L. How to read articles that use machine learning: Users' Guides to the Medical Literature. <em>JAMA</em>. 2019;322:1806-16.</li>
+<li>Lindsey R, Daluiski A, Chopra S, et al. Deep neural network improves fracture detection by clinicians. <em>Proc Natl Acad Sci U S A</em>. 2018;115:11591-6.</li>
+<li>Zech JR, Badgeley MA, Liu M, Costa AB, Titano JJ, Oermann EK. Variable generalization performance of a deep learning model to detect pneumonia in chest radiographs: a cross-sectional study. <em>PLoS Med</em>. 2018;15:e1002683.</li>
+<li>Obermeyer Z, Powers B, Vogeli C, Mullainathan S. Dissecting racial bias in an algorithm used to manage the health of populations. <em>Science</em>. 2019;366:447-53.</li>
 </ol>
 <p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
 </section>

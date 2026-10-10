@@ -15,7 +15,7 @@
   <div id="module-status"></div>
 </div></div>
 <div class="wrap layout">
-<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#types">Types of PROMs</a></li><li><a href="#properties">Measurement properties (COSMIN)</a></li><li><a href="#mcid">MCID, PASS and friends</a></li><li><a href="#interpret">Interpreting PROM differences in trials</a></li><li><a href="#choose">Choosing a PROM for your study</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#types">Types of PROMs</a></li><li><a href="#properties">Measurement properties (COSMIN)</a></li><li><a href="#mcid">MCID, PASS and friends</a></li><li><a href="#interpret">Interpreting PROM differences in trials</a></li><li><a href="#choose">Choosing a PROM for your study</a></li><li><a href="#missing">Missing PROM data and ceiling effects</a></li><li><a href="#worked-oks">Worked example: interpreting an Oxford Knee Score result</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
 <div class="content">
 
 <section id="objectives"><h2>Learning objectives</h2>
@@ -79,7 +79,32 @@
 </ul>
 </section>
 
-<section id="interactive"><h2>6. Interactive</h2>
+<section id="missing"><h2>6. Missing PROM data and ceiling effects</h2>
+<h3>Missing data</h3>
+<p>PROMs depend on patients returning questionnaires, and follow-up is often incomplete. Missing PROMs are rarely missing completely at random (R3): patients doing very well may not bother to return forms, while those doing badly may have had revision surgery elsewhere, moved away or died.</p>
+<ul>
+  <li>Report the <strong>response rate at each time point</strong>, by group, and compare baseline characteristics of responders and non-responders.</li>
+  <li>Prefer analyses that use all available data under a stated assumption (mixed models or multiple imputation, under missing at random), with <strong>sensitivity analyses</strong> exploring missing-not-at-random scenarios.</li>
+  <li>Complete-case analyses of PROMs with heavy loss to follow-up can mislead in either direction.</li>
+  <li>Design to prevent it: electronic PROM collection (REDCap surveys, R3), reminders, and a short questionnaire burden.</li>
+</ul>
+<h3>Ceiling effects in practice</h3>
+<p>Many hip and knee PROMs were designed for older patients with arthritis. In young, active patients (e.g., after ACL reconstruction), a large proportion may score at or near the maximum. Patients at the ceiling can't show further improvement, so differences between treatments are compressed and the study loses power. Choose an instrument with room at the top for your population (e.g., a sports-focused KOOS subscale) or add a performance or activity measure.</p>
+</section>
+
+<section id="worked-oks"><h2>7. Worked example: interpreting an Oxford Knee Score result</h2>
+<p class="small muted"><strong>Fictional trial</strong> results, used for teaching.</p>
+<div class="example"><div class="label">Fictional trial</div>Two total knee arthroplasty techniques are compared in 300 patients. At 12 months, the mean Oxford Knee Score (OKS, 12 items, scored 0–48, higher is better) is 40.1 vs 38.3: difference 1.8 points (95% CI 0.4 to 3.2; p = 0.01). Follow-up is 78% in one group and 91% in the other.</div>
+<ol>
+  <li><strong>Statistically significant?</strong> Yes: the CI excludes 0.</li>
+  <li><strong>Clinically important?</strong> Compare with a published MCID for the OKS. Published estimates for change after knee arthroplasty are several points (they vary with the method and population), and the entire CI here lies below them. So, at most, the difference is <strong>small and probably unimportant</strong> to individual patients (A5 sorter category: significant but trivial).</li>
+  <li><strong>Between-group vs within-patient:</strong> an MCID for within-patient change is not automatically the right threshold for a between-group difference in means. Also report the <strong>proportion of patients in each group who achieved the MCID or a PASS</strong>, which is easier for patients to interpret.</li>
+  <li><strong>Missing data:</strong> unequal follow-up (78% vs 91%) raises concern about attrition bias. Were missing-data methods and sensitivity analyses reported?</li>
+  <li><strong>Bottom line:</strong> “Technique A produced a statistically significant but small difference in OKS at 12 months that is unlikely to be clinically important, with a risk of attrition bias.”</li>
+</ol>
+</section>
+
+<section id="interactive"><h2>8. Interactive</h2>
 <h3>Is it clinically important?</h3>
 <p class="small muted">Ten <strong>fictional</strong> results. MCID values are assumed for each exercise; they aren't recommendations.</p>
 <div id="imp-app"></div>
@@ -87,7 +112,7 @@
 <div id="ci-app"></div>
 </section>
 
-<section id="quiz"><h2>7. End-of-module quiz</h2>
+<section id="quiz"><h2>9. End-of-module quiz</h2>
 <div id="quiz-app"></div>
 </section>
 
@@ -99,6 +124,7 @@
 <li>Prinsen CAC, Mokkink LB, Bouter LM, et al. COSMIN guideline for systematic reviews of patient-reported outcome measures. <em>Qual Life Res</em>. 2018;27:1147-57.</li>
 <li>Terwee CB, Bot SDM, de Boer MR, et al. Quality criteria were proposed for measurement properties of health status questionnaires. <em>J Clin Epidemiol</em>. 2007;60:34-42.</li>
 <li>Tubach F, Ravaud P, Baron G, et al. Evaluation of clinically relevant states in patient reported outcomes in knee and hip osteoarthritis: the patient acceptable symptom state. <em>Ann Rheum Dis</em>. 2005;64:34-7.</li>
+<li>Dawson J, Fitzpatrick R, Murray D, Carr A. Questionnaire on the perceptions of patients about total knee replacement. <em>J Bone Joint Surg Br</em>. 1998;80:63-9.</li>
 </ol>
 <p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
 </section>

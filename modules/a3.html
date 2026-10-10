@@ -15,7 +15,7 @@
   <div id="module-status"></div>
 </div></div>
 <div class="wrap layout">
-<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#twobytwo">The 2×2 table</a></li><li><a href="#lr">Likelihood ratios and post-test probability</a></li><li><a href="#roc">ROC curves, AUC and thresholds</a></li><li><a href="#bias">Biases in diagnostic studies, and QUADAS-2</a></li><li><a href="#ortho">Orthopaedic applications</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#twobytwo">The 2×2 table</a></li><li><a href="#lr">Likelihood ratios and post-test probability</a></li><li><a href="#roc">ROC curves, AUC and thresholds</a></li><li><a href="#bias">Biases in diagnostic studies, and QUADAS-2</a></li><li><a href="#ortho">Orthopaedic applications</a></li><li><a href="#thresholds">Worked example: serial tests and decision thresholds</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
 <div class="content">
 
 <section id="objectives"><h2>Learning objectives</h2>
@@ -73,7 +73,33 @@
 </ul>
 </section>
 
-<section id="interactive"><h2>6. Interactive</h2>
+<section id="thresholds"><h2>6. Worked example: serial tests and decision thresholds</h2>
+<p>Diagnostic tests are only useful if they move the probability of disease across a threshold where management changes. Pauker and Kassirer (NEJM 1980) described two thresholds:</p>
+<ul>
+  <li>Below the <strong>testing threshold</strong>, the disease is unlikely enough that you neither test nor treat.</li>
+  <li>Above the <strong>treatment threshold</strong>, it is likely enough that you treat without further testing.</li>
+  <li>In between, test, and choose a test whose LRs can push the probability past one of the thresholds.</li>
+</ul>
+<p class="small muted"><strong>Illustrative numbers</strong> chosen for teaching; they are not published accuracy estimates.</p>
+<div class="example"><div class="label">Painful total knee arthroplasty, two years after surgery</div>
+The surgeon judges the pre-test probability of periprosthetic joint infection to be <strong>20%</strong>.
+<ol>
+  <li>Pre-test odds = 0.20 / 0.80 = <strong>0.25</strong>.</li>
+  <li>A serum marker is positive (LR+ 5): post-test odds = 0.25 × 5 = 1.25; probability = 1.25 / 2.25 = <strong>56%</strong>.</li>
+  <li>An aspirate synovial test is then positive (LR+ 4): odds = 1.25 × 4 = 5; probability = 5 / 6 = <strong>83%</strong>.</li>
+  <li>Had the aspirate been negative (LR− 0.1): odds = 1.25 × 0.1 = 0.125; probability = 0.125 / 1.125 = <strong>11%</strong>.</li>
+</ol></div>
+<div class="callout"><strong>Caution: chaining LRs</strong>Multiplying LRs one after another assumes the tests are <em>conditionally independent</em> (given infection status, one result tells you nothing about the other). Two inflammatory markers often rise together, so chaining their LRs overstates certainty. Prefer LRs from studies that evaluated the test combination, or a validated scoring system.</div>
+<h3>Reading a diagnostic accuracy paper</h3>
+<ol>
+  <li>Find the <strong>STARD flow diagram</strong>: how many eligible patients received the index test and the reference standard, and how many results were indeterminate?</li>
+  <li>Check that patients were <strong>consecutive or random</strong>, with the clinical uncertainty you face (QUADAS-2, patient selection).</li>
+  <li>Were index-test readers <strong>blinded</strong> to the reference standard, and was the <strong>threshold prespecified</strong>? Thresholds chosen after looking at the data overestimate accuracy.</li>
+  <li>Convert the reported sensitivity and specificity into LRs, and apply them to <em>your</em> patient's pre-test probability.</li>
+</ol>
+</section>
+
+<section id="interactive"><h2>7. Interactive</h2>
 <h3>2×2 calculator with nomogram</h3>
 <p class="small muted">Enter a 2×2 table and a pre-test probability. The nomogram line passes through the pre-test probability and the LR to give the post-test probability.</p>
 <div id="dx-app"></div>
@@ -81,7 +107,7 @@
 <div id="case-app"></div>
 </section>
 
-<section id="quiz"><h2>7. End-of-module quiz</h2>
+<section id="quiz"><h2>8. End-of-module quiz</h2>
 <div id="quiz-app"></div>
 </section>
 
@@ -92,6 +118,7 @@
 <li>Fagan TJ. Nomogram for Bayes theorem. <em>N Engl J Med</em>. 1975;293:257.</li>
 <li>Jaeschke R, Guyatt GH, Sackett DL. Users' guides to the medical literature. III. How to use an article about a diagnostic test. B. What are the results and will they help me in caring for my patients? <em>JAMA</em>. 1994;271:703-7.</li>
 <li>Guyatt G, Rennie D, Meade MO, Cook DJ, eds. <em>Users' Guides to the Medical Literature</em>. 3rd ed. JAMA/McGraw-Hill; 2015. (Diagnosis chapters.)</li>
+<li>Pauker SG, Kassirer JP. The threshold approach to clinical decision making. <em>N Engl J Med</em>. 1980;302:1109-17.</li>
 </ol>
 <p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
 </section>
