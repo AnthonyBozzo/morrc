@@ -15,7 +15,7 @@
   <div id="module-status"></div>
 </div></div>
 <div class="wrap layout">
-<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#why">Why reporting guidelines exist</a></li><li><a href="#match">Matching the guideline to the design</a></li><li><a href="#reporting-vs-conduct">Poor reporting vs poor conduct</a></li><li><a href="#read">A structured strategy for reading a paper</a></li><li><a href="#abstracts">CONSORT for Abstracts</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#why">Why reporting guidelines exist</a></li><li><a href="#match">Matching the guideline to the design</a></li><li><a href="#reporting-vs-conduct">Poor reporting vs poor conduct</a></li><li><a href="#read">A structured strategy for reading a paper</a></li><li><a href="#abstracts">CONSORT for Abstracts</a></li><li><a href="#surgical">Reporting surgical trials: the non-pharmacologic extension</a></li><li><a href="#strobe-example">Worked example: STROBE on a typical chart review</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
 <div class="content">
 
 <section id="objectives"><h2>Learning objectives</h2>
@@ -70,7 +70,35 @@
 <p>Hopewell and colleagues (PLoS Med 2008) defined the minimum content of a trial abstract. Key items: the title identifies the trial as randomized; trial design; participants (eligibility and setting); interventions; specific objective; clearly defined primary outcome; how participants were allocated; blinding; numbers randomized and analysed in each group; the primary outcome result for each group with effect size and precision; important harms; conclusions; trial registration; and funding.</p>
 </section>
 
-<section id="interactive"><h2>6. Interactive</h2>
+<section id="surgical"><h2>6. Reporting surgical trials: the non-pharmacologic extension</h2>
+<p>Drug trials can hide the intervention inside an identical capsule; surgical trials cannot. The CONSORT extension for non-pharmacologic treatments (Boutron et al., 2008; updated 2017) adds items that matter for any operation, rehabilitation protocol or device:</p>
+<ul>
+  <li><strong>Care providers:</strong> who operated, their eligibility criteria (e.g., minimum number of cases performed) and their experience. Results from three high-volume surgeons may not transfer to a community hospital.</li>
+  <li><strong>Standardization:</strong> how the procedure was standardized (approach, implant, fixation, closure), and what co-interventions such as rehabilitation were allowed.</li>
+  <li><strong>Adherence:</strong> how adherence to the protocol was assessed, and how often surgeons deviated from it.</li>
+  <li><strong>Blinding:</strong> who was blinded (patients, outcome assessors, data analysts) and how, since surgeons usually can't be.</li>
+  <li><strong>Clustering:</strong> whether the analysis accounted for patients being clustered within surgeons or centres.</li>
+</ul>
+<p>When these details are missing, you can't judge applicability or performance bias, and you can't reproduce the intervention.</p>
+</section>
+
+<section id="strobe-example"><h2>7. Worked example: STROBE on a typical chart review</h2>
+<p class="small muted">A <strong>fictional</strong> resident study used for teaching.</p>
+<div class="example"><div class="label">Fictional study</div>“We reviewed all patients who had cemented or uncemented hemiarthroplasty for femoral neck fracture at our centre over five years. Mortality at one year was lower in the uncemented group (p = 0.04). Uncemented stems are safer.”</div>
+<p>Working through the STROBE items shows what a reader cannot tell from this report:</p>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>STROBE item</th><th>What's missing</th><th>Why it matters</th></tr></thead><tbody>
+<tr><td>Setting and participants</td><td>Dates, eligibility, how cases were identified (billing codes? OR logs?), exclusions</td><td>Selection bias; can't judge who the results apply to</td></tr>
+<tr><td>Variables and data sources</td><td>How death was ascertained (hospital records only, or a provincial registry?)</td><td>Deaths after discharge may be missed unevenly</td></tr>
+<tr><td>Bias and confounding</td><td>No mention of age, ASA class, cognitive status or the reasons surgeons chose cement</td><td>Confounding by indication (F3): frailer patients may have received one stem type</td></tr>
+<tr><td>Study size</td><td>No justification</td><td>A small study can't exclude important differences</td></tr>
+<tr><td>Statistical methods and missing data</td><td>No adjusted analysis; no account of missing data or loss to follow-up</td><td>An unadjusted p-value can't support a causal claim</td></tr>
+<tr><td>Main results</td><td>No numbers per group, no effect size, no 95% CI</td><td>Readers can't judge the size or precision of the effect (F4)</td></tr>
+<tr><td>Interpretation</td><td>“Safer” is a causal claim from observational data</td><td>Conclusions should match the design</td></tr>
+</tbody></table></div>
+<p>Use the same table as a writing scaffold. If you can fill every row for your own study, the paper will largely write itself (R4).</p>
+</section>
+
+<section id="interactive"><h2>8. Interactive</h2>
 <h3>“Checklist it”: audit an abstract against CONSORT for Abstracts</h3>
 <p class="small muted">A <strong>fictional</strong> teaching abstract written for MORRC.</p>
 <div id="ck-app"></div>
@@ -78,7 +106,7 @@
 <div id="match-app"></div>
 </section>
 
-<section id="quiz"><h2>7. End-of-module quiz</h2>
+<section id="quiz"><h2>9. End-of-module quiz</h2>
 <div id="quiz-app"></div>
 </section>
 
@@ -94,6 +122,8 @@
 <li>Page MJ, McKenzie JE, Bossuyt PM, et al. The PRISMA 2020 statement. <em>BMJ</em>. 2021;372:n71.</li>
 <li>Collins GS, Moons KGM, Dhiman P, et al. TRIPOD+AI statement. <em>BMJ</em>. 2024;385:e078378.</li>
 <li>Chan AW, Tetzlaff JM, Altman DG, et al. SPIRIT 2013 statement. <em>Ann Intern Med</em>. 2013;158:200-7.</li>
+<li>Boutron I, Moher D, Altman DG, Schulz KF, Ravaud P. Extending the CONSORT statement to randomized trials of nonpharmacologic treatment: explanation and elaboration. <em>Ann Intern Med</em>. 2008;148:295-309.</li>
+<li>Vandenbroucke JP, von Elm E, Altman DG, et al. Strengthening the Reporting of Observational Studies in Epidemiology (STROBE): explanation and elaboration. <em>PLoS Med</em>. 2007;4:e297.</li>
 </ol>
 <p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
 </section>

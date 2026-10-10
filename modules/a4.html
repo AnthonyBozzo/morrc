@@ -15,7 +15,7 @@
   <div id="module-status"></div>
 </div></div>
 <div class="wrap layout">
-<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#sr">What makes a review systematic</a></li><li><a href="#forest">Reading a forest plot</a></li><li><a href="#bias">Subgroups and publication bias</a></li><li><a href="#grade">GRADE: certainty of evidence</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#sr">What makes a review systematic</a></li><li><a href="#forest">Reading a forest plot</a></li><li><a href="#bias">Subgroups and publication bias</a></li><li><a href="#grade">GRADE: certainty of evidence</a></li><li><a href="#amstar">Appraising a review: AMSTAR 2</a></li><li><a href="#recommend">From evidence to recommendation: a worked orthopaedic example</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
 <div class="content">
 
 <section id="objectives"><h2>Learning objectives</h2>
@@ -72,7 +72,40 @@
 <p>Each “serious” concern usually rates down one level and “very serious” two. A <strong>summary-of-findings table</strong> shows, for each outcome, the relative effect, absolute effects per 1,000 patients, the number of participants and studies, and the certainty rating.</p>
 </section>
 
-<section id="interactive"><h2>5. Interactive</h2>
+<section id="amstar"><h2>5. Appraising a review: AMSTAR 2</h2>
+<p>A meta-analysis is only as trustworthy as the process behind it. <strong>AMSTAR 2</strong> (Shea et al., BMJ 2017) is a 16-item tool for appraising systematic reviews that include randomized or non-randomized studies. Rather than adding up a score, it asks you to identify <strong>critical weaknesses</strong>. The domains the authors flag as critical are:</p>
+<ol>
+  <li>A protocol registered <strong>before</strong> the review began (and any deviations explained).</li>
+  <li>An adequate, comprehensive literature search.</li>
+  <li>A list of excluded studies, with reasons.</li>
+  <li>A satisfactory assessment of risk of bias in the included studies.</li>
+  <li>Appropriate methods for statistical combination of results.</li>
+  <li>Accounting for risk of bias when interpreting the results.</li>
+  <li>Assessment of publication bias and its likely effect.</li>
+</ol>
+<p>Overall confidence is then rated <strong>high, moderate, low or critically low</strong>. One critical flaw makes confidence low; more than one makes it critically low, however polished the forest plot looks.</p>
+<h3>Common problems in orthopaedic meta-analyses</h3>
+<ul>
+  <li><strong>Pooling randomized and observational studies</strong> in one estimate, so the confounded studies dominate.</li>
+  <li><strong>Mixing very different interventions</strong> (e.g., all “cemented” or all “minimally invasive” techniques) or follow-up times.</li>
+  <li><strong>Double-counting patients</strong> from overlapping cohorts, registry updates or multiple reports of one trial.</li>
+  <li><strong>Pooling surrogate outcomes</strong> (radiographic union, implant position) when patients care about function, pain and reoperation.</li>
+  <li><strong>Ignoring unit-of-analysis errors</strong> (knees counted instead of patients, A6).</li>
+</ul>
+</section>
+
+<section id="recommend"><h2>6. From evidence to recommendation: a worked orthopaedic example</h2>
+<p>Arthroscopic surgery for degenerative knee disease shows the full chain from trials to a guideline.</p>
+<ol>
+  <li><strong>Trials:</strong> several placebo- or sham-controlled and pragmatic RCTs, including Moseley (NEJM 2002) and FIDELITY (Sihvonen, NEJM 2013), found no important benefit of arthroscopic débridement or partial meniscectomy over sham surgery or exercise therapy in middle-aged and older patients.</li>
+  <li><strong>Systematic review:</strong> Thorlund and colleagues (BMJ 2015) pooled the RCTs and found a small benefit on pain that was not sustained, while harms included venous thromboembolism, infection and, rarely, death.</li>
+  <li><strong>Guideline:</strong> a BMJ Rapid Recommendation panel (Siemieniuk et al., BMJ 2017) used GRADE and a linked systematic review, and made a <strong>strong recommendation against</strong> arthroscopic surgery for nearly all patients with degenerative knee disease.</li>
+</ol>
+<div class="callout blue"><strong>Strength vs certainty</strong>GRADE separates the <em>certainty of evidence</em> (how confident we are in the effect estimates) from the <em>strength of a recommendation</em> (strong or weak/conditional). Strength also depends on the balance of benefits and harms, patients' values and preferences, and resource use. A panel can make a strong recommendation against a procedure when moderate-certainty evidence shows little benefit and real harm, as here.</div>
+<p>When you lead a journal club (the Tier 2 capstone), finish with the GRADE bottom line for the main outcome, the absolute effect per 1,000 patients, and what you would tell a patient in clinic.</p>
+</section>
+
+<section id="interactive"><h2>7. Interactive</h2>
 <h3>Read the forest plot</h3>
 <p class="small muted"><strong>Fictional data</strong> created for teaching (a new suture vs standard suture; outcome: surgical-site infection). Switch between the two datasets, then answer the questions. Pooled estimates are computed live (inverse-variance fixed effect; DerSimonian–Laird random effects).</p>
 <div id="forest-app"></div>
@@ -82,7 +115,7 @@
 <div id="grade-app"></div>
 </section>
 
-<section id="quiz"><h2>6. End-of-module quiz</h2>
+<section id="quiz"><h2>8. End-of-module quiz</h2>
 <div id="quiz-app"></div>
 </section>
 
@@ -95,6 +128,10 @@
 <li>Higgins JPT, Thompson SG, Deeks JJ, Altman DG. Measuring inconsistency in meta-analyses. <em>BMJ</em>. 2003;327:557-60.</li>
 <li>Sun X, Briel M, Walter SD, Guyatt GH. Is a subgroup effect believable? Updating criteria to evaluate the credibility of subgroup analyses. <em>BMJ</em>. 2010;340:c117.</li>
 <li>Ioannidis JPA. The mass production of redundant, misleading, and conflicted systematic reviews and meta-analyses. <em>Milbank Q</em>. 2016;94:485-514.</li>
+<li>Thorlund JB, Juhl CB, Roos EM, Lohmander LS. Arthroscopic surgery for degenerative knee: systematic review and meta-analysis of benefits and harms. <em>BMJ</em>. 2015;350:h2747.</li>
+<li>Siemieniuk RAC, Harris IA, Agoritsas T, et al. Arthroscopic surgery for degenerative knee arthritis and meniscal tears: a clinical practice guideline. <em>BMJ</em>. 2017;357:j1982.</li>
+<li>Moseley JB, O'Malley K, Petersen NJ, et al. A controlled trial of arthroscopic surgery for osteoarthritis of the knee. <em>N Engl J Med</em>. 2002;347:81-8.</li>
+<li>Sihvonen R, Paavola M, Malmivaara A, et al. Arthroscopic partial meniscectomy versus sham surgery for a degenerative meniscal tear. <em>N Engl J Med</em>. 2013;369:2515-24.</li>
 </ol>
 <p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
 </section>

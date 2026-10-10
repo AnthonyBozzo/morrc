@@ -15,7 +15,7 @@
   <div id="module-status"></div>
 </div></div>
 <div class="wrap layout">
-<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#protocol">The protocol as a contract</a></li><li><a href="#sap">The statistical analysis plan</a></li><li><a href="#register">Registration</a></li><li><a href="#pilot">Pilot and feasibility studies</a></li><li><a href="#grants">Grant writing and funding</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#protocol">The protocol as a contract</a></li><li><a href="#sap">The statistical analysis plan</a></li><li><a href="#register">Registration</a></li><li><a href="#pilot">Pilot and feasibility studies</a></li><li><a href="#grants">Grant writing and funding</a></li><li><a href="#outcomes">Choosing outcomes and running randomization</a></li><li><a href="#worked">Worked example: from idea to protocol</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
 <div class="content">
 
 <section id="objectives"><h2>Learning objectives</h2>
@@ -81,13 +81,44 @@
 </tbody></table></div>
 </section>
 
-<section id="interactive"><h2>6. Interactive</h2>
+<section id="outcomes"><h2>6. Choosing outcomes and running randomization</h2>
+<h3>Outcomes</h3>
+<ul>
+  <li><strong>One primary outcome</strong>, with its instrument and time point (e.g., Olerud–Molander Ankle Score at 12 months). It drives the sample size and the conclusion.</li>
+  <li>Prefer outcomes that matter to patients (function, pain, reoperation, return to work) over surrogates (radiographic union, implant position), unless the study is a pilot or a mechanistic study.</li>
+  <li>Check whether a <strong>core outcome set</strong> exists for your condition (the COMET Initiative database) so your results can be pooled later (A4).</li>
+  <li>Define <strong>adverse events</strong> and how they will be collected and graded; don't leave them to chance chart review.</li>
+</ul>
+<h3>Randomization logistics</h3>
+<ul>
+  <li>Generate the sequence by computer, usually in <strong>permuted blocks of varying size</strong>, stratified by centre and one or two key prognostic factors.</li>
+  <li><strong>Conceal allocation</strong> with central web-based randomization (REDCap has a randomization module, R3) rather than envelopes, which can be held up to the light or opened out of order.</li>
+  <li>Randomize as late as possible (e.g., in the operating room once eligibility is confirmed) to reduce post-randomization exclusions.</li>
+  <li>Whoever generates the sequence should not be enrolling patients.</li>
+</ul>
+<div class="callout"><strong>Exemplar</strong>Large orthopaedic trials such as HEALTH (total hip arthroplasty vs hemiarthroplasty for displaced femoral neck fracture) published their protocols and analysis plans before the results. Read one before writing yours: it shows what a complete SPIRIT protocol looks like in practice.</div>
+</section>
+
+<section id="worked"><h2>7. Worked example: from idea to protocol</h2>
+<p class="small muted">A <strong>fictional</strong> resident project, used for teaching. The protocol builder below starts with the same example.</p>
+<div class="example"><div class="label">Fictional project</div>An R3 wonders whether patients with surgically fixed unstable ankle fractures could bear weight as tolerated at 2 weeks rather than staying non-weight-bearing for 6 weeks.</div>
+<ol>
+  <li><strong>Question (F1):</strong> In adults with an unstable ankle fracture treated with ORIF (P), does weight-bearing as tolerated at 2 weeks (I), compared with protected weight-bearing to 6 weeks (C), improve ankle function at 12 months (O)?</li>
+  <li><strong>Is a full trial feasible?</strong> The mentor isn't sure how many eligible patients present each year or how many would accept randomization. Decision: a <strong>pilot RCT</strong> with feasibility outcomes (recruitment rate, retention, adherence) and prespecified progression criteria, not hypothesis testing (Eldridge 2016).</li>
+  <li><strong>Sample size:</strong> for the eventual definitive trial, a target difference based on a published MCID and an SD from prior studies (A6; the embedded calculator). The pilot's own size is justified by its feasibility objectives.</li>
+  <li><strong>Protocol and SAP:</strong> SPIRIT items, analysis populations, missing-data plan (R3) and harms (wound complications, loss of reduction).</li>
+  <li><strong>Approvals and registration:</strong> REB (F5) and ClinicalTrials.gov registration <em>before</em> the first patient is enrolled.</li>
+  <li><strong>Budget:</strong> research coordinator time, REDCap build, PROM licences and statistician time; apply for a departmental seed grant. <span class="placeholder">[COMMITTEE: typical seed-grant size and deadline]</span></li>
+</ol>
+</section>
+
+<section id="interactive"><h2>8. Interactive</h2>
 <h3>Design-your-study protocol builder</h3>
 <p class="small muted">Fill in the fields; a structured protocol outline appears below, aligned with the right guideline for your design. The embedded calculator fills in the sample-size section. Your draft is saved in this browser only. Download it as a Markdown/text file to share with your mentor.</p>
 <div id="builder-app"></div>
 </section>
 
-<section id="quiz"><h2>7. End-of-module quiz</h2>
+<section id="quiz"><h2>9. End-of-module quiz</h2>
 <div id="quiz-app"></div>
 </section>
 
@@ -99,6 +130,8 @@
 <li>Eldridge SM, Chan CL, Campbell MJ, et al. CONSORT 2010 statement: extension to randomised pilot and feasibility trials. <em>BMJ</em>. 2016;355:i5239.</li>
 <li>HEALTH Investigators. Total hip arthroplasty or hemiarthroplasty for hip fracture. <em>N Engl J Med</em>. 2019;381:2199-208. (An example of a large trial with a published protocol and SAP.)</li>
 <li>Local funding opportunities and deadlines: <span class="placeholder">[COMMITTEE]</span></li>
+<li>Williamson PR, Altman DG, Bagley H, et al. The COMET Handbook: version 1.0. <em>Trials</em>. 2017;18(Suppl 3):280.</li>
+<li>Schulz KF, Grimes DA. Allocation concealment in randomised trials: defending against deciphering. <em>Lancet</em>. 2002;359:614-8.</li>
 </ol>
 <p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
 </section>
