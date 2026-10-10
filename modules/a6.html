@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A6. Biostatistics II: fragility, power and pitfalls · MORRC</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-module="A6">
+<main id="main">
+<div class="module-hero"><div class="wrap">
+  <div><span class="tag t2">Tier 2 · Applied appraisal</span><span class="tag lvl">R3</span><span class="tag">~75–90 min</span></div>
+  <h1>A6. Biostatistics II: fragility, power and pitfalls</h1>
+  <p class="muted" style="margin:0 0 8px">How many patients a study needs, how fragile a “significant” result is, how non-inferiority trials work, and how to recognize spin.</p>
+  <div id="module-status"></div>
+</div></div>
+<div class="wrap layout">
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#ss">Sample size: the ingredients</a></li><li><a href="#fragility">The fragility index</a></li><li><a href="#ni">Non-inferiority and equivalence trials</a></li><li><a href="#units">Clustering, bilateral cases and multiplicity</a></li><li><a href="#spin">Spin</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<div class="content">
+
+<section id="objectives"><h2>Learning objectives</h2>
+<p>By the end of this module you will be able to:</p>
+<ul class="objectives"><li>Calculate and interpret the fragility index.</li><li>Explain power and how sample size is calculated.</li><li>Identify multiplicity, unplanned subgroups and spin.</li><li>Interpret non-inferiority and equivalence trials.</li></ul>
+<p class="small muted">Prerequisites: F4 and A1. Not locked: you can start here.</p>
+<div class="callout green"><strong>Why this matters to you</strong>An underpowered resident project can't answer its question, and reviewers will say so. These four skills turn you from someone who reads p-values into someone who can judge, and design, a credible trial.</div>
+</section>
+
+<section id="ss"><h2>1. Sample size: the ingredients</h2>
+<ul>
+  <li><strong>α</strong> (type I error, usually 0.05 two-sided) and <strong>power</strong> (1 − β, usually 80% or 90%).</li>
+  <li><strong>The target difference</strong>: the smallest difference worth detecting, ideally the MCID (A5) or a clinically important risk difference. Don't use an optimistic guess just because it shrinks the sample.</li>
+  <li><strong>Variability</strong>: the SD for continuous outcomes (from pilot data or prior trials), or the control-group event rate for binary outcomes.</li>
+  <li><strong>Attrition</strong>: inflate n as n / (1 − expected loss).</li>
+  <li><strong>Clustering</strong> (patients within surgeons, or two limbs per patient): multiply by the design effect, 1 + (m − 1) × ICC, where m is the cluster size.</li>
+</ul>
+<h3>Formulas used by the calculator (per group, equal allocation)</h3>
+<ul>
+  <li>Continuous: n = 2 (z<sub>1−α/2</sub> + z<sub>1−β</sub>)² σ² / δ²</li>
+  <li>Binary: n = [z<sub>1−α/2</sub>√(2p̄(1−p̄)) + z<sub>1−β</sub>√(p₁(1−p₁) + p₂(1−p₂))]² / (p₁ − p₂)², with p̄ = (p₁ + p₂)/2 (no continuity correction)</li>
+</ul>
+<div class="example"><div class="label">Hand-worked examples (these are the calculator's test cases)</div>
+<p><strong>Continuous:</strong> δ = 5 points, σ = 10, α = 0.05, power 80%: z values 1.960 and 0.842; n = 2 × (2.802)² × 100 / 25 = 62.8, so <strong>63 per group</strong>. With 10% attrition: 63 / 0.9 = 70 per group.</p>
+<p><strong>Binary:</strong> 20% vs 10% reoperation, α = 0.05, power 80%: p̄ = 0.15; [1.960 × √0.255 + 0.842 × √0.25]² / 0.01 = (0.990 + 0.421)² / 0.01 = 199.0, so <strong>199 per group</strong>.</p></div>
+<div class="callout"><strong>Post hoc power is uninformative</strong>Calculating “observed power” after a non-significant result just restates the p-value. Interpret the confidence interval instead (F4).</div>
+</section>
+
+<section id="fragility"><h2>2. The fragility index</h2>
+<p>Walsh et al. (J Clin Epidemiol 2014) defined the <strong>fragility index (FI)</strong> as the minimum number of patients whose status would have to change from non-event to event, in the group with fewer events, to turn a statistically significant result (Fisher's exact test, p &lt; 0.05) non-significant.</p>
+<ul>
+  <li>A small FI (e.g., 1 to 3) means the conclusion hinges on a handful of events.</li>
+  <li>Compare the FI with the <strong>number lost to follow-up</strong>: if more patients were lost than the FI, their missing outcomes could plausibly reverse the conclusion.</li>
+  <li><strong>Limitations:</strong> it applies only to binary outcomes and 1:1 comparisons, is tied to the arbitrary 0.05 threshold, and largely re-expresses the p-value and sample size. Use it as a reading aid, not a verdict.</li>
+</ul>
+</section>
+
+<section id="ni"><h2>3. Non-inferiority and equivalence trials</h2>
+<p>These trials ask whether a new treatment (often cheaper, less invasive or with fewer complications) is <strong>not unacceptably worse</strong> than the standard. The key design element is the <strong>non-inferiority margin (Δ)</strong>, the largest loss of efficacy that is clinically acceptable. It should be justified before the trial, from clinical reasoning and the standard's established effect.</p>
+<ul>
+  <li>Non-inferiority is shown if the whole CI for the difference (new − standard, higher = better) lies above −Δ.</li>
+  <li>Analyze by both <strong>ITT and per-protocol</strong>: in non-inferiority trials, ITT can bias <em>toward</em> similarity (crossovers dilute differences), so results should agree.</li>
+  <li>A non-significant superiority trial does <strong>not</strong> show equivalence.</li>
+  <li>Report with the CONSORT extension for non-inferiority and equivalence trials (Piaggio et al., JAMA 2012).</li>
+</ul>
+</section>
+
+<section id="units"><h2>4. Clustering, bilateral cases and multiplicity</h2>
+<ul>
+  <li><strong>Unit of analysis:</strong> two knees from one patient aren't independent. Analyzing limbs as if they were independent overstates precision. Use one limb per patient, or methods for correlated data (mixed models, GEE).</li>
+  <li><strong>Surgeon clustering:</strong> outcomes cluster within surgeons and centres, so account for it in sample size and analysis.</li>
+  <li><strong>Multiplicity:</strong> many outcomes, time points and subgroups inflate false positives. Prespecify one primary outcome, and treat others as secondary or exploratory, with correction where appropriate.</li>
+</ul>
+</section>
+
+<section id="spin"><h2>5. Spin</h2>
+<p>Boutron et al. (JAMA 2010) found spin in a large proportion of reports of RCTs with non-significant primary outcomes. Common strategies:</p>
+<ul>
+  <li>Focusing on statistically significant <strong>secondary outcomes</strong> or <strong>subgroups</strong>.</li>
+  <li>Highlighting <strong>within-group</strong> improvement (“both groups improved significantly”) instead of the between-group comparison.</li>
+  <li>Interpreting non-significance as <strong>equivalence or safety</strong>.</li>
+  <li>Concluding with recommendations not supported by the primary result.</li>
+</ul>
+<p>Antidote: read the registered primary outcome and its CI first, then compare the abstract's conclusion with it.</p>
+</section>
+
+<section id="interactive"><h2>6. Interactive</h2>
+<h3>Sample-size calculator</h3>
+<div id="ss-app"></div>
+<h3>Fragility-index calculator</h3>
+<p class="small muted">Enter events and totals for each arm. Uses a two-sided Fisher's exact test and adds events to the arm with the lower event rate, as in Walsh et al.</p>
+<div id="fi-app"></div>
+<h3>Find the spin</h3>
+<p class="small muted"><strong>Fictional</strong> teaching abstract.</p>
+<div id="spin-app"></div>
+</section>
+
+<section id="quiz"><h2>7. End-of-module quiz</h2>
+<div id="quiz-app"></div>
+</section>
+
+<section id="refs"><h2>References and further reading</h2>
+<ol class="refs">
+<li>Walsh M, Srinathan SK, McAuley DF, et al. The statistical significance of randomized controlled trial results is frequently fragile: a case for a Fragility Index. <em>J Clin Epidemiol</em>. 2014;67:622-8.</li>
+<li>Piaggio G, Elbourne DR, Pocock SJ, Evans SJW, Altman DG. Reporting of noninferiority and equivalence randomized trials: extension of the CONSORT 2010 statement. <em>JAMA</em>. 2012;308:2594-604.</li>
+<li>Boutron I, Dutton S, Ravaud P, Altman DG. Reporting and interpretation of randomized controlled trials with statistically nonsignificant results for primary outcomes. <em>JAMA</em>. 2010;303:2058-64.</li>
+<li>Altman DG, Bland JM. Absence of evidence is not evidence of absence. <em>BMJ</em>. 1995;311:485.</li>
+</ol>
+<p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
+</section>
+<p id="next-module" class="small"></p>
+</div></div>
+</main>
+<script src="../assets/js/catalogue.js"></script>
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script src="../assets/js/module.js"></script>
+<script src="../assets/js/engines.js"></script>
+<script src="../assets/js/calc.js"></script>
+<script src="../assets/js/content/a6.js"></script>
+<script>
+  MORRC.initModulePage();
+MORRC.A6.mountSS(document.getElementById("ss-app"));
+  MORRC.A6.mountFI(document.getElementById("fi-app"));
+  MORRC.mountSpotBias(document.getElementById("spin-app"), MORRC.A6.spin);
+  MORRC.mountQuiz(document.getElementById("quiz-app"), MORRC.A6.quiz);
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R1. Prediction models and AI/ML in orthopaedics · MORRC</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-module="R1">
+<main id="main">
+<div class="module-hero"><div class="wrap">
+  <div><span class="tag t3">Tier 3 · Advanced and independent research</span><span class="tag lvl">R4</span><span class="tag">~75–90 min</span></div>
+  <h1>R1. Prediction models and AI/ML in orthopaedics</h1>
+  <p class="muted" style="margin:0 0 8px">Survival calculators, complication risk scores and AI fracture detectors are entering orthopaedic practice. Learn to tell a trustworthy model from an overfitted one.</p>
+  <div id="module-status"></div>
+</div></div>
+<div class="wrap layout">
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#what">What prediction models do</a></li><li><a href="#performance">Discrimination, calibration and clinical utility</a></li><li><a href="#overfit">Overfitting, sample size and common pitfalls</a></li><li><a href="#metastases">Worked context: survival models in skeletal metastases</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<div class="content">
+
+<section id="objectives"><h2>Learning objectives</h2>
+<p>By the end of this module you will be able to:</p>
+<ul class="objectives"><li>Distinguish diagnostic, prognostic and causal questions.</li><li>Appraise model development and validation (discrimination, calibration).</li><li>Recognize overfitting, data leakage and lack of external validation.</li><li>Apply TRIPOD+AI to an ML paper.</li></ul>
+<p class="small muted">Prerequisites: F4 and A3. Not locked: you can start here.</p>
+<div class="callout green"><strong>Why this matters to you</strong>Tools such as SORG and PATHFx already inform decisions about skeletal metastases, and many resident projects now involve machine learning. Knowing what discrimination, calibration and external validation mean protects patients, and your publications.</div>
+</section>
+
+<section id="what"><h2>1. What prediction models do</h2>
+<ul>
+  <li><strong>Diagnostic</strong> models estimate the probability that a condition is present now (e.g., an AI algorithm flagging a scaphoid fracture).</li>
+  <li><strong>Prognostic</strong> models estimate the probability of a future outcome (e.g., survival at 3 and 12 months with skeletal metastases, used to choose between more and less durable fixation; 90-day complications after arthroplasty).</li>
+  <li>A model's life cycle is <strong>development</strong> → <strong>internal validation</strong> (bootstrapping or cross-validation to estimate optimism) → <strong>external validation</strong> in new patients, places and time periods → <strong>impact assessment</strong> (does using it improve decisions and outcomes?) → monitoring and updating.</li>
+</ul>
+<div class="callout"><strong>Development is not validation</strong>Performance measured in the data used to build a model is almost always optimistic. Ask where, when and in whom the model was externally validated, and whether those patients resemble yours.</div>
+</section>
+
+<section id="performance"><h2>2. Discrimination, calibration and clinical utility</h2>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Property</th><th>Question</th><th>Measures</th></tr></thead><tbody>
+<tr><td><strong>Discrimination</strong></td><td>Does the model give higher risks to patients who have the outcome than to those who don't?</td><td>C-statistic / AUC (0.5 = chance)</td></tr>
+<tr><td><strong>Calibration</strong></td><td>Do predicted risks match observed risks? (Of patients predicted 30%, do about 30% have the outcome?)</td><td>Calibration-in-the-large (observed/expected), calibration slope, calibration plot</td></tr>
+<tr><td><strong>Clinical utility</strong></td><td>Does using the model lead to better decisions than treating all or none?</td><td>Decision curve analysis (net benefit)</td></tr>
+</tbody></table></div>
+<p>Van Calster et al. called calibration the “Achilles heel” of predictive analytics (BMC Med 2019). A model can rank patients perfectly (high AUC) yet systematically over- or under-predict risk, which misleads every individual decision based on its numbers. The interactive demo below shows that <strong>AUC doesn't change when calibration breaks</strong>.</p>
+<p><strong>Decision curve analysis</strong> (Vickers and Elkin, Med Decis Making 2006) plots net benefit across threshold probabilities, weighing true positives against false positives at the threshold where a clinician would act.</p>
+</section>
+
+<section id="overfit"><h2>3. Overfitting, sample size and common pitfalls</h2>
+<ul>
+  <li><strong>Overfitting</strong>: too many candidate predictors for too few events. The old “10 events per variable” rule has been replaced by formal minimum sample-size calculations (Riley et al., BMJ 2020).</li>
+  <li><strong>Dichotomizing continuous predictors</strong> (age &gt; 65) throws away information.</li>
+  <li><strong>Data-driven selection</strong> (stepwise by p-value) produces unstable models. Penalized regression (LASSO, ridge) and prespecified predictors are better.</li>
+  <li><strong>Missing data</strong>: complete-case analysis discards patients and can bias the model. Multiple imputation is usually preferred (R3).</li>
+  <li><strong>Predictors not available at the moment of prediction</strong> (e.g., using a postoperative variable in a preoperative model).</li>
+</ul>
+<h3>Machine-learning specific</h3>
+<ul>
+  <li><strong>Data leakage</strong>: information from the test set leaking into training, e.g., images of the same patient in both, or normalization or imputation on the full dataset before splitting. Leakage inflates performance dramatically.</li>
+  <li><strong>Accuracy with imbalanced outcomes</strong>: if 5% have the outcome, a model predicting “no” for everyone is 95% accurate. Report AUC, calibration, sensitivity and specificity at relevant thresholds.</li>
+  <li><strong>Reference standard</strong> for imaging AI: who labelled the images, how, and were they blinded? (A3, QUADAS-2.)</li>
+  <li><strong>Shortcut learning</strong>: models can learn site-specific artefacts (scanner type, burned-in labels) instead of pathology, so they fail at new sites.</li>
+</ul>
+<p>Liu et al.'s Users' Guide (JAMA 2019) gives a structured approach to reading machine-learning papers. Report models with <strong>TRIPOD+AI</strong> and assess risk of bias with <strong>PROBAST</strong> (participants, predictors, outcome, analysis).</p>
+</section>
+
+<section id="metastases"><h2>4. Worked context: survival models in skeletal metastases</h2>
+<p>For a patient with an impending pathological femoral fracture, expected survival influences whether a surgeon chooses intramedullary nailing or a more durable endoprosthetic reconstruction. Tools such as <strong>PATHFx</strong> and the <strong>SORG</strong> machine-learning algorithms estimate survival from clinical and laboratory variables. Ask of any such tool:</p>
+<ol>
+  <li>Was it externally validated in a population like ours (tumour mix, era of systemic therapy, country)?</li>
+  <li>Is calibration reported (not only AUC), and how does it hold at the decision thresholds?</li>
+  <li>How are missing laboratory values handled when the tool is used?</li>
+  <li>Has anyone shown that using it improves decisions?</li>
+</ol>
+<p class="small muted">Look up the published development and external-validation studies of these tools and compare their reported calibration. That makes a good journal-club exercise.</p>
+</section>
+
+<section id="interactive"><h2>5. Interactive</h2>
+<h3>Discrimination vs calibration demo</h3>
+<p class="small muted">A simulated (fictional) cohort of 1,000 patients with a seeded random generator, so everyone sees the same data. Move the sliders to miscalibrate the model and watch what happens to the AUC.</p>
+<div id="cal-app"></div>
+<h3>Appraise this model</h3>
+<p class="small muted"><strong>Fictional</strong> model description. Rate PROBAST domains.</p>
+<div id="model-app"></div>
+</section>
+
+<section id="quiz"><h2>6. End-of-module quiz</h2>
+<div id="quiz-app"></div>
+</section>
+
+<section id="refs"><h2>References and further reading</h2>
+<ol class="refs">
+<li>Collins GS, Moons KGM, Dhiman P, et al. TRIPOD+AI statement: updated guidance for reporting clinical prediction models that use regression or machine learning methods. <em>BMJ</em>. 2024;385:e078378.</li>
+<li>Wolff RF, Moons KGM, Riley RD, et al. PROBAST: a tool to assess the risk of bias and applicability of prediction model studies. <em>Ann Intern Med</em>. 2019;170:51-8.</li>
+<li>Van Calster B, McLernon DJ, van Smeden M, et al. Calibration: the Achilles heel of predictive analytics. <em>BMC Med</em>. 2019;17:230.</li>
+<li>Vickers AJ, Elkin EB. Decision curve analysis: a novel method for evaluating prediction models. <em>Med Decis Making</em>. 2006;26:565-74.</li>
+<li>Riley RD, Ensor J, Snell KIE, et al. Calculating the sample size required for developing a clinical prediction model. <em>BMJ</em>. 2020;368:m441.</li>
+<li>Liu Y, Chen PC, Krause J, Peng L. How to read articles that use machine learning: Users' Guides to the Medical Literature. <em>JAMA</em>. 2019;322:1806-16.</li>
+</ol>
+<p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
+</section>
+<p id="next-module" class="small"></p>
+</div></div>
+</main>
+<script src="../assets/js/catalogue.js"></script>
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script src="../assets/js/module.js"></script>
+<script src="../assets/js/engines.js"></script>
+<script src="../assets/js/calc.js"></script>
+<script src="../assets/js/content/r1.js"></script>
+<script>
+  MORRC.initModulePage();
+MORRC.R1.mountCal(document.getElementById("cal-app"));
+  MORRC.mountRater(document.getElementById("model-app"), MORRC.R1.rater);
+  MORRC.mountQuiz(document.getElementById("quiz-app"), MORRC.R1.quiz);
+</script>
+</body>
+</html>

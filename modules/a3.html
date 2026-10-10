@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A3. Diagnostic accuracy studies · MORRC</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-module="A3">
+<main id="main">
+<div class="module-hero"><div class="wrap">
+  <div><span class="tag t2">Tier 2 · Applied appraisal</span><span class="tag lvl">R3</span><span class="tag">~75–90 min</span></div>
+  <h1>A3. Diagnostic accuracy studies</h1>
+  <p class="muted" style="margin:0 0 8px">Sensitivity, specificity and, most usefully, likelihood ratios: how a test result should change what you believe, and how to tell whether a diagnostic study can be trusted.</p>
+  <div id="module-status"></div>
+</div></div>
+<div class="wrap layout">
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#twobytwo">The 2×2 table</a></li><li><a href="#lr">Likelihood ratios and post-test probability</a></li><li><a href="#roc">ROC curves, AUC and thresholds</a></li><li><a href="#bias">Biases in diagnostic studies, and QUADAS-2</a></li><li><a href="#ortho">Orthopaedic applications</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<div class="content">
+
+<section id="objectives"><h2>Learning objectives</h2>
+<p>By the end of this module you will be able to:</p>
+<ul class="objectives"><li>Calculate sensitivity, specificity, PPV, NPV and likelihood ratios.</li><li>Use pre-test probability and LRs to revise post-test probability.</li><li>Appraise a diagnostic study for spectrum and verification bias.</li><li>Apply QUADAS-2.</li></ul>
+<p class="small muted">Prerequisites: F2 and F3. Not locked: you can start here.</p>
+<div class="callout green"><strong>Why this matters to you</strong>Every scaphoid MRI, PJI work-up and physical-exam manoeuvre is a diagnostic decision. Likelihood ratios let you move from a study's numbers to your patient's probability in seconds.</div>
+</section>
+
+<section id="twobytwo"><h2>1. The 2×2 table</h2>
+<div class="tbl-wrap"><table class="tbl" style="max-width:520px"><thead><tr><th></th><th>Target condition present (reference standard +)</th><th>Absent (reference standard −)</th></tr></thead><tbody>
+<tr><th>Index test +</th><td>a = true positives (TP)</td><td>b = false positives (FP)</td></tr>
+<tr><th>Index test −</th><td>c = false negatives (FN)</td><td>d = true negatives (TN)</td></tr>
+</tbody></table></div>
+<ul>
+  <li><strong>Sensitivity</strong> = a/(a+c): proportion of people with the condition who test positive. A highly sensitive test, when <strong>negative</strong>, rules the condition <strong>out</strong> (“SnNout”).</li>
+  <li><strong>Specificity</strong> = d/(b+d): proportion without the condition who test negative. A highly specific test, when <strong>positive</strong>, rules it <strong>in</strong> (“SpPin”).</li>
+  <li><strong>PPV</strong> = a/(a+b) and <strong>NPV</strong> = d/(c+d) depend on <strong>prevalence</strong>. The same MRI has a lower PPV in a low-prevalence clinic than in a referral centre.</li>
+</ul>
+</section>
+
+<section id="lr"><h2>2. Likelihood ratios and post-test probability</h2>
+<p><strong>LR+</strong> = sensitivity / (1 − specificity); <strong>LR−</strong> = (1 − sensitivity) / specificity. LRs don't depend on prevalence, and they convert your pre-test probability into a post-test probability:</p>
+<div class="callout blue"><strong>Bayes in three steps</strong>pre-test odds = p / (1 − p) → post-test odds = pre-test odds × LR → post-test probability = odds / (1 + odds). The Fagan nomogram (NEJM 1975) does this graphically.</div>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>LR+</th><th>LR−</th><th>Change in probability (Users' Guides rule of thumb)</th></tr></thead><tbody>
+<tr><td>&gt; 10</td><td>&lt; 0.1</td><td>Large, often conclusive</td></tr>
+<tr><td>5–10</td><td>0.1–0.2</td><td>Moderate</td></tr>
+<tr><td>2–5</td><td>0.2–0.5</td><td>Small but sometimes important</td></tr>
+<tr><td>1–2</td><td>0.5–1</td><td>Rarely important</td></tr>
+</tbody></table></div>
+<div class="example"><div class="label">Worked example (illustrative numbers)</div>
+<p>A test has sensitivity 90% and specificity 85%, so LR+ = 0.90/0.15 = <strong>6</strong> and LR− = 0.10/0.85 = <strong>0.12</strong>. With a pre-test probability of 20%: pre-test odds = 0.25; after a positive test, odds = 0.25 × 6 = 1.5, so the post-test probability is 1.5/2.5 = <strong>60%</strong>. After a negative test, odds = 0.25 × 0.12 = 0.03, so the probability is about <strong>3%</strong>.</p></div>
+</section>
+
+<section id="roc"><h2>3. ROC curves, AUC and thresholds</h2>
+<p>For continuous tests (CRP, synovial white cell count), each threshold gives a different sensitivity/specificity pair. The <strong>ROC curve</strong> plots sensitivity against 1 − specificity across thresholds; the <strong>area under the curve (AUC)</strong> summarizes discrimination (0.5 = chance, 1.0 = perfect). The best threshold depends on the consequences: in a PJI work-up, missing an infection (FN) may be worse than an unnecessary aspiration (FP). Thresholds chosen to optimize results in the same dataset overestimate performance and need external validation.</p>
+</section>
+
+<section id="bias"><h2>4. Biases in diagnostic studies, and QUADAS-2</h2>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Bias</th><th>What happens</th><th>Effect</th></tr></thead><tbody>
+<tr><td><strong>Spectrum bias</strong> (two-gate or case-control sampling)</td><td>Obvious cases are compared with healthy controls instead of consecutive patients with suspected disease</td><td>Inflates sensitivity and specificity</td></tr>
+<tr><td><strong>Partial verification</strong> (work-up) bias</td><td>Only test-positives get the reference standard</td><td>Inflates sensitivity, deflates specificity</td></tr>
+<tr><td><strong>Differential verification</strong></td><td>Positives get MRI and negatives get clinical follow-up</td><td>Unpredictable distortion</td></tr>
+<tr><td><strong>Incorporation bias</strong></td><td>The index test is part of the reference standard (e.g., a marker included in the PJI definition)</td><td>Inflates accuracy</td></tr>
+<tr><td><strong>Review bias</strong></td><td>Index test and reference standard interpreted with knowledge of each other</td><td>Inflates agreement</td></tr>
+</tbody></table></div>
+<p><strong>QUADAS-2</strong> (Whiting et al., Ann Intern Med 2011) assesses four domains: <strong>patient selection</strong>, <strong>index test</strong>, <strong>reference standard</strong>, and <strong>flow and timing</strong>. Each gets a risk-of-bias judgment, and the first three also get an applicability judgment. Report diagnostic studies with <strong>STARD 2015</strong>.</p>
+</section>
+
+<section id="ortho"><h2>5. Orthopaedic applications</h2>
+<ul>
+  <li><strong>Suspected scaphoid fracture with normal radiographs:</strong> most such patients don't have a fracture, so the decision hinges on whether early MRI or CT changes management compared with immobilization and repeat imaging. Reference standards vary between studies (MRI, CT, follow-up imaging), which affects accuracy estimates.</li>
+  <li><strong>Periprosthetic joint infection:</strong> no single test is perfect. Consensus definitions (e.g., the MSIS/ICM criteria) combine serology, synovial markers, cultures and histology, and serve as reference standards. Beware incorporation bias when a test is evaluated against a definition that includes it.</li>
+  <li><strong>Physical examination:</strong> tests such as Lachman or McMurray have accuracies that vary widely across studies, partly from spectrum differences (acute vs chronic, primary care vs sports clinic) and unblinded examiners.</li>
+</ul>
+</section>
+
+<section id="interactive"><h2>6. Interactive</h2>
+<h3>2×2 calculator with nomogram</h3>
+<p class="small muted">Enter a 2×2 table and a pre-test probability. The nomogram line passes through the pre-test probability and the LR to give the post-test probability.</p>
+<div id="dx-app"></div>
+<h3>Case: suspected scaphoid fracture (illustrative numbers)</h3>
+<div id="case-app"></div>
+</section>
+
+<section id="quiz"><h2>7. End-of-module quiz</h2>
+<div id="quiz-app"></div>
+</section>
+
+<section id="refs"><h2>References and further reading</h2>
+<ol class="refs">
+<li>Bossuyt PM, Reitsma JB, Bruns DE, et al. STARD 2015: an updated list of essential items for reporting diagnostic accuracy studies. <em>BMJ</em>. 2015;351:h5527.</li>
+<li>Whiting PF, Rutjes AWS, Westwood ME, et al. QUADAS-2: a revised tool for the quality assessment of diagnostic accuracy studies. <em>Ann Intern Med</em>. 2011;155:529-36.</li>
+<li>Fagan TJ. Nomogram for Bayes theorem. <em>N Engl J Med</em>. 1975;293:257.</li>
+<li>Jaeschke R, Guyatt GH, Sackett DL. Users' guides to the medical literature. III. How to use an article about a diagnostic test. B. What are the results and will they help me in caring for my patients? <em>JAMA</em>. 1994;271:703-7.</li>
+<li>Guyatt G, Rennie D, Meade MO, Cook DJ, eds. <em>Users' Guides to the Medical Literature</em>. 3rd ed. JAMA/McGraw-Hill; 2015. (Diagnosis chapters.)</li>
+</ol>
+<p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
+</section>
+<p id="next-module" class="small"></p>
+</div></div>
+</main>
+<script src="../assets/js/catalogue.js"></script>
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script src="../assets/js/module.js"></script>
+<script src="../assets/js/engines.js"></script>
+<script src="../assets/js/calc.js"></script>
+<script src="../assets/js/content/a3.js"></script>
+<script>
+  MORRC.initModulePage();
+MORRC.A3.mountDx(document.getElementById("dx-app"));
+  MORRC.mountSorter(document.getElementById("case-app"), MORRC.A3.case);
+  MORRC.mountQuiz(document.getElementById("quiz-app"), MORRC.A3.quiz);
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A4. Systematic reviews, meta-analysis and GRADE · MORRC</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-module="A4">
+<main id="main">
+<div class="module-hero"><div class="wrap">
+  <div><span class="tag t2">Tier 2 · Applied appraisal</span><span class="tag lvl">R3</span><span class="tag">~75–90 min</span></div>
+  <h1>A4. Systematic reviews, meta-analysis and GRADE</h1>
+  <p class="muted" style="margin:0 0 8px">Read a forest plot, judge heterogeneity, appraise a systematic review and rate the certainty of evidence with GRADE.</p>
+  <div id="module-status"></div>
+</div></div>
+<div class="wrap layout">
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#sr">What makes a review systematic</a></li><li><a href="#forest">Reading a forest plot</a></li><li><a href="#bias">Subgroups and publication bias</a></li><li><a href="#grade">GRADE: certainty of evidence</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<div class="content">
+
+<section id="objectives"><h2>Learning objectives</h2>
+<p>By the end of this module you will be able to:</p>
+<ul class="objectives"><li>Appraise a systematic review and meta-analysis.</li><li>Interpret forest plots, heterogeneity (I²) and funnel plots.</li><li>Rate certainty of evidence using GRADE.</li><li>Recognize redundant and low-quality meta-analyses.</li></ul>
+<p class="small muted">Prerequisites: F3, F4 and A1. Not locked: you can start here.</p>
+<div class="callout green"><strong>Why this matters to you</strong>Guidelines and many journal-club papers rest on meta-analyses, and orthopaedics produces many small, overlapping ones. GRADE gives you a disciplined bottom line for the journal club you will lead (Tier 2 capstone).</div>
+</section>
+
+<section id="sr"><h2>1. What makes a review systematic</h2>
+<ol>
+  <li>A focused question (PICO) and a <strong>protocol registered in advance</strong> (PROSPERO), reported with PRISMA-P.</li>
+  <li>A comprehensive, reproducible <strong>search</strong> of several databases (MEDLINE, Embase, CENTRAL) plus registries and grey literature, ideally designed with a librarian.</li>
+  <li><strong>Duplicate, independent</strong> screening and data extraction.</li>
+  <li><strong>Risk-of-bias assessment</strong> of each study (RoB 2, ROBINS-I, QUADAS-2).</li>
+  <li>Appropriate <strong>synthesis</strong> (meta-analysis only when studies are similar enough) and <strong>certainty rating</strong> (GRADE).</li>
+  <li>Reporting with <strong>PRISMA 2020</strong>; appraise reviews with <strong>AMSTAR 2</strong>.</li>
+</ol>
+<div class="callout"><strong>Redundant meta-analyses</strong>Ioannidis (Milbank Q 2016) documented a flood of redundant, overlapping and often conflicted meta-analyses. Before reading, or writing, one, check how many already exist on the same question.</div>
+</section>
+
+<section id="forest"><h2>2. Reading a forest plot</h2>
+<ul>
+  <li>Each <strong>square</strong> is one study's estimate; its size reflects its weight, and the horizontal line is its 95% CI.</li>
+  <li>The <strong>vertical line</strong> at RR = 1 (or a mean difference of 0) is no effect. Check which side favours the intervention.</li>
+  <li>The <strong>diamond</strong> is the pooled estimate; its width is the pooled CI.</li>
+  <li>Ratio measures are plotted on a <strong>log scale</strong>, so RR 0.5 and RR 2 are equidistant from 1.</li>
+</ul>
+<h3>Heterogeneity</h3>
+<ul>
+  <li><strong>Eyeball first:</strong> do the CIs overlap? Do the point estimates sit on both sides of 1?</li>
+  <li><strong>Cochran's Q</strong> tests whether differences exceed chance; it has low power with few studies.</li>
+  <li><strong>I²</strong> (Higgins et al., BMJ 2003) is the percentage of variability due to heterogeneity rather than chance. Rough guide: around 25% low, 50% moderate, 75% high. Its uncertainty is large with few studies.</li>
+  <li><strong>τ²</strong> estimates the between-study variance used by random-effects models.</li>
+</ul>
+<h3>Fixed vs random effects</h3>
+<p>A <strong>fixed-effect</strong> model assumes one true effect and weights studies by precision. A <strong>random-effects</strong> model assumes the true effects vary, gives relatively more weight to small studies and produces wider CIs when heterogeneity is present. When the two disagree, investigate <em>why</em> the studies differ; don't just pick the model you like.</p>
+</section>
+
+<section id="bias"><h2>3. Subgroups and publication bias</h2>
+<p><strong>Subgroup credibility</strong> (Sun et al., BMJ 2010): believe a subgroup effect more if it was prespecified with a hypothesized direction, it is one of few tested, it is supported by a significant test of interaction, it is consistent across studies, and it is biologically plausible.</p>
+<p><strong>Publication and small-study bias:</strong> small negative studies are less likely to be published. A <strong>funnel plot</strong> (effect against precision) that is asymmetric, with small studies showing larger benefits, raises concern. With fewer than about 10 studies, funnel-plot tests are unreliable.</p>
+</section>
+
+<section id="grade"><h2>4. GRADE: certainty of evidence</h2>
+<p>GRADE (Guyatt et al., BMJ 2008) rates certainty <strong>per outcome</strong> as high, moderate, low or very low. RCT evidence starts high; observational evidence starts low.</p>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Rate down for</th><th>Ask</th><th>Rate up (observational) for</th></tr></thead><tbody>
+<tr><td>Risk of bias</td><td>Do most of the data come from studies at high risk?</td><td>Large effect (e.g., RR &gt; 2 or &lt; 0.5)</td></tr>
+<tr><td>Inconsistency</td><td>Unexplained heterogeneity in direction or size?</td><td>Dose–response gradient</td></tr>
+<tr><td>Indirectness</td><td>Different population, intervention, comparator or surrogate outcome?</td><td>Plausible confounding would reduce the observed effect</td></tr>
+<tr><td>Imprecision</td><td>Does the CI include both important benefit and no effect (or harm)? Too few events?</td><td></td></tr>
+<tr><td>Publication bias</td><td>Small-study effects, industry-only small trials, missing studies?</td><td></td></tr>
+</tbody></table></div>
+<p>Each “serious” concern usually rates down one level and “very serious” two. A <strong>summary-of-findings table</strong> shows, for each outcome, the relative effect, absolute effects per 1,000 patients, the number of participants and studies, and the certainty rating.</p>
+</section>
+
+<section id="interactive"><h2>5. Interactive</h2>
+<h3>Read the forest plot</h3>
+<p class="small muted"><strong>Fictional data</strong> created for teaching (a new suture vs standard suture; outcome: surgical-site infection). Switch between the two datasets, then answer the questions. Pooled estimates are computed live (inverse-variance fixed effect; DerSimonian–Laird random effects).</p>
+<div id="forest-app"></div>
+<div id="forest-q" style="margin-top:12px"></div>
+<h3>GRADE it</h3>
+<p class="small muted">Rate each GRADE domain for dataset B. Assume three of the six trials were unblinded with unconcealed allocation and carry most of the weight, and that all trials enrolled the population of interest.</p>
+<div id="grade-app"></div>
+</section>
+
+<section id="quiz"><h2>6. End-of-module quiz</h2>
+<div id="quiz-app"></div>
+</section>
+
+<section id="refs"><h2>References and further reading</h2>
+<ol class="refs">
+<li>Higgins JPT, Thomas J, Chandler J, et al., eds. <em>Cochrane Handbook for Systematic Reviews of Interventions</em> (current version). Cochrane.</li>
+<li>Page MJ, McKenzie JE, Bossuyt PM, et al. The PRISMA 2020 statement. <em>BMJ</em>. 2021;372:n71.</li>
+<li>Guyatt GH, Oxman AD, Vist GE, et al. GRADE: an emerging consensus on rating quality of evidence and strength of recommendations. <em>BMJ</em>. 2008;336:924-6.</li>
+<li>Shea BJ, Reeves BC, Wells G, et al. AMSTAR 2. <em>BMJ</em>. 2017;358:j4008.</li>
+<li>Higgins JPT, Thompson SG, Deeks JJ, Altman DG. Measuring inconsistency in meta-analyses. <em>BMJ</em>. 2003;327:557-60.</li>
+<li>Sun X, Briel M, Walter SD, Guyatt GH. Is a subgroup effect believable? Updating criteria to evaluate the credibility of subgroup analyses. <em>BMJ</em>. 2010;340:c117.</li>
+<li>Ioannidis JPA. The mass production of redundant, misleading, and conflicted systematic reviews and meta-analyses. <em>Milbank Q</em>. 2016;94:485-514.</li>
+</ol>
+<p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
+</section>
+<p id="next-module" class="small"></p>
+</div></div>
+</main>
+<script src="../assets/js/catalogue.js"></script>
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script src="../assets/js/module.js"></script>
+<script src="../assets/js/engines.js"></script>
+<script src="../assets/js/calc.js"></script>
+<script src="../assets/js/content/a4.js"></script>
+<script>
+  MORRC.initModulePage();
+MORRC.A4.mountForest(document.getElementById("forest-app"));
+  MORRC.mountSorter(document.getElementById("forest-q"), MORRC.A4.questions);
+  MORRC.mountRater(document.getElementById("grade-app"), MORRC.A4.grade);
+  MORRC.mountQuiz(document.getElementById("quiz-app"), MORRC.A4.quiz);
+</script>
+</body>
+</html>

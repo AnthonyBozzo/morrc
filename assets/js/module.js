@@ -152,7 +152,7 @@
       const it = items[i];
       el.innerHTML = `<div class="counter">${i+1} of ${items.length} · score ${score}</div>
         <div class="vignette">${it.text}</div>
-        <div class="choice-row">${cfg.choices.map(c => `<button type="button" data-c="${h(c)}">${h(c)}</button>`).join("")}</div>
+        <div class="choice-row">${(it.choices ? MORRC.shuffle(it.choices) : cfg.choices).map(c => `<button type="button" data-c="${h(c)}">${h(c)}</button>`).join("")}</div>
         <div class="fb"></div>`;
       el.querySelectorAll(".choice-row button").forEach(b => b.onclick = () => {
         const ok = b.dataset.c === it.answer; if(ok) score++;

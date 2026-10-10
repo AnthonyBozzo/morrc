@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R3. Data management and REDCap · MORRC</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-module="R3">
+<main id="main">
+<div class="module-hero"><div class="wrap">
+  <div><span class="tag t3">Tier 3 · Advanced and independent research</span><span class="tag lvl">R4</span><span class="tag">~60–75 min</span></div>
+  <h1>R3. Data management and REDCap</h1>
+  <p class="muted" style="margin:0 0 8px">Most errors in resident research are made at data collection, not analysis. Build a clean REDCap database, handle missing data properly and keep patient data secure.</p>
+  <div id="module-status"></div>
+</div></div>
+<div class="wrap layout">
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#dmp">Plan before you collect</a></li><li><a href="#redcap">REDCap</a></li><li><a href="#dictionary">Building a good data dictionary</a></li><li><a href="#cleaning">Data cleaning without regret</a></li><li><a href="#missing">Missing data</a></li><li><a href="#security">Security and storage</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<div class="content">
+
+<section id="objectives"><h2>Learning objectives</h2>
+<p>By the end of this module you will be able to:</p>
+<ul class="objectives"><li>Build a REDCap project with a data dictionary and validation.</li><li>Apply data security and privacy standards for health data.</li><li>Plan data cleaning, missing data and version control.</li><li>Write reproducible analysis code (R, Stata or Python).</li></ul>
+<p class="small muted">Prerequisites: F5 and R2. Not locked: you can start here.</p>
+<div class="callout green"><strong>Why this matters to you</strong>A well-built data dictionary saves weeks of cleaning and is part of your R4 capstone. Poor data handling is also the commonest privacy breach in resident research.</div>
+</section>
+
+<section id="dmp"><h2>1. Plan before you collect</h2>
+<ul>
+  <li>Write a <strong>data management plan</strong>: what is collected, by whom, where it is stored, who can access it, how long it is kept and how it will be shared.</li>
+  <li>Collect only what the protocol needs (<strong>data minimization</strong>, F5). Each variable should map to an objective, a confounder or eligibility.</li>
+  <li>Build and <strong>pilot</strong> the database on 5 to 10 charts before full data collection. Fix the dictionary, then lock its structure.</li>
+  <li>Use <strong>double data entry</strong> or a re-abstraction audit of a random sample (e.g., 10%) to estimate the error rate.</li>
+</ul>
+</section>
+
+<section id="redcap"><h2>2. REDCap</h2>
+<p><strong>REDCap</strong> (Research Electronic Data Capture; Harris et al., 2009) is a secure, web-based platform used by thousands of institutions. Features that matter for resident projects:</p>
+<ul>
+  <li><strong>Field validation</strong> (integer, date, ranges) and <strong>required fields</strong>, which catch errors at entry.</li>
+  <li><strong>Branching logic</strong> (show “revision reason” only if revision = yes) and calculated fields.</li>
+  <li><strong>Longitudinal events</strong> and repeating instruments for follow-up visits.</li>
+  <li><strong>Surveys</strong> for PROMs, including automated invitations, and e-consent where the REB approves it.</li>
+  <li><strong>Audit trail</strong>, user rights and <strong>data access groups</strong> for multicentre projects.</li>
+  <li>A shared <strong>instrument library</strong> containing many validated questionnaires (check licensing).</li>
+</ul>
+<div class="tbl-wrap"><table class="tbl"><tbody>
+<tr><th>McGill / hospital REDCap instance</th><td><span class="placeholder">[COMMITTEE: URL of the local REDCap instance(s)]</span></td></tr>
+<tr><th>How residents request access</th><td><span class="placeholder">[COMMITTEE: process and contact]</span></td></tr>
+<tr><th>Training</th><td><span class="placeholder">[COMMITTEE: local REDCap training sessions]</span></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="dictionary"><h2>3. Building a good data dictionary</h2>
+<ul>
+  <li><strong>Variable names</strong>: short, lowercase, no spaces, and meaningful (<code>oxford_hip_6m</code>, not <code>Q7</code>).</li>
+  <li><strong>One concept per variable</strong>, and <strong>coded categories</strong> (radio or dropdown) rather than free text for anything you will analyze.</li>
+  <li><strong>Units</strong> in the label (kg, mmol/L, hours) and <strong>validation ranges</strong> matching the instrument (the Oxford Hip Score runs from 0 to 48).</li>
+  <li><strong>Missing data</strong>: don't type 999 into a numeric field, because it will be averaged as a real value. Leave the field empty and record the reason (REDCap supports missing-data codes), so “not collected” is distinguished from “patient declined” or “died”.</li>
+  <li><strong>Identifiers</strong>: keep names, MRNs and RAMQ numbers out of the analysis database, or in a separate, restricted instrument, as approved by the REB. Use a study ID.</li>
+  <li><strong>Dates</strong>: use date-validated fields. Derive intervals (time to surgery) by calculation, not by hand.</li>
+</ul>
+</section>
+
+<section id="cleaning"><h2>4. Data cleaning without regret</h2>
+<ol>
+  <li><strong>Never edit the raw export.</strong> Keep it read-only; clean with a script (R, Stata, SAS or Python), so every change is reproducible (Wilson et al., “Good enough practices”, PLoS Comput Biol 2017).</li>
+  <li>Run <strong>range checks</strong> (age, scores), <strong>logic checks</strong> (surgery before admission? PROM recorded after death?) and <strong>duplicate checks</strong> (repeated study IDs).</li>
+  <li>Send <strong>queries</strong> back to the source (the chart) rather than guessing, and record the resolution in a <strong>cleaning log</strong>.</li>
+  <li><strong>Lock</strong> the database before the primary analysis, and keep the analysis code with the paper's materials.</li>
+</ol>
+</section>
+
+<section id="missing"><h2>5. Missing data</h2>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Mechanism (Rubin 1976)</th><th>Meaning</th><th>Example</th><th>Consequence</th></tr></thead><tbody>
+<tr><td><strong>MCAR</strong>: missing completely at random</td><td>Missingness is unrelated to any data</td><td>A batch of questionnaires lost in the mail</td><td>Complete-case analysis unbiased (but less precise)</td></tr>
+<tr><td><strong>MAR</strong>: missing at random</td><td>Related to observed variables</td><td>Older patients less likely to return PROMs, and age is recorded</td><td>Multiple imputation using those variables can correct bias</td></tr>
+<tr><td><strong>MNAR</strong>: missing not at random</td><td>Related to the unobserved value itself</td><td>Patients with poor outcomes stop attending</td><td>No standard method is unbiased; sensitivity analyses are essential</td></tr>
+</tbody></table></div>
+<ul>
+  <li><strong>Prevention beats cure:</strong> short instruments, flexible follow-up windows, multiple contact methods, and recording the reason for every missing value.</li>
+  <li><strong>Multiple imputation</strong> creates several plausible completed datasets and combines the results. Sterne et al. (BMJ 2009) describe its potential and pitfalls; include the outcome and auxiliary variables in the imputation model.</li>
+  <li><strong>Death is not missing data</strong> to be imputed. A PROM “after death” doesn't exist, so use composite outcomes or methods that handle truncation by death, and report deaths separately.</li>
+</ul>
+</section>
+
+<section id="security"><h2>6. Security and storage</h2>
+<ul>
+  <li>Store data only on <strong>institution-approved</strong> platforms (REDCap, hospital network drives). Never use personal email, personal cloud accounts, USB keys or unencrypted laptops.</li>
+  <li>Keep the <strong>linking key</strong> separate from the coded data, with restricted access.</li>
+  <li>Share data outside the team only under REB approval and a data-sharing agreement.</li>
+  <li>Retention and destruction follow the REB-approved protocol. <span class="placeholder">[COMMITTEE: local retention requirements and approved storage options]</span></li>
+</ul>
+</section>
+
+<section id="interactive"><h2>7. Interactive</h2>
+<h3>Data-dictionary error hunt</h3>
+<p class="small muted">A <strong>fictional</strong> REDCap data dictionary for a hip-fracture study. Tag each problem row.</p>
+<div id="dd-app"></div>
+<h3>Clean this dataset</h3>
+<p class="small muted">Download the <strong>fictional, simulated</strong> practice file (<a href="../assets/data/morrc_practice_hipfracture.csv" download>morrc_practice_hipfracture.csv</a>, no real patients), explore it in your own software or with the profiler below, then answer the questions.</p>
+<div id="profile-app"></div>
+<div id="clean-app" style="margin-top:12px"></div>
+</section>
+
+<section id="quiz"><h2>8. End-of-module quiz</h2>
+<div id="quiz-app"></div>
+</section>
+
+<section id="refs"><h2>References and further reading</h2>
+<ol class="refs">
+<li>Harris PA, Taylor R, Thielke R, et al. Research electronic data capture (REDCap): a metadata-driven methodology and workflow process for providing translational research informatics support. <em>J Biomed Inform</em>. 2009;42:377-81.</li>
+<li>Harris PA, Taylor R, Minor BL, et al. The REDCap consortium: building an international community of software platform partners. <em>J Biomed Inform</em>. 2019;95:103208.</li>
+<li>Rubin DB. Inference and missing data. <em>Biometrika</em>. 1976;63:581-92.</li>
+<li>Sterne JAC, White IR, Carlin JB, et al. Multiple imputation for missing data in epidemiological and clinical research: potential and pitfalls. <em>BMJ</em>. 2009;338:b2393.</li>
+<li>Wilson G, Bryan J, Cranston K, et al. Good enough practices in scientific computing. <em>PLoS Comput Biol</em>. 2017;13:e1005510.</li>
+<li>Local REDCap instance and data-storage policy: <span class="placeholder">[COMMITTEE]</span></li>
+</ol>
+<p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
+</section>
+<p id="next-module" class="small"></p>
+</div></div>
+</main>
+<script src="../assets/js/catalogue.js"></script>
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script src="../assets/js/module.js"></script>
+<script src="../assets/js/engines.js"></script>
+<script src="../assets/js/calc.js"></script>
+<script src="../assets/js/content/r3.js"></script>
+<script>
+  MORRC.initModulePage();
+MORRC.mountSpotBias(document.getElementById("dd-app"), MORRC.R3.dict);
+  MORRC.R3.mountProfiler(document.getElementById("profile-app"));
+  MORRC.mountSorter(document.getElementById("clean-app"), MORRC.R3.clean);
+  MORRC.mountQuiz(document.getElementById("quiz-app"), MORRC.R3.quiz);
+</script>
+</body>
+</html>

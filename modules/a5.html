@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A5. Patient-reported outcomes in orthopaedics · MORRC</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-module="A5">
+<main id="main">
+<div class="module-hero"><div class="wrap">
+  <div><span class="tag t2">Tier 2 · Applied appraisal</span><span class="tag lvl">R3</span><span class="tag">~60–75 min</span></div>
+  <h1>A5. Patient-reported outcomes in orthopaedics</h1>
+  <p class="muted" style="margin:0 0 8px">Patient-reported outcomes are the primary outcome of most orthopaedic trials. Learn how they are validated, what an MCID really is, and how to decide whether a difference matters.</p>
+  <div id="module-status"></div>
+</div></div>
+<div class="wrap layout">
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#types">Types of PROMs</a></li><li><a href="#properties">Measurement properties (COSMIN)</a></li><li><a href="#mcid">MCID, PASS and friends</a></li><li><a href="#interpret">Interpreting PROM differences in trials</a></li><li><a href="#choose">Choosing a PROM for your study</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<div class="content">
+
+<section id="objectives"><h2>Learning objectives</h2>
+<p>By the end of this module you will be able to:</p>
+<ul class="objectives"><li>Choose an appropriate PROM for a condition and population.</li><li>Explain validity, reliability and responsiveness.</li><li>Define MCID, PASS and SCB and how each is derived.</li><li>Judge whether a statistically significant difference is clinically important.</li></ul>
+<p class="small muted">Prerequisites: F4. Not locked: you can start here.</p>
+<div class="callout green"><strong>Why this matters to you</strong>“Statistically significant” is the beginning of the question, not the end. Interpreting PROM differences against the MCID, correctly, is what lets you tell a patient whether an operation is worth it.</div>
+</section>
+
+<section id="types"><h2>1. Types of PROMs</h2>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Type</th><th>Examples</th><th>Strength / limitation</th></tr></thead><tbody>
+<tr><td>Generic health status / utility</td><td>EQ-5D, SF-36 / SF-12, PROMIS</td><td>Comparable across conditions and usable for cost-utility; less sensitive to specific problems</td></tr>
+<tr><td>Region-specific</td><td>Oxford Hip and Knee Scores, HOOS/KOOS, DASH/QuickDASH</td><td>Responsive for the joint or region; can't compare across body regions</td></tr>
+<tr><td>Condition-specific</td><td>WOMAC (OA), PRWE (wrist), Oswestry Disability Index (back)</td><td>Most responsive for the condition; narrow</td></tr>
+<tr><td>Computer-adaptive</td><td>PROMIS CAT</td><td>Few items, low floor/ceiling effects; needs software</td></tr>
+</tbody></table></div>
+<p class="small">Many orthopaedic “scores” mix clinician-rated and patient-reported items (e.g., the Harris Hip Score, the Constant score). Clinician-rated items are open to detection bias when assessors aren't blinded (A1).</p>
+</section>
+
+<section id="properties"><h2>2. Measurement properties (COSMIN)</h2>
+<p>The COSMIN initiative standardized terminology and methods for evaluating measurement instruments:</p>
+<ul>
+  <li><strong>Reliability</strong>: test–retest (intraclass correlation coefficient), internal consistency (Cronbach's α, only meaningful for unidimensional scales), and measurement error (standard error of measurement, smallest detectable change).</li>
+  <li><strong>Validity</strong>: content validity (do the items cover what matters to patients? the most important property), structural validity, construct validity (hypothesis testing) and criterion validity.</li>
+  <li><strong>Responsiveness</strong>: the ability to detect change over time.</li>
+  <li><strong>Interpretability</strong>: floor and ceiling effects (Terwee et al. 2007 suggested more than 15% of respondents at the lowest or highest score as problematic) and the availability of MCID values.</li>
+</ul>
+<div class="callout"><strong>Translation matters in Montreal</strong>A PROM validated in English isn't automatically valid in French. Use versions with documented cross-cultural adaptation (forward and back translation, cognitive testing), ideally validated in Canadian French where available.</div>
+</section>
+
+<section id="mcid"><h2>3. MCID, PASS and friends</h2>
+<p>The <strong>minimal clinically important difference</strong> was defined by Jaeschke, Singer and Guyatt (1989) as the smallest difference in score that patients perceive as beneficial and that would mandate a change in management.</p>
+<ul>
+  <li><strong>Anchor-based methods</strong> link score changes to an external anchor, such as a global rating of change (“a little better”). They are preferred because they reflect patients' perspective.</li>
+  <li><strong>Distribution-based methods</strong> use statistical properties (e.g., 0.5 SD, SEM). They describe change beyond measurement error, not importance to patients.</li>
+  <li><strong>MCIDs vary</strong> by method, population, baseline severity and follow-up. Copay et al. (Spine J 2007) showed how widely values differ for the same instrument, so quote the source and context of any MCID.</li>
+  <li><strong>Within-patient vs between-group:</strong> an MCID for individual change isn't automatically the threshold for a meaningful difference <em>between groups</em> in a trial. Be explicit about which you use.</li>
+  <li><strong>PASS</strong> (patient acceptable symptom state; Tubach et al. 2005) is the score above which patients consider themselves well. <strong>SCB</strong> (substantial clinical benefit) is a larger threshold for a clearly worthwhile improvement.</li>
+</ul>
+</section>
+
+<section id="interpret"><h2>4. Interpreting PROM differences in trials</h2>
+<ol>
+  <li>Find the between-group difference and its <strong>95% CI</strong> at the primary time point.</li>
+  <li>Compare the CI with <strong>0</strong> and with the <strong>MCID</strong> (the visualizer below and module F4).</li>
+  <li>Look at <strong>responder analyses</strong> (proportion achieving the MCID or PASS in each arm). These are intuitive and allow an NNT, but dichotomizing loses information and thresholds can be cherry-picked, so they should be prespecified.</li>
+  <li>Check for <strong>missing PROM data</strong>. PROM completion often falls over time, and patients doing badly may respond less often.</li>
+  <li>Check <strong>ceiling effects</strong>. If many patients score the maximum, true differences between good outcomes are invisible.</li>
+</ol>
+<div class="example"><div class="label">Worked example (illustrative)</div>
+<p>A trial reports a 3-point difference in Oxford Knee Score (95% CI 1.5 to 4.5) favouring a new implant, and the authors call it significant. If we assume, for this example, a between-group threshold of 5 points, the whole CI lies below the threshold, so the difference is <strong>statistically significant but unlikely to be important</strong> to patients.</p></div>
+</section>
+
+<section id="choose"><h2>5. Choosing a PROM for your study</h2>
+<ul>
+  <li>Start from the <strong>construct</strong> you need to measure (pain? function? return to sport?) and the population.</li>
+  <li>Check measurement properties in the target population using COSMIN-based systematic reviews.</li>
+  <li>Prefer instruments used in <strong>core outcome sets</strong> and in comparable trials, so your results can be pooled.</li>
+  <li>Consider respondent burden, available languages, licensing and fees, and whether your <strong>REDCap</strong> instrument library already has it (R3).</li>
+  <li>Prespecify the primary PROM, time point, MCID source and responder definitions in the protocol (R2).</li>
+</ul>
+</section>
+
+<section id="interactive"><h2>6. Interactive</h2>
+<h3>Is it clinically important?</h3>
+<p class="small muted">Ten <strong>fictional</strong> results. MCID values are assumed for each exercise; they aren't recommendations.</p>
+<div id="imp-app"></div>
+<h3>CI vs MCID visualizer</h3>
+<div id="ci-app"></div>
+</section>
+
+<section id="quiz"><h2>7. End-of-module quiz</h2>
+<div id="quiz-app"></div>
+</section>
+
+<section id="refs"><h2>References and further reading</h2>
+<ol class="refs">
+<li>Jaeschke R, Singer J, Guyatt GH. Measurement of health status: ascertaining the minimal clinically important difference. <em>Control Clin Trials</em>. 1989;10:407-15.</li>
+<li>Copay AG, Subach BR, Glassman SD, Polly DW Jr, Schuler TC. Understanding the minimum clinically important difference: a review of concepts and methods. <em>Spine J</em>. 2007;7:541-6.</li>
+<li>Mokkink LB, Terwee CB, Patrick DL, et al. The COSMIN checklist for assessing the methodological quality of studies on measurement properties. <em>Qual Life Res</em>. 2010;19:539-49.</li>
+<li>Prinsen CAC, Mokkink LB, Bouter LM, et al. COSMIN guideline for systematic reviews of patient-reported outcome measures. <em>Qual Life Res</em>. 2018;27:1147-57.</li>
+<li>Terwee CB, Bot SDM, de Boer MR, et al. Quality criteria were proposed for measurement properties of health status questionnaires. <em>J Clin Epidemiol</em>. 2007;60:34-42.</li>
+<li>Tubach F, Ravaud P, Baron G, et al. Evaluation of clinically relevant states in patient reported outcomes in knee and hip osteoarthritis: the patient acceptable symptom state. <em>Ann Rheum Dis</em>. 2005;64:34-7.</li>
+</ol>
+<p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
+</section>
+<p id="next-module" class="small"></p>
+</div></div>
+</main>
+<script src="../assets/js/catalogue.js"></script>
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script src="../assets/js/module.js"></script>
+<script src="../assets/js/engines.js"></script>
+<script src="../assets/js/calc.js"></script>
+<script src="../assets/js/content/a5.js"></script>
+<script>
+  MORRC.initModulePage();
+MORRC.A5.finalize();
+  MORRC.mountSorter(document.getElementById("imp-app"), MORRC.A5.important);
+  MORRC.mountCIViz(document.getElementById("ci-app"), MORRC.A5.ci);
+  MORRC.mountQuiz(document.getElementById("quiz-app"), MORRC.A5.quiz);
+</script>
+</body>
+</html>

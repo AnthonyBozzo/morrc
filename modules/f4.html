@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F4. Biostatistics essentials I · MORRC</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-module="F4">
+<main id="main">
+<div class="module-hero"><div class="wrap">
+  <div><span class="tag t1">Tier 1 · Foundations</span><span class="tag lvl">R1–R2</span><span class="tag">~75–90 min</span></div>
+  <h1>F4. Biostatistics essentials I</h1>
+  <p class="muted" style="margin:0 0 8px">P-values, confidence intervals and absolute versus relative effects: the numbers in every results section, and how to read them without being misled.</p>
+  <div id="module-status"></div>
+</div></div>
+<div class="wrap layout">
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#describe">Describing data</a></li><li><a href="#pvalues">Hypothesis tests and p-values</a></li><li><a href="#ci">Confidence intervals and clinical importance</a></li><li><a href="#effects">Relative vs absolute effects, NNT and NNH</a></li><li><a href="#errors">Type I and type II errors, and power</a></li><li><a href="#tests">Choosing a basic test</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<div class="content">
+
+<section id="objectives"><h2>Learning objectives</h2>
+<p>By the end of this module you will be able to:</p>
+<ul class="objectives"><li>Interpret p-values correctly and list common misinterpretations.</li><li>Interpret 95% CIs in relation to clinically important effects.</li><li>Calculate and interpret RR, OR, ARR and NNT.</li><li>Explain type I/II error and power.</li></ul>
+<p class="small muted">Prerequisites: F2 and F3 recommended. Not locked: you can start here.</p>
+<div class="callout green"><strong>Why this matters to you</strong>Most misreadings of orthopaedic papers come from three errors: treating p &lt; 0.05 as proof, treating p &gt; 0.05 as proof of no difference, and being impressed by relative risk reductions. This module fixes all three.</div>
+</section>
+
+<section id="describe"><h2>1. Describing data</h2>
+<ul>
+  <li><strong>Continuous, roughly symmetric data</strong> (age, many PROM totals in large samples): report the mean and standard deviation (SD).</li>
+  <li><strong>Skewed data</strong> (length of stay, time to union, costs, blood loss): report the median and interquartile range (IQR). A few long stays drag the mean upward.</li>
+  <li><strong>Categorical data</strong> (union yes/no, reoperation): report counts and percentages, always with the denominator.</li>
+  <li><strong>SD vs standard error (SE):</strong> the SD describes spread between patients; the SE (SD/√n) describes the precision of the mean. Error bars showing SE look reassuringly small. Check which one a figure shows.</li>
+</ul>
+</section>
+
+<section id="pvalues"><h2>2. Hypothesis tests and p-values</h2>
+<p>A p-value is the probability of observing data at least as extreme as those seen <em>if the null hypothesis (usually “no difference”) and all other model assumptions were true</em>. In 2016, the American Statistical Association issued six principles (Wasserstein and Lazar), paraphrased here:</p>
+<ol>
+  <li>P-values can indicate how incompatible the data are with a specified statistical model.</li>
+  <li>They do <strong>not</strong> measure the probability that the hypothesis is true, or that the data arose by chance alone.</li>
+  <li>Conclusions should not rest only on whether a p-value crosses a threshold such as 0.05.</li>
+  <li>Proper inference requires full reporting and transparency (all analyses, not just the significant ones).</li>
+  <li>A p-value does not measure the size of an effect or the importance of a result.</li>
+  <li>By itself, a p-value is not a good measure of evidence for a model or hypothesis.</li>
+</ol>
+<div class="callout"><strong>Absence of evidence is not evidence of absence</strong>A small trial reporting “no significant difference (p = 0.30)” has often simply failed to detect a difference that may exist (Altman and Bland, BMJ 1995). Look at the confidence interval: if it includes clinically important benefit <em>and</em> harm, the study is inconclusive, not negative.</div>
+</section>
+
+<section id="ci"><h2>3. Confidence intervals and clinical importance</h2>
+<p>A 95% confidence interval (CI) gives the range of true effects reasonably compatible with the data. Narrow CIs mean precise estimates; wide CIs mean imprecise ones. The key move in appraisal is to compare the CI not only with zero (no effect) but with the <strong>minimal clinically important difference (MCID)</strong>, the smallest change patients perceive as worthwhile (module A5).</p>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Where the CI lies (higher = better)</th><th>Interpretation</th></tr></thead><tbody>
+<tr><td>Entirely above the MCID</td><td>Clinically important benefit</td></tr>
+<tr><td>Above zero, but includes the MCID</td><td>Statistically significant; possibly important</td></tr>
+<tr><td>Above zero, entirely below the MCID</td><td>Statistically significant but trivial</td></tr>
+<tr><td>Includes zero and the MCID</td><td>Inconclusive (imprecise)</td></tr>
+<tr><td>Includes zero, excludes the MCID</td><td>Important benefit unlikely</td></tr>
+</tbody></table></div>
+<p class="small muted">The CI-vs-MCID visualizer in the interactive section lets you test each case.</p>
+</section>
+
+<section id="effects"><h2>4. Relative vs absolute effects, NNT and NNH</h2>
+<p>For a dichotomous outcome with control event rate (CER) and experimental event rate (EER):</p>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Measure</th><th>Formula</th><th>Meaning</th></tr></thead><tbody>
+<tr><td>Relative risk (RR)</td><td>EER / CER</td><td>Risk with treatment as a proportion of risk without</td></tr>
+<tr><td>Relative risk reduction (RRR)</td><td>1 − RR</td><td>Proportion of baseline risk removed</td></tr>
+<tr><td>Absolute risk reduction (ARR)</td><td>CER − EER</td><td>Risk difference: what the patient actually gains</td></tr>
+<tr><td>Number needed to treat (NNT)</td><td>1 / ARR (round up)</td><td>Patients treated for one to benefit</td></tr>
+<tr><td>Number needed to harm (NNH)</td><td>1 / absolute risk increase</td><td>Patients treated for one to be harmed</td></tr>
+<tr><td>Odds ratio (OR)</td><td>[a/b] / [c/d]</td><td>Ratio of odds; close to RR only when the outcome is uncommon</td></tr>
+</tbody></table></div>
+<div class="example"><div class="label">Worked example (illustrative numbers)</div>
+<p>The COTS trial (JBJS Am 2007) randomized displaced midshaft clavicle fractures to plate fixation or a sling and found fewer nonunions with plating. To practise the arithmetic we use <strong>round illustrative numbers, not the trial's data</strong>: nonunion in 15 of 100 with a sling and 3 of 100 with a plate.</p>
+<ul>
+  <li>CER = 0.15; EER = 0.03; RR = 0.03/0.15 = <strong>0.20</strong>; RRR = <strong>80%</strong>.</li>
+  <li>ARR = 0.15 − 0.03 = <strong>0.12</strong> (12 percentage points); NNT = 1/0.12 = 8.3, rounded up to <strong>9</strong>.</li>
+  <li>If plating caused a hardware-related reoperation in 10 of 100 vs 0 of 100 with a sling, the NNH would be 1/0.10 = <strong>10</strong>. Benefit and harm now sit on the same scale for the shared decision.</li>
+</ul>
+<p class="small muted">Exercise: look up the COTS paper and compute the real NNT for nonunion from its reported numbers.</p></div>
+<div class="callout blue"><strong>Same RRR, very different value</strong>A 50% RRR turns 2% into 1% (ARR 1%, NNT 100) or 40% into 20% (ARR 20%, NNT 5). Relative effects travel well between populations; absolute effects depend on baseline risk and drive decisions. Laupacis, Sackett and Roberts introduced the NNT (NEJM 1988), and Altman showed how to give it a confidence interval (BMJ 1998).</div>
+</section>
+
+<section id="errors"><h2>5. Type I and type II errors, and power</h2>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th></th><th>Truly no difference</th><th>Truly a difference</th></tr></thead><tbody>
+<tr><th>Study finds a difference</th><td><strong>Type I error</strong> (false positive), probability α (usually 0.05)</td><td>Correct (probability = power, 1 − β)</td></tr>
+<tr><th>Study finds no difference</th><td>Correct</td><td><strong>Type II error</strong> (false negative), probability β (often 0.20)</td></tr>
+</tbody></table></div>
+<p><strong>Power</strong> rises with larger sample size, larger true effect, less variability, a more lenient α, and more events for binary outcomes. Many orthopaedic trials are underpowered, so their “negative” results are inconclusive. Sample-size calculation is covered in A6.</p>
+</section>
+
+<section id="tests"><h2>6. Choosing a basic test</h2>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Outcome / comparison</th><th>Two independent groups</th><th>Paired or before–after</th><th>Three or more groups</th></tr></thead><tbody>
+<tr><td>Continuous, approximately normal</td><td>t-test</td><td>Paired t-test</td><td>ANOVA</td></tr>
+<tr><td>Continuous skewed, or ordinal</td><td>Mann–Whitney U</td><td>Wilcoxon signed-rank</td><td>Kruskal–Wallis</td></tr>
+<tr><td>Proportions</td><td>Chi-square (Fisher's exact if expected counts are small)</td><td>McNemar</td><td>Chi-square</td></tr>
+<tr><td>Time-to-event</td><td>Log-rank; Cox regression</td><td>–</td><td>Log-rank; Cox</td></tr>
+</tbody></table></div>
+<p>To adjust for other variables, use regression: linear for continuous outcomes, logistic for binary, Cox for time-to-event. Bilateral cases or repeated measures need methods that account for clustering (A6). Bring your question to a statistician <em>before</em> data collection.</p>
+</section>
+
+<section id="interactive"><h2>7. Interactive</h2>
+<h3>NNT / ARR calculator</h3>
+<p class="small muted">Enter events and totals for each group. Results include RR, RRR, OR, ARR with a 95% CI (Wald), and NNT with its CI.</p>
+<div id="nnt-app"></div>
+<h3>P-value myth-buster</h3>
+<p class="small muted">True or false? Ten statements you will hear at journal club.</p>
+<div id="myth-app"></div>
+<h3>CI-vs-MCID visualizer</h3>
+<p class="small muted">Change the estimate, CI or MCID, or use the presets, and see how the interpretation changes.</p>
+<div id="ci-app"></div>
+</section>
+
+<section id="quiz"><h2>8. End-of-module quiz</h2>
+<div id="quiz-app"></div>
+</section>
+
+<section id="refs"><h2>References and further reading</h2>
+<ol class="refs">
+<li>Wasserstein RL, Lazar NA. The ASA statement on p-values: context, process, and purpose. <em>Am Stat</em>. 2016;70:129-33.</li>
+<li>Altman DG, Bland JM. Absence of evidence is not evidence of absence. <em>BMJ</em>. 1995;311:485.</li>
+<li>Laupacis A, Sackett DL, Roberts RS. An assessment of clinically useful measures of the consequences of treatment. <em>N Engl J Med</em>. 1988;318:1728-33.</li>
+<li>Altman DG. Confidence intervals for the number needed to treat. <em>BMJ</em>. 1998;317:1309-12.</li>
+<li>Canadian Orthopaedic Trauma Society. Nonoperative treatment compared with plate fixation of displaced midshaft clavicular fractures. <em>J Bone Joint Surg Am</em>. 2007;89:1-10.</li>
+<li>Guyatt G, Rennie D, Meade MO, Cook DJ, eds. <em>Users' Guides to the Medical Literature</em>. 3rd ed. JAMA/McGraw-Hill; 2015. (Chapters on hypothesis testing and confidence intervals.)</li>
+</ol>
+<p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
+</section>
+<p id="next-module" class="small"></p>
+</div></div>
+</main>
+<script src="../assets/js/catalogue.js"></script>
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script src="../assets/js/module.js"></script>
+<script src="../assets/js/engines.js"></script>
+<script src="../assets/js/calc.js"></script>
+<script src="../assets/js/content/f4.js"></script>
+<script>
+  MORRC.initModulePage();
+MORRC.F4.mountNNT(document.getElementById("nnt-app"));
+  MORRC.mountSorter(document.getElementById("myth-app"), MORRC.F4.myths);
+  MORRC.mountCIViz(document.getElementById("ci-app"), MORRC.F4.ci);
+  MORRC.mountQuiz(document.getElementById("quiz-app"), MORRC.F4.quiz);
+</script>
+</body>
+</html>

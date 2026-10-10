@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A2. Observational studies, registries and administrative data · MORRC</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-root="../" data-module="A2">
+<main id="main">
+<div class="module-hero"><div class="wrap">
+  <div><span class="tag t2">Tier 2 · Applied appraisal</span><span class="tag lvl">R3</span><span class="tag">~75–90 min</span></div>
+  <h1>A2. Observational studies, registries and administrative data</h1>
+  <p class="muted" style="margin:0 0 8px">Registries, chart reviews and administrative databases answer questions trials can't, provided you handle confounding, time and coding properly.</p>
+  <div id="module-status"></div>
+</div></div>
+<div class="wrap layout">
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#when">When observational evidence is the right tool</a></li><li><a href="#confounding">Methods to address confounding</a></li><li><a href="#time">Getting time right: immortal time bias</a></li><li><a href="#registries">Arthroplasty registries and administrative data</a></li><li><a href="#target">Target trial emulation</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<div class="content">
+
+<section id="objectives"><h2>Learning objectives</h2>
+<p>By the end of this module you will be able to:</p>
+<ul class="objectives"><li>Appraise cohort and case-control studies.</li><li>Explain methods to address confounding (multivariable regression, propensity scores).</li><li>Describe strengths and pitfalls of arthroplasty registries and administrative databases.</li><li>Explain the target trial emulation concept.</li></ul>
+<p class="small muted">Prerequisites: F2, F3 and F6. Not locked: you can start here.</p>
+<div class="callout green"><strong>Why this matters to you</strong>Most resident projects are observational. The difference between a publishable cohort study and a misleading one is usually in how time zero, confounders and outcomes were defined, and that is decided before you open the database.</div>
+</section>
+
+<section id="when"><h2>1. When observational evidence is the right tool</h2>
+<p>Observational designs are essential when trials are infeasible or unethical: rare or delayed harms, long-term implant survival, exposures that can't be randomized (smoking, obesity, diabetes), and real-world effectiveness after a trial. Their central weakness is confounding (F3). Their strengths are size, generalizability and long follow-up.</p>
+<h3>Appraising a cohort or case-control study</h3>
+<ul>
+  <li>Were exposed and unexposed (or cases and controls) drawn from the <strong>same source population</strong>?</li>
+  <li>Were exposure and outcome <strong>measured the same way</strong> in both groups, ideally blind to the other?</li>
+  <li>Was follow-up <strong>long enough and complete</strong>?</li>
+  <li>Were important <strong>confounders identified in advance</strong> (ideally with a DAG), measured well and adjusted for?</li>
+  <li>Is the effect large, consistent and dose-responsive enough to survive plausible residual confounding?</li>
+</ul>
+</section>
+
+<section id="confounding"><h2>2. Methods to address confounding</h2>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Method</th><th>How it works</th><th>Watch for</th></tr></thead><tbody>
+<tr><td>Restriction</td><td>Limit the cohort (e.g., only primary THA for osteoarthritis)</td><td>Reduced generalizability</td></tr>
+<tr><td>Multivariable regression</td><td>Estimates the exposure effect holding included covariates constant</td><td>Too few events per variable; adjusting for mediators or colliders</td></tr>
+<tr><td>Propensity score (PS) methods</td><td>Model each patient's probability of receiving the exposure from baseline covariates, then match, weight (IPTW), stratify or adjust on it</td><td>Balances only <em>measured</em> covariates; check balance with standardized differences; non-overlap (patients who would always get one treatment)</td></tr>
+<tr><td>Instrumental variables and other quasi-experiments</td><td>Exploit variation unrelated to prognosis (e.g., surgeon or hospital preference)</td><td>Strong, often untestable assumptions</td></tr>
+</tbody></table></div>
+<p class="small">Austin (Multivariate Behav Res 2011) gives an accessible introduction to PS methods. None of them can fix confounders you didn't measure, such as frailty, surgeon judgment or bone quality.</p>
+</section>
+
+<section id="time"><h2>3. Getting time right: immortal time bias</h2>
+<p><strong>Immortal time bias</strong> (Suissa, Am J Epidemiol 2008) arises when exposure is defined by something that happens <em>after</em> cohort entry. Exposed patients must survive event-free long enough to become exposed, so that “immortal” time is credited to the exposed group.</p>
+<div class="example"><div class="label">Example</div>
+<p>A study defines “treated” hip-fracture patients as those who filled an osteoporosis prescription within 6 months of discharge, and reports far lower mortality in that group. Patients who died in the first weeks never had the chance to fill a prescription and were counted as untreated. <strong>Fix:</strong> start follow-up for everyone at the same time zero and treat exposure as time-varying, or use a landmark analysis.</p></div>
+<p>Related traps: <strong>prevalent-user bias</strong> (including long-term users who have “survived” early harms) and misaligned time zero between groups.</p>
+</section>
+
+<section id="registries"><h2>4. Arthroplasty registries and administrative data</h2>
+<p>National registries, such as the <strong>Canadian Joint Replacement Registry</strong> (CJRR, run by CIHI), the <strong>Australian Orthopaedic Association National Joint Replacement Registry</strong> (AOANJRR) and the UK National Joint Registry, have identified poorly performing implants that trials were too small to detect.</p>
+<h3>Pitfalls</h3>
+<ul>
+  <li><strong>Revision is the usual outcome</strong>, but it captures only failures that are revised. A painful implant in a frail patient may never be revised, and revision thresholds vary by surgeon.</li>
+  <li><strong>Competing risk of death:</strong> in older cohorts, 1 − Kaplan–Meier overestimates cumulative revision because it treats patients who died as if they could still be revised. Competing-risk methods (cumulative incidence functions) are preferred.</li>
+  <li><strong>Confounding by indication:</strong> implants are chosen for particular patients, and by surgeons and hospitals with different volumes.</li>
+  <li><strong>Completeness and validation:</strong> check the registry's capture rate and whether outcomes are validated.</li>
+</ul>
+<h3>Administrative (health-services) data</h3>
+<ul>
+  <li>Data are collected for billing, not research. Diagnosis and procedure codes can be wrong, non-specific or missing (laterality, fracture classification, PROMs).</li>
+  <li>Use <strong>validated coding algorithms</strong> (with reported sensitivity and PPV) and report them as RECORD requires.</li>
+  <li>Coding practices change over time (e.g., ICD versions), creating spurious trends.</li>
+</ul>
+</section>
+
+<section id="target"><h2>5. Target trial emulation</h2>
+<p>Hernán and Robins (Am J Epidemiol 2016) propose designing an observational analysis by first writing the protocol of the <strong>randomized trial you would ideally run</strong>, the “target trial”, and then emulating each component with observational data:</p>
+<ol>
+  <li>Eligibility criteria (applied at time zero, using only information available then)</li>
+  <li>Treatment strategies being compared</li>
+  <li>Assignment procedure (emulated by adjusting for baseline confounders)</li>
+  <li><strong>Time zero</strong>: when eligibility is met, a strategy is assigned and follow-up starts, aligned for every group</li>
+  <li>Outcome and follow-up period</li>
+  <li>Causal contrast (intention-to-treat or per-protocol analogue) and the analysis plan</li>
+</ol>
+<p>Aligning these three things at time zero prevents immortal time and prevalent-user bias by design. Emulation doesn't solve unmeasured confounding.</p>
+</section>
+
+<section id="interactive"><h2>6. Interactive</h2>
+<h3>Spot-the-bias: a registry revision-risk study</h3>
+<p class="small muted"><strong>Fictional</strong> teaching abstract written for MORRC.</p>
+<div id="spot-app"></div>
+<h3>Design your cohort</h3>
+<p class="small muted">Question: in adults with a displaced femoral neck fracture, does cemented hemiarthroplasty increase 30-day mortality compared with uncemented hemiarthroplasty? Choose the best design option at each step.</p>
+<div id="design-app"></div>
+</section>
+
+<section id="quiz"><h2>7. End-of-module quiz</h2>
+<div id="quiz-app"></div>
+</section>
+
+<section id="refs"><h2>References and further reading</h2>
+<ol class="refs">
+<li>von Elm E, Altman DG, Egger M, et al. The STROBE statement. <em>Lancet</em>. 2007;370:1453-7.</li>
+<li>Benchimol EI, Smeeth L, Guttmann A, et al. The RECORD statement. <em>PLoS Med</em>. 2015;12:e1001885.</li>
+<li>Hernán MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. <em>Am J Epidemiol</em>. 2016;183:758-64.</li>
+<li>Austin PC. An introduction to propensity score methods for reducing the effects of confounding in observational studies. <em>Multivariate Behav Res</em>. 2011;46:399-424.</li>
+<li>Suissa S. Immortal time bias in pharmaco-epidemiology. <em>Am J Epidemiol</em>. 2008;167:492-9.</li>
+<li>Sterne JAC, Hernán MA, Reeves BC, et al. ROBINS-I: a tool for assessing risk of bias in non-randomised studies of interventions. <em>BMJ</em>. 2016;355:i4919.</li>
+<li>VanderWeele TJ, Ding P. Sensitivity analysis in observational research: introducing the E-value. <em>Ann Intern Med</em>. 2017;167:268-74.</li>
+<li>Canadian Institute for Health Information. <em>Canadian Joint Replacement Registry (CJRR)</em>: annual reports and data dictionary.</li>
+</ol>
+<p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
+</section>
+<p id="next-module" class="small"></p>
+</div></div>
+</main>
+<script src="../assets/js/catalogue.js"></script>
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script src="../assets/js/module.js"></script>
+<script src="../assets/js/engines.js"></script>
+<script src="../assets/js/calc.js"></script>
+<script src="../assets/js/content/a2.js"></script>
+<script>
+  MORRC.initModulePage();
+MORRC.mountSpotBias(document.getElementById("spot-app"), MORRC.A2.spot);
+  MORRC.mountSorter(document.getElementById("design-app"), MORRC.A2.design);
+  MORRC.mountQuiz(document.getElementById("quiz-app"), MORRC.A2.quiz);
+</script>
+</body>
+</html>
