@@ -15,7 +15,7 @@
   <div id="module-status"></div>
 </div></div>
 <div class="wrap layout">
-<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#when">When observational evidence is the right tool</a></li><li><a href="#confounding">Methods to address confounding</a></li><li><a href="#time">Getting time right: immortal time bias</a></li><li><a href="#registries">Arthroplasty registries and administrative data</a></li><li><a href="#target">Target trial emulation</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#when">When observational evidence is the right tool</a></li><li><a href="#confounding">Methods to address confounding</a></li><li><a href="#time">Getting time right: immortal time bias</a></li><li><a href="#registries">Arthroplasty registries and administrative data</a></li><li><a href="#target">Target trial emulation</a></li><li><a href="#worked-registry">Worked example: reading a registry revision study</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
 <div class="content">
 
 <section id="objectives"><h2>Learning objectives</h2>
@@ -84,7 +84,24 @@
 <p>Aligning these three things at time zero prevents immortal time and prevalent-user bias by design. Emulation doesn't solve unmeasured confounding.</p>
 </section>
 
-<section id="interactive"><h2>6. Interactive</h2>
+<section id="worked-registry"><h2>6. Worked example: reading a registry revision study</h2>
+<h3>When registries get it right</h3>
+<p>Registries detect poorly performing implants that trials are too small or too short to reveal. In the late 2000s, the Australian (AOANJRR) and England and Wales (NJR) registries identified unexpectedly high revision rates for some large-head metal-on-metal hip designs, contributing to a worldwide recall of one device in 2010. This is the classic strength of registries: large numbers, real-world surgeons and long follow-up.</p>
+<h3>Questions to ask of any registry comparison</h3>
+<ol>
+  <li><strong>Is revision the right outcome?</strong> Revision captures only failures that led to reoperation. Patients with a poor result who are too frail or unwilling to have surgery are counted as successes.</li>
+  <li><strong>Competing risk of death.</strong> In older patients, many die before they could ever be revised. Kaplan–Meier estimates that treat death as censoring overestimate the cumulative risk of revision (Lacny et al., Clin Orthop Relat Res 2015); cumulative incidence functions are preferred.</li>
+  <li><strong>Confounding by indication.</strong> Surgeons choose implants for younger, more active or more complex patients. Was there adjustment for age, sex, diagnosis, ASA class and surgeon or hospital volume?</li>
+  <li><strong>Completeness and linkage.</strong> What proportion of procedures does the registry capture, and are revisions done at other hospitals or provinces linked back to the primary procedure?</li>
+  <li><strong>Multiple comparisons.</strong> Registries compare many implants; some “outliers” will arise by chance.</li>
+</ol>
+<h3>How strong would unmeasured confounding have to be? The E-value</h3>
+<p>The E-value (VanderWeele and Ding, Ann Intern Med 2017) is the minimum strength of association, on the risk-ratio scale, that an unmeasured confounder would need with both the exposure and the outcome to fully explain away an observed association. For an observed RR above 1:</p>
+<p style="text-align:center"><strong>E-value = RR + √(RR × (RR − 1))</strong></p>
+<div class="example"><div class="label">Hand-worked example (illustrative)</div>A registry analysis reports an adjusted RR of revision of 1.8 for implant X. E-value = 1.8 + √(1.8 × 0.8) = 1.8 + √1.44 = 1.8 + 1.2 = <strong>3.0</strong>. An unmeasured confounder would need to be associated with both implant choice and revision by a risk ratio of at least 3.0 each to explain away the result. For a protective RR below 1, take its reciprocal first. Compute the E-value for the confidence limit closest to 1 as well.</div>
+</section>
+
+<section id="interactive"><h2>7. Interactive</h2>
 <h3>Spot-the-bias: a registry revision-risk study</h3>
 <p class="small muted"><strong>Fictional</strong> teaching abstract written for MORRC.</p>
 <div id="spot-app"></div>
@@ -93,7 +110,7 @@
 <div id="design-app"></div>
 </section>
 
-<section id="quiz"><h2>7. End-of-module quiz</h2>
+<section id="quiz"><h2>8. End-of-module quiz</h2>
 <div id="quiz-app"></div>
 </section>
 
@@ -107,6 +124,7 @@
 <li>Sterne JAC, Hernán MA, Reeves BC, et al. ROBINS-I: a tool for assessing risk of bias in non-randomised studies of interventions. <em>BMJ</em>. 2016;355:i4919.</li>
 <li>VanderWeele TJ, Ding P. Sensitivity analysis in observational research: introducing the E-value. <em>Ann Intern Med</em>. 2017;167:268-74.</li>
 <li>Canadian Institute for Health Information. <em>Canadian Joint Replacement Registry (CJRR)</em>: annual reports and data dictionary.</li>
+<li>Lacny S, Wilson T, Clement F, et al. Kaplan-Meier survival analysis overestimates the risk of revision arthroplasty: a meta-analysis. <em>Clin Orthop Relat Res</em>. 2015;473:3431-42.</li>
 </ol>
 <p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
 </section>

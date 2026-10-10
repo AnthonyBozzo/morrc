@@ -15,7 +15,7 @@
   <div id="module-status"></div>
 </div></div>
 <div class="wrap layout">
-<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#describe">Describing data</a></li><li><a href="#pvalues">Hypothesis tests and p-values</a></li><li><a href="#ci">Confidence intervals and clinical importance</a></li><li><a href="#effects">Relative vs absolute effects, NNT and NNH</a></li><li><a href="#errors">Type I and type II errors, and power</a></li><li><a href="#tests">Choosing a basic test</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#describe">Describing data</a></li><li><a href="#pvalues">Hypothesis tests and p-values</a></li><li><a href="#ci">Confidence intervals and clinical importance</a></li><li><a href="#effects">Relative vs absolute effects, NNT and NNH</a></li><li><a href="#errors">Type I and type II errors, and power</a></li><li><a href="#tests">Choosing a basic test</a></li><li><a href="#worked-f4">Worked example: reading a results paragraph</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
 <div class="content">
 
 <section id="objectives"><h2>Learning objectives</h2>
@@ -98,7 +98,20 @@
 <p>To adjust for other variables, use regression: linear for continuous outcomes, logistic for binary, Cox for time-to-event. Bilateral cases or repeated measures need methods that account for clustering (A6). Bring your question to a statistician <em>before</em> data collection.</p>
 </section>
 
-<section id="interactive"><h2>7. Interactive</h2>
+<section id="worked-f4"><h2>7. Worked example: reading a results paragraph</h2>
+<p class="small muted"><strong>Fictional</strong> results, used for teaching.</p>
+<div class="example"><div class="label">Fictional trial report</div>“Deep infection occurred in 6 of 200 patients (3.0%) given extended antibiotic prophylaxis and 12 of 200 (6.0%) given standard prophylaxis (relative risk 0.50, 95% CI 0.19 to 1.31; p = 0.15). <em>Extended prophylaxis halved the infection rate.</em>”</div>
+<ol>
+  <li><strong>Absolute effect:</strong> ARR = 6.0% − 3.0% = 3.0 percentage points, so NNT = 1 / 0.03 ≈ 33 (if the effect were real).</li>
+  <li><strong>Relative effect:</strong> RR = 0.03 / 0.06 = 0.50, the “halved” in the last sentence.</li>
+  <li><strong>Precision:</strong> the 95% CI for the RR runs from 0.19 (an 81% relative reduction) to 1.31 (a 31% relative increase). The data are compatible with a large benefit, no effect or some harm.</li>
+  <li><strong>The p-value:</strong> 0.15 does not mean there is a 15% chance the treatment doesn't work, nor does it show the treatments are equivalent (ASA statement).</li>
+  <li><strong>Verdict:</strong> the final sentence is spin (A6). A fair conclusion: “Infection was less frequent with extended prophylaxis, but the difference was not statistically significant and the estimate is imprecise; a larger trial is needed.”</li>
+  <li><strong>Harms:</strong> what about the costs of extended antibiotics: C. difficile infection, resistance and adverse drug reactions? Ask for the NNH as well (see the section on absolute effects above).</li>
+</ol>
+</section>
+
+<section id="interactive"><h2>8. Interactive</h2>
 <h3>NNT / ARR calculator</h3>
 <p class="small muted">Enter events and totals for each group. Results include RR, RRR, OR, ARR with a 95% CI (Wald), and NNT with its CI.</p>
 <div id="nnt-app"></div>
@@ -110,7 +123,7 @@
 <div id="ci-app"></div>
 </section>
 
-<section id="quiz"><h2>8. End-of-module quiz</h2>
+<section id="quiz"><h2>9. End-of-module quiz</h2>
 <div id="quiz-app"></div>
 </section>
 

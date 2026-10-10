@@ -15,7 +15,7 @@
   <div id="module-status"></div>
 </div></div>
 <div class="wrap layout">
-<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#ss">Sample size: the ingredients</a></li><li><a href="#fragility">The fragility index</a></li><li><a href="#ni">Non-inferiority and equivalence trials</a></li><li><a href="#units">Clustering, bilateral cases and multiplicity</a></li><li><a href="#spin">Spin</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#ss">Sample size: the ingredients</a></li><li><a href="#fragility">The fragility index</a></li><li><a href="#ni">Non-inferiority and equivalence trials</a></li><li><a href="#units">Clustering, bilateral cases and multiplicity</a></li><li><a href="#spin">Spin</a></li><li><a href="#faith">Worked example: reading a “negative” trial (FAITH)</a></li><li><a href="#composite">Composite outcomes and regression basics</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
 <div class="content">
 
 <section id="objectives"><h2>Learning objectives</h2>
@@ -82,7 +82,30 @@
 <p>Antidote: read the registered primary outcome and its CI first, then compare the abstract's conclusion with it.</p>
 </section>
 
-<section id="interactive"><h2>6. Interactive</h2>
+<section id="faith"><h2>6. Worked example: reading a “negative” trial (FAITH)</h2>
+<p>The FAITH trial (Lancet 2017) randomized patients with low-energy femoral neck fractures to a sliding hip screw or cancellous screws at centres in several countries. The primary outcome was hip reoperation within 24 months. Reoperation occurred in about 20% vs 22% of patients (hazard ratio 0.83, 95% CI 0.63 to 1.09), which was not statistically significant.</p>
+<ol>
+  <li><strong>Don't say “no difference”.</strong> The CI is compatible with anything from a 37% relative reduction in reoperation with the sliding hip screw to a 9% relative increase. The correct summary is that the trial didn't show a significant difference, and the plausible effects range from a meaningful benefit to a small harm.</li>
+  <li><strong>Was it adequately powered?</strong> Look at the sample-size section: what difference was it designed to detect, and was that difference realistic and clinically important? Don't calculate post hoc power.</li>
+  <li><strong>Read secondary outcomes and subgroups cautiously.</strong> With a non-significant primary outcome, “positive” secondary or subgroup findings are hypothesis-generating at best (multiplicity; A4, subgroup credibility).</li>
+  <li><strong>Absolute terms:</strong> a 2-percentage-point difference in reoperation corresponds to an NNT of about 50, if real (F4).</li>
+</ol>
+</section>
+
+<section id="composite"><h2>7. Composite outcomes and regression basics</h2>
+<h3>Composite outcomes</h3>
+<p>Combining events (e.g., “reoperation, nonunion or infection”) increases event rates and power, but the result is only interpretable when the components are of <strong>similar importance</strong>, occur with <strong>similar frequency</strong>, and are affected by treatment in the <strong>same direction</strong> (Montori et al., BMJ 2005). Always look at each component: a composite “win” driven entirely by the least important component (e.g., a minor wound problem) is not a win on reoperation or death.</p>
+<h3>Regression in one paragraph</h3>
+<ul>
+  <li><strong>Linear regression</strong> for continuous outcomes (e.g., a PROM score); the coefficient is the adjusted mean difference.</li>
+  <li><strong>Logistic regression</strong> for binary outcomes; the coefficient gives an adjusted odds ratio. When the outcome is common, an OR exaggerates the RR.</li>
+  <li><strong>Cox regression</strong> for time-to-event outcomes (implant survival, time to union); it gives a hazard ratio and handles censoring.</li>
+  <li><strong>Baseline adjustment in trials:</strong> for a PROM measured before and after treatment, analysis of covariance (follow-up score adjusted for baseline score) is generally more powerful than comparing change scores or follow-up scores alone (Vickers and Altman, BMJ 2001).</li>
+  <li><strong>Too many variables:</strong> with few outcome events, models with many predictors become unstable and overfitted (R1). Choose adjustment variables in advance, based on clinical knowledge or a DAG (F3), not by stepwise selection.</li>
+</ul>
+</section>
+
+<section id="interactive"><h2>8. Interactive</h2>
 <h3>Sample-size calculator</h3>
 <div id="ss-app"></div>
 <h3>Fragility-index calculator</h3>
@@ -93,7 +116,7 @@
 <div id="spin-app"></div>
 </section>
 
-<section id="quiz"><h2>7. End-of-module quiz</h2>
+<section id="quiz"><h2>9. End-of-module quiz</h2>
 <div id="quiz-app"></div>
 </section>
 
@@ -103,6 +126,9 @@
 <li>Piaggio G, Elbourne DR, Pocock SJ, Evans SJW, Altman DG. Reporting of noninferiority and equivalence randomized trials: extension of the CONSORT 2010 statement. <em>JAMA</em>. 2012;308:2594-604.</li>
 <li>Boutron I, Dutton S, Ravaud P, Altman DG. Reporting and interpretation of randomized controlled trials with statistically nonsignificant results for primary outcomes. <em>JAMA</em>. 2010;303:2058-64.</li>
 <li>Altman DG, Bland JM. Absence of evidence is not evidence of absence. <em>BMJ</em>. 1995;311:485.</li>
+<li>FAITH Investigators. Fracture fixation in the operative management of hip fractures (FAITH): an international, multicentre, randomised controlled trial. <em>Lancet</em>. 2017;389:1519-27.</li>
+<li>Montori VM, Permanyer-Miralda G, Ferreira-González I, et al. Validity of composite end points in clinical trials. <em>BMJ</em>. 2005;330:594-6.</li>
+<li>Vickers AJ, Altman DG. Analysing controlled trials with baseline and follow up measurements. <em>BMJ</em>. 2001;323:1123-4.</li>
 </ol>
 <p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
 </section>

@@ -15,7 +15,7 @@
   <div id="module-status"></div>
 </div></div>
 <div class="wrap layout">
-<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#dmp">Plan before you collect</a></li><li><a href="#redcap">REDCap</a></li><li><a href="#dictionary">Building a good data dictionary</a></li><li><a href="#cleaning">Data cleaning without regret</a></li><li><a href="#missing">Missing data</a></li><li><a href="#security">Security and storage</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#dmp">Plan before you collect</a></li><li><a href="#redcap">REDCap</a></li><li><a href="#dictionary">Building a good data dictionary</a></li><li><a href="#cleaning">Data cleaning without regret</a></li><li><a href="#missing">Missing data</a></li><li><a href="#security">Security and storage</a></li><li><a href="#deid">De-identification in practice</a></li><li><a href="#repro">Reproducible workflows and version control</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
 <div class="content">
 
 <section id="objectives"><h2>Learning objectives</h2>
@@ -93,7 +93,31 @@
 </ul>
 </section>
 
-<section id="interactive"><h2>7. Interactive</h2>
+<section id="deid"><h2>7. De-identification in practice</h2>
+<p>Most resident projects should analyse a <strong>de-identified</strong> dataset, with any re-identification key held separately under the conditions the REB approved (F5).</p>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Data element</th><th>Risk</th><th>Usual approach</th></tr></thead><tbody>
+<tr><td>Name, RAMQ number, medical record number</td><td>Direct identifiers</td><td>Never in the analysis file; replace with a study ID. Keep the linking key in a separate, restricted location</td></tr>
+<tr><td>Dates (birth, surgery, discharge)</td><td>Indirect identifiers, especially combined</td><td>Record age at surgery and intervals (days from surgery to revision) instead of calendar dates, where the REB allows</td></tr>
+<tr><td>Full postal code</td><td>Can pinpoint a small area</td><td>Keep only the first three characters, or derive a deprivation index, if needed</td></tr>
+<tr><td>Free-text fields and radiology reports</td><td>Often contain names, dates and locations</td><td>Avoid them, or code them into categories before export</td></tr>
+<tr><td>Images (radiographs, clinical photos)</td><td>Burned-in labels, DICOM header data, faces and tattoos</td><td>Strip metadata, crop or mask, and check every image by eye</td></tr>
+<tr><td>Rare conditions and small cells</td><td>A unique combination (e.g., a rare tumour in a small town) can identify someone</td><td>Suppress or combine small categories in tables, following local rules <span class="placeholder">[COMMITTEE: confirm the local small-cell suppression rule]</span></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="repro"><h2>8. Reproducible workflows and version control</h2>
+<ol>
+  <li><strong>Keep raw data read-only.</strong> Never edit the exported file by hand. Every change happens in a script that reads the raw export and writes a clean analysis file.</li>
+  <li><strong>Script everything</strong> in R, Stata or Python: cleaning, derived variables, tables and figures. A point-and-click analysis can't be checked or rerun when a reviewer asks for one more sensitivity analysis.</li>
+  <li><strong>One folder structure per project</strong>, e.g., <code>data-raw/</code>, <code>data-clean/</code>, <code>code/</code>, <code>output/</code>, and a short README describing each file and how to rerun the analysis from start to finish.</li>
+  <li><strong>Version control</strong> (Git) tracks every change to your code with a message explaining why, and lets you return to the version used for the submitted manuscript. Keep code in version control, but <strong>never commit patient data</strong>, even to a private repository, unless your REB-approved data plan explicitly allows that storage.</li>
+  <li><strong>Literate programming</strong> (R Markdown or Quarto, Stata dyndoc, Jupyter) combines code, output and text, so every number in your results tables comes directly from the code.</li>
+  <li><strong>Record software versions</strong> and set random seeds for anything involving imputation, bootstrapping or machine learning.</li>
+</ol>
+<div class="callout blue"><strong>A simple test</strong>Could your co-resident, given your folder and the raw export, reproduce every table and figure in your paper without asking you a question? If not, fix the workflow before you write the paper.</div>
+</section>
+
+<section id="interactive"><h2>9. Interactive</h2>
 <h3>Data-dictionary error hunt</h3>
 <p class="small muted">A <strong>fictional</strong> REDCap data dictionary for a hip-fracture study. Tag each problem row.</p>
 <div id="dd-app"></div>
@@ -103,7 +127,7 @@
 <div id="clean-app" style="margin-top:12px"></div>
 </section>
 
-<section id="quiz"><h2>8. End-of-module quiz</h2>
+<section id="quiz"><h2>10. End-of-module quiz</h2>
 <div id="quiz-app"></div>
 </section>
 

@@ -15,7 +15,7 @@
   <div id="module-status"></div>
 </div></div>
 <div class="wrap layout">
-<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#definitions">Misconduct and questionable research practices</a></li><li><a href="#coi">Conflicts of interest</a></li><li><a href="#open">Open science</a></li><li><a href="#retract">Corrections and retractions</a></li><li><a href="#ai">Generative AI in research and writing</a></li><li><a href="#report">Where to report concerns at McGill</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
+<nav class="toc" aria-label="In this module"><strong>In this module</strong><ol><li><a href="#objectives">Objectives</a></li><li><a href="#definitions">Misconduct and questionable research practices</a></li><li><a href="#coi">Conflicts of interest</a></li><li><a href="#open">Open science</a></li><li><a href="#retract">Corrections and retractions</a></li><li><a href="#ai">Generative AI in research and writing</a></li><li><a href="#report">Where to report concerns at McGill</a></li><li><a href="#worked-forking">Worked example: how p-hacking happens without anyone meaning to</a></li><li><a href="#interactive">Interactive</a></li><li><a href="#quiz">Quiz</a></li><li><a href="#refs">References</a></li></ol></nav>
 <div class="content">
 
 <section id="objectives"><h2>Learning objectives</h2>
@@ -86,7 +86,21 @@
 <p>If you are unsure, start by asking a trusted mentor or the integrity office for confidential advice. Document what you observed, factually and with dates. Don't investigate on your own or confront people publicly.</p>
 </section>
 
-<section id="interactive"><h2>7. Interactive</h2>
+<section id="worked-forking"><h2>7. Worked example: how p-hacking happens without anyone meaning to</h2>
+<p class="small muted">A <strong>fictional</strong> resident project, used for teaching.</p>
+<div class="example"><div class="label">Fictional project</div>A resident compares two approaches for total hip arthroplasty in 120 patients. The planned outcome, the hip PROM at 12 months, shows no significant difference. Over the next month, guided by well-meaning suggestions, the team tries: the 6-week PROM instead; excluding patients with BMI over 40; a different PROM subscale; adjusting for different covariates; and analysing only patients under 70. The under-70 analysis of the 6-week score gives p = 0.03, and that becomes the abstract's headline.</div>
+<p><strong>What went wrong?</strong> Each choice seemed reasonable, but together they created many analyses. If there is no true effect and the team runs about 20 roughly independent analyses at α = 0.05, the chance that at least one is “significant” is 1 − 0.95<sup>20</sup> ≈ 64%. Simmons and colleagues (2011) called this flexibility “researcher degrees of freedom”.</p>
+<p><strong>What should happen instead?</strong></p>
+<ol>
+  <li>Report the <strong>prespecified primary analysis</strong> as the main result, whatever it shows.</li>
+  <li>Label additional analyses as <strong>exploratory</strong> and report how many were done.</li>
+  <li>Protect yourself in future with a <strong>registered protocol and statistical analysis plan</strong> (R2), written before you see outcome data.</li>
+  <li>Remember that a well-done study with a null result is publishable and useful, and that the honest version is the one you can defend at Research Day.</li>
+</ol>
+<div class="callout"><strong>How common is misconduct?</strong>In a meta-analysis of surveys, Fanelli (PLoS One 2009) found that about 2% of scientists admitted to having fabricated, falsified or modified data at least once, and many more admitted questionable research practices. Most integrity problems are not dramatic fraud, but the small, unrecorded decisions in this example.</div>
+</section>
+
+<section id="interactive"><h2>8. Interactive</h2>
 <h3>What would you do?</h3>
 <p class="small muted">Eight <strong>fictional</strong> dilemmas.</p>
 <div id="dilemma-app"></div>
@@ -95,7 +109,7 @@
 <div id="coi-app"></div>
 </section>
 
-<section id="quiz"><h2>8. End-of-module quiz</h2>
+<section id="quiz"><h2>9. End-of-module quiz</h2>
 <div id="quiz-app"></div>
 </section>
 
@@ -108,6 +122,7 @@
 <li>McGill University. <em>Regulation on the Conduct of Research</em>. <span class="placeholder">[COMMITTEE: add current link]</span></li>
 <li>Committee on Publication Ethics (COPE). Guidance and flowcharts on misconduct, authorship and AI. publicationethics.org.</li>
 <li>International Committee of Medical Journal Editors. <em>Recommendations</em> (current version) and the ICMJE disclosure form. icmje.org.</li>
+<li>Fanelli D. How many scientists fabricate and falsify research? A systematic review and meta-analysis of survey data. <em>PLoS One</em>. 2009;4:e5738.</li>
 </ol>
 <p class="small muted">Access full texts through the McGill Library. MORRC links to sources rather than hosting them. Items marked <span class="placeholder">[COMMITTEE]</span> are placeholders for the committee to complete.</p>
 </section>
