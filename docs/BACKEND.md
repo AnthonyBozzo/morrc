@@ -1,28 +1,32 @@
-# MORRC backend plan (not in v1)
+# MORRC backend (built, not yet switched on)
 
-v1 stores progress in `localStorage` (key `morrc.v1`) via `MORRC.store` → `LocalAdapter`.
-All pages call only the async `MORRC.store` API, so a server can be added by implementing
-`RemoteAdapter` (same methods) and calling `MORRC.store.use(MORRC.store.adapters.RemoteAdapter)`.
+The API lives in `/workspace/morrc/api` (Node/Express + SQLite, to run on AWS Lightsail in Canada (Central) behind Caddy at
+`https://api.morrc.sarcomaaihub.com`). See `api/README.md`, `api/deploy/RUNBOOK.md` and `api/deploy/CHECKLIST_DR_BOZZO.md`.
 
-## Adapter interface
-| Method | Purpose |
+## Launch switch
+`assets/js/config.js` → `MORRC.CONFIG.BACKEND_ENABLED` (default **false**). While false the site behaves exactly like the
+static v1: progress in `localStorage` (`morrc.v1`), no network calls, the leaderboard shows only your own row as a preview,
+and the sign-in and committee pages say they open at launch.
+
+## Storage layer
+All pages call only the async `MORRC.store` API (`assets/js/store.js`). The adapter is chosen at load time:
+`RemoteAdapter` when the flag is on **and** the visitor is signed in and has accepted the privacy notice; otherwise `LocalAdapter`.
+`RemoteAdapter` keeps a mirror of the last server copy and an outbox, so writes made while the API is unreachable sync later.
+
+| Method | API |
 |---|---|
-| `load()` → `{schema, profile, modules:{[id]:{started, interactiveDone, attempts, bestPct, lastPct, passed, passedAt, passedFirstAttempt}}}` | Current user's progress |
-| `saveProfile({displayName, level, showOnLeaderboard})` | Profile |
-| `recordEvent(moduleId, patch)` | Merge module progress (quiz attempt, interactive done) |
-| `reset()` | Clear own progress |
+| `load()` → `{schema, profile, modules:{[id]:{started, interactiveDone, attempts, bestPct, lastPct, passed, passedAt, passedFirstAttempt}}, updatedAt}` | `GET /api/me/progress` |
+| `saveProfile({displayName, showOnLeaderboard, leaderboardShowLevel})` (level is committee-managed) | `PUT /api/me/profile` |
+| `recordEvent(moduleId, patch)` (used by markStarted, markInteractive, recordQuiz) | `PATCH /api/me/progress/:moduleId` |
+| `reset()` | `DELETE /api/me/progress` |
+| first sign-in import of this browser's progress (`MORRC.auth.importLocal()`) | `POST /api/me/import` |
 
-## Proposed REST endpoints (small server, e.g. Node/Express + SQLite, behind Caddy)
-- `POST /api/auth/*` – login (McGill email magic link or SSO); session cookie.
-- `GET  /api/me/progress`, `PATCH /api/me/progress/:moduleId`, `PUT /api/me/profile`
-- `POST /api/me/import` – one-time import of a resident's localStorage JSON (Export button on home page).
-- `GET  /api/committee/dashboard` – committee role only: per-resident module status, attempts, scores.
-- `GET  /api/leaderboard` – signed-in users only; returns **only** `[{displayName, level, completionPct}]`
-  for residents with `showOnLeaderboard=true`. **Never** returns quiz scores or attempts.
+The server merges progress forward only (passed and interactiveDone are sticky; attempts and bestPct never drop) and
+rejects a pass claim with a best score under 83% (10 of 12).
 
-Completion % = modules with a passed quiz (pass = at least 10 of 12 correct (83%), an integer count rule in `MORRC.isPass`) / 18 (`MORRC.summarize`); leaderboard row shape is
-`MORRC.leaderboardRow()`.
+## Pages
+`progress.html` (map of all 18 modules, overall and per-tier %), `leaderboard.html` (completion % only, opt-in, nickname),
+`signin.html` (6-digit email code or the "Finish signing in" link, consent, import), `admin.html` (committee dashboard; admins also
+manage residents, CSV, levels, the annual promotion and the audit log).
 
-## Privacy (Quebec Law 25)
-Opt-in leaderboard with nickname option; data minimization; Canadian hosting (ca-central-1); retention policy
-and privacy notice to be approved by the committee.
+Completion % = modules with a passed quiz / 18 (`MORRC.summarize`). The leaderboard never receives quiz scores or attempts.
