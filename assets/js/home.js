@@ -71,12 +71,19 @@
     }).join("");
   }
 
-  async function refresh(){ data = await MORRC.store.load(); grid(); progress(); }
+  async function refresh(){
+    data = await MORRC.store.load(); grid(); progress();
+    if(MORRC.store.adapterName === "remote"){   // level is managed by the committee once signed in
+      const f = document.getElementById("profile-form"); f.level.disabled = true; f.level.title = "Your level is set by the MORRC committee";
+      const sub = document.querySelector("#progress .sub"); if(sub) sub.textContent = "Saved to your MORRC account.";
+    }
+  }
 
   document.getElementById("profile-form").addEventListener("submit", async e => {
     e.preventDefault();
     const f = e.target;
-    data = await MORRC.store.saveProfile({displayName:f.displayName.value.trim(), level:f.level.value});
+    try { data = await MORRC.store.saveProfile({displayName:f.displayName.value.trim(), level:f.level.value}); }
+    catch(err){ document.getElementById("profile-saved").textContent = " " + (err.message || "Couldn't save."); return; }
     progress(); document.getElementById("profile-saved").textContent = " Saved.";
     if(data.profile.level && filter.type==="all"){ filter={type:"level", value:data.profile.level}; filters(); grid(); }
   });
