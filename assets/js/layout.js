@@ -31,10 +31,19 @@
   footer.className = "site-footer";
   footer.innerHTML = `<div class="wrap">
     <p><strong>MORRC</strong> · McGill Orthopaedics Resident Research Committee and Curriculum · v1 (pilot), October 2026</p>
-    <p class="small">Educational resource for McGill orthopaedic surgery residents. <span id="footer-storage">Progress is saved only in this browser on this device.</span> Content is for teaching research methods and is not clinical guidance. Not an official McGill University website.</p>
+    <p class="small">Educational resource for McGill orthopaedic surgery residents. <span id="footer-storage">Progress is saved only in this browser on this device.</span> Content is for teaching research methods and is not clinical guidance. Not an official McGill University website. <a class="staff-signin" href="${root}signin.html${MORRC.auth && MORRC.auth.enabled ? "" : "?staff=1"}">Committee sign-in</a></p>
   </div>`;
   document.body.append(footer);
 
+  /* Before launch: a staff-marked browser shows the Committee link on every page (one session check). */
+  if(MORRC.auth && !MORRC.auth.enabled && MORRC.auth.staffNav){
+    const slot = header.querySelector("#nav-auth");
+    MORRC.auth.staffUser().then(u => {
+      if(!slot) return;
+      if(u) slot.innerHTML = `<a href="${root}admin.html">Committee</a><a href="${root}signin.html" class="nav-account" title="Signed in as ${MORRC.h(u.name||"")}">${MORRC.h((u.name||"Account").replace(/^Dr\.?\s+/,"Dr ").split(" ").slice(0,2).join(" "))}</a>`;
+      else slot.innerHTML = `<a class="nav-signin" href="${root}signin.html?staff=1">Committee sign-in</a>`;
+    });
+  }
   /* Account controls (only when the backend is switched on in assets/js/config.js). */
   if(MORRC.auth && MORRC.auth.enabled){
     const slot = header.querySelector("#nav-auth");

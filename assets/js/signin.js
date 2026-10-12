@@ -140,10 +140,9 @@
   }
 
   function done(user){
-    if(MORRC.auth.staffPreview){
-      if(user && ["admin","committee"].includes(user.role)) { location.href = "admin.html"; return; }
-      return signedInView(user || MORRC.auth.user);
-    }
+    user = user || MORRC.auth.user;
+    if(MORRC.auth.isStaff(user)) { location.href = "admin.html"; return; }   // committee members always land on the dashboard
+    if(MORRC.auth.staffPreview) return signedInView(user);
     location.href = next;
   }
 

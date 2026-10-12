@@ -18,8 +18,14 @@
      link, behaves exactly as with the flag off. */
   const STAFF_KEY = "morrc.staffPreview";
   const PAGE = (location.pathname.split("/").pop() || "index.html").replace(/\.html$/, "") + ".html";
-  const STAFF_PREVIEW = !CFG.BACKEND_ENABLED && CFG.STAFF_PREVIEW !== false && ["signin.html","admin.html"].includes(PAGE)
-    && (/(^|[#&])t=/.test(location.hash) || (function(){ try { return localStorage.getItem(STAFF_KEY) === "1"; } catch(e){ return false; } })());
+  const STAFF_MARKED = (function(){ try { return localStorage.getItem(STAFF_KEY) === "1"; } catch(e){ return false; } })();
+  const PREVIEW_OK = !CFG.BACKEND_ENABLED && CFG.STAFF_PREVIEW !== false;
+  const STAFF_PREVIEW = PREVIEW_OK && ["signin.html","admin.html"].includes(PAGE)
+    && (/(^|[#&])t=/.test(location.hash) || STAFF_MARKED || (PAGE === "signin.html" && /[?&]staff=1(&|$)/.test(location.search)));
+  /* On every other page, only a browser marked as staff (set when a committee member signs in)
+     makes one session check, just to show the Committee link. Progress stays in this browser. */
+  const STAFF_NAV = PREVIEW_OK && STAFF_MARKED && !STAFF_PREVIEW;
+  const isStaff = u => !!u && ["admin","committee"].includes(u.role);
   const blank = () => ({ schema:1, profile:{displayName:"", level:"", showOnLeaderboard:false}, modules:{}, updatedAt:null });
   const blankModule = () => ({started:null, interactiveDone:false, attempts:0, bestPct:null, lastPct:null, passed:false, passedAt:null, passedFirstAttempt:false});
   const readJSON = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch(e){ return d; } };
@@ -120,6 +126,13 @@
   const auth = {
     enabled: !!CFG.BACKEND_ENABLED || STAFF_PREVIEW,
     staffPreview: STAFF_PREVIEW,
+    staffNav: STAFF_NAV,
+    isStaff,
+    /* Resolves to the signed-in committee user (or null) in a staff-marked browser; never calls the API otherwise. */
+    staffUser(){
+      if(!STAFF_NAV) return Promise.resolve(null);
+      return this._staffP || (this._staffP = api("GET", "/api/auth/session").then(r => isStaff(r.user) ? r.user : null, () => null));
+    },
     user: null,
     offline: false,
     ready: null,
@@ -145,7 +158,7 @@
     },
     setUser(u){
       this.user = u; RemoteAdapter._cache = null;
-      if(u && STAFF_PREVIEW && ["admin","committee"].includes(u.role)) { try { localStorage.setItem(STAFF_KEY, "1"); } catch(e){} }
+      if(u && STAFF_PREVIEW) { try { isStaff(u) ? localStorage.setItem(STAFF_KEY, "1") : localStorage.removeItem(STAFF_KEY); } catch(e){} }
       if(u) writeJSON(SESSION_HINT, { name:u.name, role:u.role, displayName:u.displayName, needsConsent:u.needsConsent });
       else { localStorage.removeItem(SESSION_HINT); localStorage.removeItem(MIRROR); }
       document.dispatchEvent(new CustomEvent("morrc:auth", { detail:u }));
@@ -153,6 +166,7 @@
     async signOut(){
       try { await api("POST", "/api/auth/logout", {}); } catch(e){}
       localStorage.removeItem(OUTBOX);
+      if(STAFF_PREVIEW) { try { localStorage.removeItem(STAFF_KEY); } catch(e){} }
       this.setUser(null);
     },
     _expired(){
