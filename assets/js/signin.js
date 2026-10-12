@@ -123,6 +123,7 @@
   }
 
   function stepImport(user){
+    if(MORRC.auth.staffPreview) return done(user);
     const lp = MORRC.auth.localProgress();
     if(!lp) return done(user);
     title.textContent = "Keep your progress";
@@ -138,11 +139,18 @@
     root.querySelector("#imp-no").onclick = () => { MORRC.auth.dismissImport(); done(user); };
   }
 
-  function done(){ location.href = next; }
+  function done(user){
+    if(MORRC.auth.staffPreview){
+      if(user && ["admin","committee"].includes(user.role)) { location.href = "admin.html"; return; }
+      return signedInView(user || MORRC.auth.user);
+    }
+    location.href = next;
+  }
 
   function signedInView(user){
     title.textContent = "Your MORRC account";
-    root.innerHTML = `<p>Signed in as <strong>${h(user.name)}</strong> (${h(user.email || "")})${user.level ? ` · ${h(user.level)}` : ""}.</p>
+    const preview = MORRC.auth.staffPreview ? `<p class="small muted">Committee preview: resident sign-in isn't open yet, so progress pages on this site still save to this browser only.</p>` : "";
+    root.innerHTML = preview + `<p>Signed in as <strong>${h(user.name)}</strong> (${h(user.email || "")})${user.level ? ` · ${h(user.level)}` : ""}.</p>
       <div class="btn-row"><a class="btn" href="progress.html">My progress</a><a class="btn secondary" href="leaderboard.html">Leaderboard</a>
       ${["admin","committee"].includes(user.role) ? `<a class="btn secondary" href="admin.html">Committee dashboard</a>` : ""}</div>
       <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
@@ -189,6 +197,6 @@
     stepLogin("");
   }
   // A setup/reset link opened while this page is already showing only changes the #fragment.
-  window.addEventListener("hashchange", () => { const t = new URLSearchParams(location.hash.slice(1)).get("t"); if(t && MORRC.auth.enabled){ history.replaceState(null, "", location.pathname + location.search); stepLink(t); } });
+  window.addEventListener("hashchange", () => { const t = new URLSearchParams(location.hash.slice(1)).get("t"); if(t && !MORRC.auth.enabled && CFG.STAFF_PREVIEW !== false){ location.reload(); return; } if(t && MORRC.auth.enabled){ history.replaceState(null, "", location.pathname + location.search); stepLink(t); } });
   init();
 })();

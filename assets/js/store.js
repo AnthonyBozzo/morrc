@@ -12,6 +12,14 @@
   const SESSION_HINT = "morrc.remote.user"; // non-secret: name/role of the signed-in user, for offline display
   const IMPORTED = "morrc.importedAt";
   const CFG = MORRC.CONFIG || { BACKEND_ENABLED:false };
+  /* Staff preview: before launch (BACKEND_ENABLED false), ONLY signin.html and admin.html talk to
+     the API, and only when opened from a one-time setup/reset link (#t=...) or in a browser where a
+     committee member has already signed in that way. Every other page, and every visitor without a
+     link, behaves exactly as with the flag off. */
+  const STAFF_KEY = "morrc.staffPreview";
+  const PAGE = (location.pathname.split("/").pop() || "index.html").replace(/\.html$/, "") + ".html";
+  const STAFF_PREVIEW = !CFG.BACKEND_ENABLED && CFG.STAFF_PREVIEW !== false && ["signin.html","admin.html"].includes(PAGE)
+    && (/(^|[#&])t=/.test(location.hash) || (function(){ try { return localStorage.getItem(STAFF_KEY) === "1"; } catch(e){ return false; } })());
   const blank = () => ({ schema:1, profile:{displayName:"", level:"", showOnLeaderboard:false}, modules:{}, updatedAt:null });
   const blankModule = () => ({started:null, interactiveDone:false, attempts:0, bestPct:null, lastPct:null, passed:false, passedAt:null, passedFirstAttempt:false});
   const readJSON = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch(e){ return d; } };
@@ -110,7 +118,8 @@
   /* ---------- auth state ---------- */
   let forced = null;
   const auth = {
-    enabled: !!CFG.BACKEND_ENABLED,
+    enabled: !!CFG.BACKEND_ENABLED || STAFF_PREVIEW,
+    staffPreview: STAFF_PREVIEW,
     user: null,
     offline: false,
     ready: null,
@@ -136,6 +145,7 @@
     },
     setUser(u){
       this.user = u; RemoteAdapter._cache = null;
+      if(u && STAFF_PREVIEW && ["admin","committee"].includes(u.role)) { try { localStorage.setItem(STAFF_KEY, "1"); } catch(e){} }
       if(u) writeJSON(SESSION_HINT, { name:u.name, role:u.role, displayName:u.displayName, needsConsent:u.needsConsent });
       else { localStorage.removeItem(SESSION_HINT); localStorage.removeItem(MIRROR); }
       document.dispatchEvent(new CustomEvent("morrc:auth", { detail:u }));
