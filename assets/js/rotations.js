@@ -134,7 +134,7 @@
       ${drafts.length ? `<div class="tbl-wrap"><table class="admin-table" id="drafts-table"><thead><tr><th></th><th>#</th><th>Name</th><th>Status</th><th>Soft issues</th><th>Unmet now</th>${sites.map(s => `<th title="lowest (count − minimum) over the year">${s} slack</th>`).join("")}<th>Created</th><th>Actions</th></tr></thead><tbody>
       ${drafts.map(d => `<tr data-id="${d.id}"><td><input type="checkbox" class="cmp" value="${d.id}" ${d.status === "done" ? "" : "disabled"} aria-label="compare"></td><td>${d.id}</td>
         <td><a href="#draft/${d.id}">${h(d.name)}</a> ${d.isFinal ? '<span class="rot-badge final">FINAL</span>' : ""}<div class="small muted">${h(d.kind)}${d.parentId ? ` from #${d.parentId}` : ""}${d.note ? " · " + h(d.note) : ""}</div></td>
-        <td>${badge(d)}${d.status === "failed" ? `<div class="small risk-high">${h(d.message || "")}</div>` : d.status === "running" ? `<div class="small muted">started ${fmt(d.startedAt)} · limit ${d.timeLimit}s</div>` : ""}</td>
+        <td>${badge(d)}${d.status === "failed" ? `<div class="small risk-high">${h(d.message || "")}</div>` : d.status === "running" ? `<div class="small muted">started ${fmt(d.startedAt)} · limit ${d.timeLimit}s</div>` : d.status === "queued" && d.message ? `<div class="small muted">${h(d.message)}</div>` : ""}</td>
         <td>${d.metrics ? d.metrics.softTotal : "–"}</td><td>${d.metrics ? d.metrics.unmetNow : "–"}</td>
         ${sites.map(s => `<td>${d.metrics && d.metrics.staffing[s] ? d.metrics.staffing[s].slackMin : "–"}</td>`).join("")}
         <td class="small">${fmt(d.createdAt)}<br>${h(d.createdBy || "")}</td>
