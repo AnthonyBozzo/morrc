@@ -53,6 +53,8 @@
       if(!u){ slot.innerHTML = `<a class="nav-signin" href="${root}signin.html" ${page==="signin"?'aria-current="page"':''}>Sign in</a>`; }
       else {
         slot.innerHTML = (["admin","committee"].includes(u.role) ? `<a href="${root}admin.html" ${page==="admin"?'aria-current="page"':''}>Committee</a>` : "")
+          + (u.rotations === "admin" ? `<a href="${root}rotations.html" ${page==="rotations"?'aria-current="page"':''}>Rotations</a>` : "")
+          + (u.rotations === "self" ? `<a href="${root}my-rotations.html" ${page==="my-rotations"?'aria-current="page"':''}>My rotations</a>` : "")
           + `<a href="${root}signin.html" class="nav-account" title="Signed in as ${esc(u.name||"")}">${esc((u.name||"Account").replace(/^Dr\.?\s+/,"Dr ").split(" ").slice(0,2).join(" "))}</a>`;
       }
       const fs = document.getElementById("footer-storage");
