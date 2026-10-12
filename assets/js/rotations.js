@@ -128,7 +128,7 @@
   async function draftsPage(){
     const [{ drafts }, st] = await Promise.all([api("GET", "/api/rotations/drafts"), api("GET", "/api/rotations/status")]);
     const sites = ["MGH","JGH","SMH","PEDS"];
-    const w = st.worker; const wOk = w && (Date.now() - Date.parse(w.at) < 60000);
+    const w = st.worker; const wOk = w && (Date.now() - Date.parse(w.at) < 120000);
     root.innerHTML = shell("drafts", `
       <p class="small muted">Solver: ${wOk ? `ready (${h(w.state)})` : "<span class=risk-high>worker not responding</span>"} · one run at a time · ${st.queue.length} queued/running · resident self-view ${st.residentAccessEnabled ? "<b>ON</b>" : "off"}</p>
       ${drafts.length ? `<div class="tbl-wrap"><table class="admin-table" id="drafts-table"><thead><tr><th></th><th>#</th><th>Name</th><th>Status</th><th>Soft issues</th><th>Unmet now</th>${sites.map(s => `<th title="lowest (count − minimum) over the year">${s} slack</th>`).join("")}<th>Created</th><th>Actions</th></tr></thead><tbody>
