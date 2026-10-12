@@ -1,5 +1,6 @@
-/* Sign in with a 6-digit code emailed to a McGill address (or the "Finish signing in" link),
-   then first-time setup: privacy notice + consent, leaderboard choice, import of this browser's progress. */
+/* Sign in with McGill email + password. First-time passwords and lost-password resets use a one-time link
+   that a committee admin generates on the dashboard and sends personally (MORRC sends no email).
+   After the first sign-in: privacy notice + consent, leaderboard choice, import of this browser's progress. */
 (function(){
   const h = MORRC.h;
   const CFG = MORRC.CONFIG;
@@ -13,69 +14,74 @@
   const msg = (text, kind) => { const m = root.querySelector(".form-msg"); if(m){ m.className = "form-msg" + (kind ? " " + kind : ""); m.textContent = text || ""; } };
   const errText = e => {
     if(!e.status) return "We couldn't reach the MORRC server. Check your connection and try again.";
-    return ({ rate_limited:`Too many attempts. Please wait ${Math.ceil((e.body.retryAfterSec||60)/60)} minute(s) and try again.`,
-      wrong_code:"That code isn't right. Check the latest MORRC email and try again.",
-      too_many_tries:"Too many wrong codes. Request a new code.",
-      invalid_or_expired:"This code or link has expired or was already used. Request a new code.",
-      invalid_input:"Enter the 6-digit code from the email.", invalid_email:"Enter a valid email address.",
+    return ({ rate_limited:`Too many attempts. Please wait ${Math.ceil(((e.body && e.body.retryAfterSec)||60)/60)} minute(s) and try again.`,
+      invalid_credentials:"That email and password combination is not right.",
+      invalid_or_expired:"This link has expired or was already used. Ask the MORRC committee for a new one.",
       nickname_required:"Choose a nickname to join the leaderboard." })[e.code] || e.message || "Something went wrong.";
   };
+  const contactLine = () => CFG.PRIVACY_CONTACT_EMAIL ? `<a href="mailto:${h(CFG.PRIVACY_CONTACT_EMAIL)}?subject=MORRC%20password%20reset">${h(CFG.PRIVACY_CONTACT_EMAIL)}</a>` : "Dr Bozzo";
 
-  function stepEmail(prefill){
+  function stepLogin(prefill){
     title.textContent = "Sign in";
-    root.innerHTML = `<form id="email-form" novalidate>
-      <label class="field">McGill email<input type="email" name="email" autocomplete="email" required placeholder="firstname.lastname@${h(CFG.RESIDENT_DOMAIN)}" value="${h(prefill||"")}"></label>
-      <p class="small muted" style="margin:4px 0 12px">Residents use their <strong>@${h(CFG.RESIDENT_DOMAIN)}</strong> address. Your address must be on the MORRC list kept by the committee. We'll email you a 6-digit code; no password needed.</p>
-      <button class="btn" type="submit">Email me a code</button>
-      <div class="form-msg" aria-live="polite"></div></form>`;
-    const f = root.querySelector("#email-form");
-    f.email.focus();
+    root.innerHTML = `<form id="login-form" novalidate>
+      <label class="field">McGill email<input type="email" name="email" autocomplete="username" required placeholder="firstname.lastname@${h(CFG.RESIDENT_DOMAIN)}" value="${h(prefill||"")}"></label>
+      <label class="field">Password<input type="password" name="password" autocomplete="current-password" required></label>
+      <button class="btn" type="submit">Sign in</button>
+      <div class="form-msg" aria-live="polite"></div>
+      <p class="small muted" style="margin:12px 0 0"><strong>First time?</strong> Open the one-time setup link the MORRC committee sent you to choose your password.<br>
+      <strong>Forgot your password?</strong> Email ${contactLine()} and ask for a reset link.</p></form>`;
+    const f = root.querySelector("#login-form");
+    (prefill ? f.password : f.email).focus();
     f.onsubmit = async e => {
       e.preventDefault();
       email = f.email.value.trim().toLowerCase();
-      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return msg("Enter a valid email address.", "err");
-      f.querySelector("button").disabled = true; msg("Sending…");
-      try { await MORRC.auth.api("POST", "/api/auth/request", { email }); stepCode(); }
-      catch(err){ msg(errText(err), "err"); f.querySelector("button").disabled = false; }
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || !f.password.value) return msg("Enter your email and password.", "err");
+      const btn = f.querySelector("button"); btn.disabled = true; msg("Signing in…");
+      try { const r = await MORRC.auth.api("POST", "/api/auth/login", { email, password:f.password.value }); signedIn(r.user); }
+      catch(err){ msg(errText(err), "err"); btn.disabled = false; f.password.value = ""; f.password.focus(); }
     };
   }
 
-  function stepCode(){
-    title.textContent = "Check your email";
-    root.innerHTML = `<form id="code-form" novalidate>
-      <p>If <strong>${h(email)}</strong> is on the MORRC list, we've sent it a 6-digit code. It works for 15 minutes. Check your junk folder if you don't see it.</p>
-      ${email.endsWith("@" + CFG.RESIDENT_DOMAIN) ? "" : `<p class="small muted">Note: residents must use their @${h(CFG.RESIDENT_DOMAIN)} address.</p>`}
-      <label class="field">6-digit code<input class="code-input" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required aria-label="6-digit code"></label>
-      <button class="btn" type="submit">Sign in</button>
+  function passwordFields(min){
+    return `<label class="field">New password<input type="password" name="pw" autocomplete="new-password" minlength="${min}" required aria-describedby="pw-help"></label>
+      <p class="small muted" id="pw-help" style="margin:-4px 0 10px">At least ${min} characters. A short phrase of unrelated words is easy to remember and hard to guess. Common passwords are refused.</p>
+      <label class="field">Type it again<input type="password" name="pw2" autocomplete="new-password" required></label>
+      <label class="toggle small"><input type="checkbox" name="showpw"><span>Show password</span></label>`;
+  }
+  function wirePasswordFields(f){ f.showpw.onchange = () => { f.pw.type = f.pw2.type = f.showpw.checked ? "text" : "password"; }; }
+  function localPwCheck(f, min){
+    if(f.pw.value.length < min) return `Use at least ${min} characters.`;
+    if(f.pw.value !== f.pw2.value) return "The two passwords don't match.";
+    return null;
+  }
+
+  async function stepLink(token){
+    title.textContent = "Checking your link…";
+    root.innerHTML = `<p class="muted">One moment…</p>`;
+    let info;
+    try { info = await MORRC.auth.api("POST", "/api/auth/link", { token }); }
+    catch(err){
+      title.textContent = "Link not valid";
+      root.innerHTML = `<p>${h(errText(err))}</p><p class="small muted">Links work once and expire after 7 days. Email ${contactLine()} for a new one.</p><p><a class="btn secondary" href="signin.html">Go to sign in</a></p>`;
+      return;
+    }
+    const reset = info.purpose === "reset";
+    title.textContent = reset ? "Choose a new password" : "Set your password";
+    root.innerHTML = `<form id="setpw-form" novalidate>
+      <p>${reset ? "Choose a new password for" : "Welcome to MORRC! Choose a password for"} <strong>${h(info.name)}</strong> (${h(info.email)}).${reset ? " This signs you out on your other devices." : ""}</p>
+      <input type="email" name="username" autocomplete="username" value="${h(info.email)}" hidden>
+      ${passwordFields(info.minLength)}
+      <button class="btn" type="submit">${reset ? "Save new password" : "Set password and continue"}</button>
       <div class="form-msg" aria-live="polite"></div>
-      <p class="small"><button class="btn small secondary" type="button" id="resend" disabled>Send a new code</button> <button class="btn small secondary" type="button" id="other">Use a different email</button></p>
-    </form>`;
-    const f = root.querySelector("#code-form");
-    f.code.focus();
-    f.code.oninput = () => { f.code.value = f.code.value.replace(/\D/g, "").slice(0, 6); if(f.code.value.length === 6) f.requestSubmit(); };
-    const resend = root.querySelector("#resend");
-    setTimeout(() => { resend.disabled = false; }, 30000);
-    resend.onclick = async () => { resend.disabled = true; try { await MORRC.auth.api("POST", "/api/auth/request", { email }); msg("A new code is on its way. Only the newest code works.", "ok"); } catch(e){ msg(errText(e), "err"); } setTimeout(() => { resend.disabled = false; }, 30000); };
-    root.querySelector("#other").onclick = () => stepEmail(email);
+      <p class="small muted">This link works once and expires ${h(new Date(info.expiresAt).toLocaleDateString("en-CA", {month:"long", day:"numeric"}))}.</p></form>`;
+    const f = root.querySelector("#setpw-form");
+    wirePasswordFields(f); f.pw.focus();
     f.onsubmit = async e => {
       e.preventDefault();
-      const btn = f.querySelector("button[type=submit]");
-      btn.disabled = true; msg("Checking…");
-      try { const r = await MORRC.auth.api("POST", "/api/auth/verify", { email, code:f.code.value }); signedIn(r.user); }
-      catch(err){ msg(errText(err), "err"); btn.disabled = false; f.code.select(); }
-    };
-  }
-
-  function stepLink(token){
-    title.textContent = "Finish signing in";
-    root.innerHTML = `<p>Press the button to finish signing in to MORRC on this device.</p>
-      <button class="btn" type="button" id="finish">Finish signing in</button>
-      <div class="form-msg" aria-live="polite"></div>
-      <p class="small muted">Link not working? <a href="signin.html">Request a new code</a>.</p>`;
-    root.querySelector("#finish").onclick = async ev => {
-      ev.target.disabled = true; msg("Signing in…");
-      try { const r = await MORRC.auth.api("POST", "/api/auth/verify", { token }); signedIn(r.user); }
-      catch(err){ msg(errText(err), "err"); }
+      const bad = localPwCheck(f, info.minLength); if(bad) return msg(bad, "err");
+      const btn = f.querySelector("button[type=submit]"); btn.disabled = true; msg("Saving…");
+      try { const r = await MORRC.auth.api("POST", "/api/auth/link/complete", { token, password:f.pw.value }); signedIn(r.user); }
+      catch(err){ msg(errText(err), "err"); btn.disabled = false; }
     };
   }
 
@@ -141,8 +147,23 @@
       ${["admin","committee"].includes(user.role) ? `<a class="btn secondary" href="admin.html">Committee dashboard</a>` : ""}</div>
       <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
       <div class="btn-row"><button class="btn small secondary" id="export" type="button">Download my data</button><button class="btn small secondary" id="del" type="button">Ask to delete my account</button><button class="btn small" id="signout" type="button">Sign out</button></div>
-      <div class="form-msg" aria-live="polite"></div>`;
-    root.querySelector("#signout").onclick = async () => { await MORRC.auth.signOut(); stepEmail(""); };
+      <div class="form-msg" aria-live="polite"></div>
+      <details style="margin-top:14px" id="chpw"><summary>Change my password</summary>
+        <form id="chpw-form" novalidate style="margin-top:10px">
+          <label class="field">Current password<input type="password" name="cur" autocomplete="current-password" required></label>
+          ${passwordFields(10)}
+          <button class="btn small" type="submit">Change password</button>
+          <div class="form-msg" id="chpw-msg" aria-live="polite"></div>
+        </form></details>`;
+    root.querySelector("#signout").onclick = async () => { await MORRC.auth.signOut(); stepLogin(""); };
+    const cf = root.querySelector("#chpw-form"); wirePasswordFields(cf);
+    cf.onsubmit = async e => {
+      e.preventDefault();
+      const m = root.querySelector("#chpw-msg");
+      const bad = localPwCheck(cf, 10); if(bad){ m.className = "form-msg err"; m.textContent = bad; return; }
+      try { await MORRC.auth.api("POST", "/api/auth/password", { currentPassword:cf.cur.value, newPassword:cf.pw.value }); m.className = "form-msg ok"; m.textContent = "Password changed. Your other devices are signed out."; cf.reset(); }
+      catch(err){ m.className = "form-msg err"; m.textContent = errText(err); }
+    };
     root.querySelector("#export").onclick = async () => {
       try { const d = await MORRC.auth.api("GET", "/api/me/export"); const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(d, null, 2)], {type:"application/json"})); a.download = "morrc-my-data.json"; a.click(); }
       catch(e){ msg(errText(e), "err"); }
@@ -160,12 +181,14 @@
         <div class="btn-row"><a class="btn" href="progress.html">My progress</a><a class="btn secondary" href="index.html#catalogue">Browse modules</a></div>`;
       return;
     }
-    const token = params.get("t");
-    if(token){ history.replaceState(null, "", location.pathname + (params.get("next") ? "?next=" + encodeURIComponent(next) : "")); return stepLink(token); }
+    const token = new URLSearchParams(location.hash.slice(1)).get("t");
+    if(token){ history.replaceState(null, "", location.pathname + location.search); return stepLink(token); }
     root.innerHTML = `<p class="muted">Loading…</p>`;
     const user = await MORRC.auth.ready;
     if(user && !user.offlineHint){ if(user.needsConsent) return stepConsent(user); return signedInView(user); }
-    stepEmail("");
+    stepLogin("");
   }
+  // A setup/reset link opened while this page is already showing only changes the #fragment.
+  window.addEventListener("hashchange", () => { const t = new URLSearchParams(location.hash.slice(1)).get("t"); if(t && MORRC.auth.enabled){ history.replaceState(null, "", location.pathname + location.search); stepLink(t); } });
   init();
 })();

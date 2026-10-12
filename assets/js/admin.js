@@ -59,13 +59,14 @@
 
   function residentsTable(){
     const rows = residents();
-    return `<div class="tbl-wrap"><table class="admin-table" id="res-table"><thead><tr><th>Name</th><th>Email</th><th>Level</th><th>Status</th><th>Last sign-in</th><th>Completion</th>${isAdmin ? "<th>Actions</th>" : ""}</tr></thead><tbody>
+    return `<div class="tbl-wrap"><table class="admin-table" id="res-table"><thead><tr><th>Name</th><th>Email</th><th>Level</th><th>Status</th><th>Account</th><th>Last sign-in</th><th>Completion</th>${isAdmin ? "<th>Actions</th>" : ""}</tr></thead><tbody>
       ${rows.map(u => `<tr data-user="${u.id}"><td>${h(u.name)}${u.displayName ? `<br><span class="small muted">Nickname: ${h(u.displayName)}${u.showOnLeaderboard ? " · on leaderboard" : ""}</span>` : ""}</td><td class="small">${h(u.email)}</td>
         <td>${isAdmin ? `<select class="set-level" aria-label="Level for ${h(u.name)}">${LEVELS.map(l => `<option ${u.level === l ? "selected" : ""}>${l}</option>`).join("")}</select>` : h(u.level || "")}</td>
         <td>${isAdmin ? `<select class="set-status" aria-label="Status for ${h(u.name)}">${Object.entries(STATUS).map(([k, v]) => `<option value="${k}" ${u.status === k ? "selected" : ""}>${v}</option>`).join("")}</select>` : `<span class="pill-status ${u.status}">${STATUS[u.status]}</span>`}${u.deleteAfter ? `<br><span class="small muted">Deleted after ${fmtDate(u.deleteAfter)}</span>` : ""}</td>
+        <td class="small acct">${u.hasPassword ? "Password set" : "No password yet"}${u.pendingLink ? `<br><span class="muted">${u.pendingLink.purpose === "reset" ? "Reset" : "Setup"} link open until ${fmtDate(u.pendingLink.expiresAt)}</span>` : ""}</td>
         <td class="small">${fmtDate(u.lastLoginAt)}</td><td><strong>${u.completionPct}%</strong> <span class="small muted">(${u.done}/18)</span></td>
-        ${isAdmin ? `<td><button class="btn small secondary remove" type="button" ${u.status === "removed" ? "disabled" : ""}>Remove</button> <button class="btn small secondary hard-delete" type="button">Delete</button>${u.showOnLeaderboard ? ` <button class="btn small secondary lb-off" type="button">Hide from leaderboard</button>` : ""}</td>` : ""}</tr>`).join("") || `<tr><td colspan="7" class="muted">No residents match.</td></tr>`}
-      </tbody></table></div><div class="form-msg" id="res-msg" aria-live="polite"></div>`;
+         ${isAdmin ? `<td><button class="btn small link-btn" type="button" ${u.status === "removed" ? "disabled" : ""}>${u.hasPassword ? "Generate reset link" : "Generate setup link"}</button> <button class="btn small secondary remove" type="button" ${u.status === "removed" ? "disabled" : ""}>Remove</button> <button class="btn small secondary hard-delete" type="button">Delete</button>${u.showOnLeaderboard ? ` <button class="btn small secondary lb-off" type="button">Hide from leaderboard</button>` : ""}</td>` : ""}</tr>`).join("") || `<tr><td colspan="8" class="muted">No residents match.</td></tr>`}
+      </tbody></table></div><div class="form-msg" id="res-msg" aria-live="polite"></div><div id="link-box"></div>`;
   }
 
   function adminTools(){
@@ -77,9 +78,9 @@
         <label>McGill email<input name="email" type="email" required placeholder="jane.doe@mail.mcgill.ca" size="28"></label>
         <label>Level<select name="level">${LEVELS.map(l => `<option>${l}</option>`).join("")}</select></label>
         <button class="btn small" type="submit">Add resident</button>
-      </form><div class="form-msg" id="add-msg" aria-live="polite"></div>
+      </form><div class="form-msg" id="add-msg" aria-live="polite"></div><div id="add-link-box"></div>
       <h3>Bulk add from CSV</h3>
-      <p class="small muted">One resident per line: <code>name, email, level</code> (a header row is optional). Paste from Excel or the PGME list. Existing residents are updated (name, level) and removed ones are reinstated.</p>
+      <p class="small muted">One resident per line: <code>name, email, level</code> (a header row is optional). Paste from Excel or the PGME list. Existing residents are updated (name, level) and removed ones are reinstated. You'll get a one-time setup link for each new resident to send them.</p>
       <form id="bulk-form" class="admin-form"><textarea name="csv" placeholder="name,email,level&#10;Jane Doe,jane.doe@mail.mcgill.ca,R1"></textarea>
         <div class="btn-row"><button class="btn small secondary" type="button" id="bulk-preview">Preview</button><button class="btn small" type="submit">Import</button></div></form>
       <div class="form-msg" id="bulk-msg" aria-live="polite"></div><div id="bulk-errors"></div>
@@ -90,6 +91,25 @@
       <div id="roll-preview"></div><div class="form-msg" id="roll-msg" aria-live="polite"></div>
     </div>
     <div class="card" style="margin-top:16px"><h2 style="margin-top:0">Recent activity</h2><div id="audit"><button class="btn small secondary" id="load-audit" type="button">Show audit log</button></div></div>`;
+  }
+
+  /* MORRC sends no email: the admin copies the one-time link and sends it personally. */
+  function linkPanel(targetId, user, link){
+    const reset = link.purpose === "reset";
+    const first = (user.name || "").replace(/^Dr\.?\s+/i, "").split(" ")[0];
+    const message = reset
+      ? `Hi ${first},\n\nHere is your MORRC password reset link. It works once and expires on ${fmtDate(link.expiresAt)}:\n${link.url}\n\nOpen it, choose a new password, and you're back in.`
+      : `Hi ${first},\n\nYou're set up on MORRC, the McGill Ortho Resident Research Curriculum. Open this link to choose your password (it works once and expires on ${fmtDate(link.expiresAt)}):\n${link.url}\n\nAfterwards, sign in at https://morrc.sarcomaaihub.com with ${user.email} and your password.`;
+    const box = document.getElementById(targetId);
+    box.innerHTML = `<div class="callout blue link-panel" data-user="${user.id}"><strong>${reset ? "Reset" : "Setup"} link for ${h(user.name)} (${h(user.email)})</strong>
+      <p class="small" style="margin:4px 0 8px">Copy this link and send it to them yourself (MORRC doesn't send email). It works once and expires on ${fmtDate(link.expiresAt)}. Making a new link cancels this one.${reset ? " Using it signs them out everywhere." : ""}</p>
+      <div class="admin-form"><input class="link-url" readonly value="${h(link.url)}" style="flex:1;min-width:280px" aria-label="One-time link"><button class="btn small copy-link" type="button">Copy link</button><button class="btn small secondary copy-msg" type="button">Copy message</button></div>
+      <textarea class="link-msg" readonly style="width:100%;min-height:110px;margin-top:8px;font-size:13px">${h(message)}</textarea>
+      <div class="form-msg copy-status" aria-live="polite"></div></div>`;
+    const copy = async (text, label) => { try { await Promise.race([navigator.clipboard.writeText(text), new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 1500))]); } catch(e){ const t = box.querySelector(".link-url"); t.select(); document.execCommand && document.execCommand("copy"); } const st = box.querySelector(".copy-status"); st.classList.add("ok"); st.textContent = label + " copied."; };
+    box.querySelector(".copy-link").onclick = () => copy(link.url, "Link");
+    box.querySelector(".copy-msg").onclick = () => copy(message, "Message");
+    box.scrollIntoView({ block:"nearest" });
   }
 
   function render(){
@@ -125,11 +145,16 @@
         if(prompt(`Permanently delete ${u.name} and all their progress now? Type DELETE to confirm.`) !== "DELETE") return;
         try { await api("DELETE", `/api/admin/users/${id}`); await reload(); say("res-msg", `${u.name} deleted.`, "ok"); } catch(e){ say("res-msg", errMsg(e), "err"); }
       };
+      tr.querySelector(".link-btn").onclick = async () => {
+        if(u.hasPassword && !confirm(`Generate a password reset link for ${u.name}? Their current password keeps working until they use the link.`)) return;
+        try { const r = await api("POST", `/api/admin/users/${id}/link`, {}); await reload(); linkPanel("link-box", r.user, r.link); say("res-msg", "", ""); }
+        catch(e){ say("res-msg", errMsg(e), "err"); }
+      };
       const lb = tr.querySelector(".lb-off"); if(lb) lb.onclick = () => patchUser(id, { showOnLeaderboard:false }, `${u.name} hidden from the leaderboard.`);
     });
     document.getElementById("add-form").onsubmit = async e => {
       e.preventDefault(); const f = e.target;
-      try { await api("POST", "/api/admin/users", { name:f.name.value, email:f.email.value, level:f.level.value }); const n = f.name.value; await reload(); say("add-msg", `${n} added. They can now sign in.`, "ok"); }
+      try { const r = await api("POST", "/api/admin/users", { name:f.name.value, email:f.email.value, level:f.level.value }); await reload(); say("add-msg", `${r.user.name} added. Send them the setup link below.`, "ok"); linkPanel("add-link-box", r.user, r.link); }
       catch(err){ say("add-msg", errMsg(err), "err"); }
     };
     const bulk = async dryRun => {
@@ -139,7 +164,11 @@
         const txt = `${dryRun ? "Preview: would add" : "Added"} ${r.added}, ${dryRun ? "update" : "updated"} ${r.updated}, unchanged ${r.unchanged}${r.errors.length ? `, ${r.errors.length} line(s) with problems` : ""}.`;
         if(!dryRun){ await reload(); document.querySelector("#bulk-form textarea").value = csv; }
         say("bulk-msg", txt, r.errors.length ? "err" : "ok");
-        document.getElementById("bulk-errors").innerHTML = r.errors.length ? `<ul class="small" id="bulk-error-list">${r.errors.map(x => `<li>Line ${x.line}: ${h(x.message)}</li>`).join("")}</ul>` : "";
+        document.getElementById("bulk-errors").innerHTML = (r.errors.length ? `<ul class="small" id="bulk-error-list">${r.errors.map(x => `<li>Line ${x.line}: ${h(x.message)}</li>`).join("")}</ul>` : "")
+          + (r.links && r.links.length ? `<div class="callout blue" id="bulk-links"><strong>Setup links for the ${r.links.length} new resident(s)</strong><p class="small" style="margin:4px 0">Send each person their own link (works once, expires in 7 days). You can also generate a new link later from the residents table.</p>
+            <textarea readonly style="width:100%;min-height:120px;font-size:13px">${h(r.links.map(l => `${l.name}\t${l.email}\t${l.url}`).join("\n"))}</textarea>
+            <button class="btn small" type="button" id="copy-bulk-links">Copy all (name, email, link)</button></div>` : "");
+        const cb = document.getElementById("copy-bulk-links"); if(cb) cb.onclick = async () => { try { await navigator.clipboard.writeText(r.links.map(l => `${l.name}\t${l.email}\t${l.url}`).join("\n")); } catch(e){} cb.textContent = "Copied"; };
       } catch(err){ say("bulk-msg", errMsg(err), "err"); }
     };
     document.getElementById("bulk-preview").onclick = () => bulk(true);
