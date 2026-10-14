@@ -59,7 +59,7 @@
   function residentView(d, back){
     const r = d.resident, periods = d.periods, labels = d.labels;
     const today = new Date().toISOString().slice(0, 10);
-    const req = r.requirements;
+    const allReq = r.requirements, req = allReq.filter(q => q.required != null), info = allReq.filter(q => q.required == null);
     const tot = req.reduce((n, q) => n + q.required, 0);
     const doneBefore = req.reduce((n, q) => n + Math.min(q.required, q.done_before), 0);
     const planned = req.reduce((n, q) => n + Math.min(q.required - Math.min(q.required, q.done_before), q.this_year), 0);
@@ -89,7 +89,7 @@
       <div class="card" style="margin-top:14px">
         <h3 style="margin-top:0">Progress map (graduation requirements)</h3>
         <p class="small"><span class="req-blocks" style="display:inline-flex"><span class="h"></span></span> completed (history) &nbsp; <span class="req-blocks" style="display:inline-flex"><span class="t"></span></span> scheduled this year &nbsp; <span class="req-blocks" style="display:inline-flex"><span class="r"></span></span> still required &nbsp; <span class="req-blocks" style="display:inline-flex"><span class="x"></span></span> extra</p>
-        <div class="req-map">${req.map(q => `<div>${h(q.label)}<div class="small muted">needs ${q.required}, by PGY${q.deadline_pgy}</div></div><div class="req-blocks">${blocks(q)}</div><div class="small ${q.status === "legacy_gap" || q.status === "unmet_final_year" ? "risk-high" : q.status === "due_next_year" ? "risk-medium" : "muted"}">${statusTxt[q.status] || q.status}${q.remaining ? ` · ${q.remaining} left` : ""}</div>`).join("")}</div>
+        <div class="req-map">${info.map(q => `<div>${h(q.label)}<div class="small muted">requirement TBC</div></div><div class="req-blocks">${'<span class="h"></span>'.repeat(q.done_before)}${'<span class="t"></span>'.repeat(q.this_year)}</div><div class="small muted">${q.done_before} done + ${q.this_year} this year · requirement TBC</div>`).join("")}${req.map(q => `<div>${h(q.label)}<div class="small muted">needs ${q.required}, by PGY${q.deadline_pgy}</div></div><div class="req-blocks">${blocks(q)}</div><div class="small ${q.status === "legacy_gap" || q.status === "unmet_final_year" ? "risk-high" : q.status === "due_next_year" ? "risk-medium" : "muted"}">${statusTxt[q.status] || q.status}${q.remaining ? ` · ${q.remaining} left` : ""}</div>`).join("")}</div>
       </div>
       <details class="card" style="margin-top:14px"><summary><strong>Rotation history (${r.history.length} blocks)</strong></summary>
         <table class="admin-table small"><thead><tr><th>Year</th><th>PGY</th><th>Period</th><th>Rotation</th></tr></thead><tbody>${r.history.map(e => `<tr><td>${h(e.year)}</td><td>${e.pgy}</td><td>P${e.period}</td><td>${h(e.label)}</td></tr>`).join("")}</tbody></table>
