@@ -171,7 +171,11 @@
   function optionsSummary(o){
     const rc = o.rules.research;
     const r1 = o.rules.r1 || {};
-    return [["R5 written exam", (o.rules.study_mode || "full_block") === "full_block" ? `study block P${o.rules.study_period}` : `leave inside one rotation P${o.rules.written_leave_period || 3}–P${(o.rules.written_leave_period || 3) + 1}`],
+    const sm = o.rules.study_mode || "full_block", wl = o.rules.written_leave_period || 3;
+    return [["R5 written exam", sm === "full_block" ? `study block P${o.rules.study_period}` : sm === "block_and_leave" ? `study block P${o.rules.study_period} + leave inside one rotation P${wl}–P${wl + 1}` : `leave inside one rotation P${wl}–P${wl + 1}`],
+      ["Hand", `${o.rules.hand_blocks || 2} block(s)${o.rules.hand_consecutive_required === false ? " (2 consecutive allowed)" : ""}; ${o.rules.hand_max_concurrent_hard} at a time${o.rules.hand_next_year_capacity ? "; next-year capacity kept" : ""}`],
+      ["R4 no elective/research", (o.rules.r4_no_nonclinical_periods || []).map(p => "P" + p).join(", ") || "none"], ["R1 no MGH Trauma", (r1.no_mt_periods || []).map(p => "P" + p).join(", ") || "none"],
+      ["R1 targets (soft)", Object.keys(r1.soft_min || {}).join(", ") || "none"],
       ["R5 oral exam", o.rules.oral_period ? `P${o.rules.oral_period}, rotation continuous with P${o.rules.oral_period - 1} or P${o.rules.oral_period + 1}` : "–"],
       ["R1s on ortho P3", r1.p3_ortho || "off"], ["R1 Spine", r1.allow_spine ? (r1.spine_counts_junior ? "allowed, counts as junior" : "allowed (exposure)") : "no"],
       ["Senior MGH Trauma cap", o.rules.senior_trauma_cap ?? "none"], ["R5 Hand catch-up", o.rules.hand_catchup_r5 ? "on" : "off"], ["R3 non-clinical max", o.rules.r3_nonclinical_max ?? "none"],
@@ -308,7 +312,7 @@
           <label>Isolated single-block penalty<input name="iso" type="number" min="0" max="1000" value="${o.weights.isolated}"></label></div>
           <p class="hint">Single-block penalty: 0 ignores isolated single blocks; 10 is the default; higher trades other preferences for fewer singles.</p></fieldset>
         <fieldset><legend>Exams, R1 and seniors (Oct 14 rules)</legend><div class="admin-form">
-          <label>R5 written exam handling<select name="smode"><option value="leave_in_rotation" ${(o.rules.study_mode || "full_block") === "leave_in_rotation" ? "selected" : ""}>Exam leave inside one clinical rotation (PGME 75%)</option><option value="full_block" ${(o.rules.study_mode || "full_block") === "full_block" ? "selected" : ""}>Full study block (legacy)</option></select></label>
+          <label>R5 written exam handling<select name="smode"><option value="leave_in_rotation" ${(o.rules.study_mode || "full_block") === "leave_in_rotation" ? "selected" : ""}>Exam leave inside one clinical rotation (PGME 75%)</option><option value="full_block" ${(o.rules.study_mode || "full_block") === "full_block" ? "selected" : ""}>Full study block only (legacy)</option><option value="block_and_leave" ${o.rules.study_mode === "block_and_leave" ? "selected" : ""}>Study block (off, no call) + exam leave inside one rotation</option></select></label>
           <label>Written exam leave period<select name="wlp">${P.slice(0, -1).map((p, i) => `<option value="${i+1}" ${(o.rules.written_leave_period || 3) === i+1 ? "selected" : ""}>P${i+1}</option>`).join("")}</select></label>
           <label>R5 oral exam period<select name="oral">${P.slice(1, -1).map((p, i) => `<option value="${i+2}" ${(o.rules.oral_period || 11) === i+2 ? "selected" : ""}>P${i+2}</option>`).join("")}</select></label>
           <label>R1s on ortho in P3 (needs SF approval)<select name="r1p3">${["soft", "hard", "off"].map(v => `<option value="${v}" ${((o.rules.r1 || {}).p3_ortho || "off") === v ? "selected" : ""}>${{ soft:"Preferred (high weight)", hard:"Hard rule", off:"Off" }[v]}</option>`).join("")}</select></label>
@@ -316,6 +320,11 @@
           <label>R1 Spine counts as R2 junior Spine<select name="r1spj"><option value="0">No (exposure only)</option><option value="1" ${(o.rules.r1 || {}).spine_counts_junior ? "selected" : ""}>Yes</option></select></label>
           <label>R3 max non-clinical blocks/yr<select name="r3nc"><option value="1" ${o.rules.r3_nonclinical_max === 1 ? "selected" : ""}>1</option><option value="" ${o.rules.r3_nonclinical_max == null ? "selected" : ""}>No limit</option></select></label>
           <label>Seniors on MGH Trauma per period (soft cap)<input name="stc" type="number" min="1" max="8" value="${o.rules.senior_trauma_cap ?? ""}" placeholder="none"></label>
+          <label>Hand requirement<select name="hblk"><option value="1" ${(o.rules.hand_blocks || 2) === 1 ? "selected" : ""}>1 block (2 consecutive allowed)</option><option value="2" ${(o.rules.hand_blocks || 2) === 2 ? "selected" : ""}>2 consecutive blocks</option></select></label>
+          <label>Keep next-year Hand capacity<select name="hnext"><option value="1">Yes (hard)</option><option value="0" ${o.rules.hand_next_year_capacity ? "" : "selected"}>No</option></select></label>
+          <label>R4: no elective/research in periods<input name="r4nc" value="${(o.rules.r4_no_nonclinical_periods || []).join(",")}" size="8"></label>
+          <label>R1: no MGH Trauma in periods<input name="r1nmt" value="${((o.rules.r1 || {}).no_mt_periods || []).join(",")}" size="8"></label>
+          <label>R1 targets ≥1 Spine/Trauma/SMH Clinic<select name="r1t"><option value="1">Preferred (soft)</option><option value="0" ${Object.keys((o.rules.r1 || {}).soft_min || {}).length ? "" : "selected"}>Off</option></select></label>
           <label>R5 Hand catch-up<select name="hcu"><option value="1">On</option><option value="0" ${o.rules.hand_catchup_r5 ? "" : "selected"}>Off</option></select></label>
           <label>No research/electives in periods<input name="nnc" value="${(o.rules.no_nonclinical_periods || []).join(",")}" size="8" placeholder="e.g. 3"></label>
           <label>Visiting-professor periods (no R4/R5 electives)<input name="vpp" value="${(o.rules.vp_periods || []).join(",")}" size="8"></label>
@@ -362,6 +371,8 @@
         unavailable: [...f.querySelectorAll("#lv-t tbody tr")].map(tr => ({ id:tr.querySelector(".lv-id").value, periods:pers(tr, "lv-p"), reason:tr.querySelector(".lv-r").value })).filter(u => u.periods.length),
         study_mode: f.smode.value, written_leave_period: Number(f.wlp.value), oral_period: Number(f.oral.value), r1_p3_ortho: f.r1p3.value,
         r1_allow_spine: f.r1sp.value === "1", r1_spine_counts_junior: f.r1spj.value === "1", r3_nonclinical_max: f.r3nc.value === "" ? null : 1,
+        hand_blocks: Number(f.hblk.value), hand_next_year_capacity: f.hnext.value === "1", r4_no_nonclinical_periods: plist(f.r4nc.value),
+        r1_no_mt_periods: plist(f.r1nmt.value), r1_targets: f.r1t.value === "1",
         senior_trauma_cap: f.stc.value === "" ? null : Number(f.stc.value), hand_catchup_r5: f.hcu.value === "1",
         no_nonclinical_periods: plist(f.nnc.value), vp_periods: plist(f.vpp.value), oite_periods: plist(f.oite.value),
         visitors: [...f.querySelectorAll("#vi-t tbody tr")].map(tr => ({ group:tr.querySelector(".vi-g").value || "Other visiting residents", name:tr.querySelector(".vi-n").value, rotation:tr.querySelector(".vi-r").value, periods:pers(tr, "vi-p") })).filter(v => v.name),
