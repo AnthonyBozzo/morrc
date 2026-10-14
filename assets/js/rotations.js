@@ -46,6 +46,15 @@
       <p class="small muted">Green = at or above preferred; yellow = below preferred (soft); red = outside min/max (hard).</p>`;
   }
 
+  function callCoverage(s, periods){
+    const cc = s.call_coverage, notes = s.calendar_notes || {};
+    let out = "";
+    if (cc && Object.keys(cc).length) out += `<h3>Home-call coverage <span class="small muted">(informational: residents × ${s.nights_per_resident} calls vs nights; fellows cover the shortfall)</span></h3>
+      <div class="tbl-wrap"><table class="rot-grid"><tr><th>Site</th>${periods.map((p, i) => `<th>P${i+1}</th>`).join("")}</tr>${Object.entries(cc).map(([k, rows]) => `<tr><td class="nm">${h(k)}</td>${rows.map(r => `<td class="${r.fellow_nights ? "warn" : "ok"}" title="${r.residents} residents, ${r.nights} nights">${r.resident_nights}/${r.nights}${r.fellow_nights ? `<br><span class="small">F ${r.fellow_nights}</span>` : ""}</td>`).join("")}</tr>`).join("")}</table></div>`;
+    if (Object.keys(notes).length) out += `<details><summary class="small">Calendar notes (exams, leave, visiting professors)</summary><ul class="small">${Object.entries(notes).map(([p, l]) => `<li><strong>P${h(p)}</strong>: ${l.map(h).join("; ")}</li>`).join("")}</ul></details>`;
+    return out;
+  }
+
   /* Resident progress map (used by admins and, when enabled, by the resident for their own page). */
   function residentView(d, back){
     const r = d.resident, periods = d.periods, labels = d.labels;
@@ -161,8 +170,13 @@
 
   function optionsSummary(o){
     const rc = o.rules.research;
-    return [["Study block", `P${o.rules.study_period}`], ["Research per period (preferred / max)", `${rc.soft_max_concurrent} / ${rc.hard_max_concurrent}`],
-      ["Research slots released", (rc.released || []).join(", ") || "none"], ["JGH max", o.sites.JGH.max], ["R5 Trauma P12–13", o.rules.mt_r5_hard === false ? "soft" : "hard"],
+    const r1 = o.rules.r1 || {};
+    return [["R5 written exam", (o.rules.study_mode || "full_block") === "full_block" ? `study block P${o.rules.study_period}` : `leave inside one rotation P${o.rules.written_leave_period || 3}–P${(o.rules.written_leave_period || 3) + 1}`],
+      ["R5 oral exam", o.rules.oral_period ? `P${o.rules.oral_period}, rotation continuous with P${o.rules.oral_period - 1} or P${o.rules.oral_period + 1}` : "–"],
+      ["R1s on ortho P3", r1.p3_ortho || "off"], ["R1 Spine", r1.allow_spine ? (r1.spine_counts_junior ? "allowed, counts as junior" : "allowed (exposure)") : "no"],
+      ["Senior MGH Trauma cap", o.rules.senior_trauma_cap ?? "none"], ["R5 Hand catch-up", o.rules.hand_catchup_r5 ? "on" : "off"], ["R3 non-clinical max", o.rules.r3_nonclinical_max ?? "none"],
+      ["No research/electives", (o.rules.no_nonclinical_periods || []).map(p => "P" + p).join(", ") || "none"], ["VP / OITE periods", `${(o.rules.vp_periods || []).map(p => "P" + p).join(",") || "–"} / ${(o.rules.oite_periods || []).map(p => "P" + p).join(",") || "–"}`], ["Research per period (preferred / max)", `${rc.soft_max_concurrent} / ${rc.hard_max_concurrent}`],
+      ["Research slots released", (rc.released || []).join(", ") || "none"], ["JGH max", o.sites.JGH.max], ["R5 Trauma P12–13", (o.rules.mt_r5_periods || [12, 13]).length === 0 ? "removed" : o.rules.mt_r5_hard === false ? "soft" : "hard"],
       ["Hand at once", o.rules.hand_max_concurrent_hard], ["Single-block weight", o.weights.isolated], ["Leaves", (o.unavailable || []).map(u => `${u.id}: P${u.periods.join(",")}`).join("; ") || "none"],
       ["Visitors", (o.visitors || []).length], ["Excluded", (o.exclude_ids || []).join(", ") || "none"], ["Locked periods", o.locks && Object.keys(o.locks).length ? `P1–P${Object.keys(Object.values(o.locks)[0] || {}).length}` : "none"], ["Time limit", o.solver.time_limit_s + " s"]];
   }
@@ -189,6 +203,7 @@
       ${s ? `
       <h3>Schedule</h3>${grid(d.schedule, residents, o.periods, d.labels, { link:true })}
       <h3>Site staffing</h3>${staffingTable(s, o.periods)}
+      ${callCoverage(s, o.periods)}
       <h3>Hard rules (independent validator, re-read from the Excel)</h3>
       <table class="admin-table small"><thead><tr><th>Rule</th><th>Result</th><th>Details</th></tr></thead><tbody>${s.checks.map(c => `<tr><td>${h(c.rule)}</td><td><span class="rot-badge ${c.result === "PASS" ? "pass" : "fail"}">${c.result}</span></td><td>${h(c.details || "")}</td></tr>`).join("")}</tbody></table>
       <h3>Soft issues (${s.soft_total})</h3>
@@ -292,6 +307,20 @@
           <label>JGH max residents<input name="jgh" type="number" min="1" max="10" value="${o.sites.JGH.max}"></label>
           <label>Isolated single-block penalty<input name="iso" type="number" min="0" max="1000" value="${o.weights.isolated}"></label></div>
           <p class="hint">Single-block penalty: 0 ignores isolated single blocks; 10 is the default; higher trades other preferences for fewer singles.</p></fieldset>
+        <fieldset><legend>Exams, R1 and seniors (Oct 14 rules)</legend><div class="admin-form">
+          <label>R5 written exam handling<select name="smode"><option value="leave_in_rotation" ${(o.rules.study_mode || "full_block") === "leave_in_rotation" ? "selected" : ""}>Exam leave inside one clinical rotation (PGME 75%)</option><option value="full_block" ${(o.rules.study_mode || "full_block") === "full_block" ? "selected" : ""}>Full study block (legacy)</option></select></label>
+          <label>Written exam leave period<select name="wlp">${P.slice(0, -1).map((p, i) => `<option value="${i+1}" ${(o.rules.written_leave_period || 3) === i+1 ? "selected" : ""}>P${i+1}</option>`).join("")}</select></label>
+          <label>R5 oral exam period<select name="oral">${P.slice(1, -1).map((p, i) => `<option value="${i+2}" ${(o.rules.oral_period || 11) === i+2 ? "selected" : ""}>P${i+2}</option>`).join("")}</select></label>
+          <label>R1s on ortho in P3 (needs SF approval)<select name="r1p3">${["soft", "hard", "off"].map(v => `<option value="${v}" ${((o.rules.r1 || {}).p3_ortho || "off") === v ? "selected" : ""}>${{ soft:"Preferred (high weight)", hard:"Hard rule", off:"Off" }[v]}</option>`).join("")}</select></label>
+          <label>R1 Spine allowed<select name="r1sp"><option value="1">Yes</option><option value="0" ${(o.rules.r1 || {}).allow_spine ? "" : "selected"}>No</option></select></label>
+          <label>R1 Spine counts as R2 junior Spine<select name="r1spj"><option value="0">No (exposure only)</option><option value="1" ${(o.rules.r1 || {}).spine_counts_junior ? "selected" : ""}>Yes</option></select></label>
+          <label>R3 max non-clinical blocks/yr<select name="r3nc"><option value="1" ${o.rules.r3_nonclinical_max === 1 ? "selected" : ""}>1</option><option value="" ${o.rules.r3_nonclinical_max == null ? "selected" : ""}>No limit</option></select></label>
+          <label>Seniors on MGH Trauma per period (soft cap)<input name="stc" type="number" min="1" max="8" value="${o.rules.senior_trauma_cap ?? ""}" placeholder="none"></label>
+          <label>R5 Hand catch-up<select name="hcu"><option value="1">On</option><option value="0" ${o.rules.hand_catchup_r5 ? "" : "selected"}>Off</option></select></label>
+          <label>No research/electives in periods<input name="nnc" value="${(o.rules.no_nonclinical_periods || []).join(",")}" size="8" placeholder="e.g. 3"></label>
+          <label>Visiting-professor periods (no R4/R5 electives)<input name="vpp" value="${(o.rules.vp_periods || []).join(",")}" size="8"></label>
+          <label>OITE periods (no electives)<input name="oite" value="${(o.rules.oite_periods || []).join(",")}" size="8"></label></div>
+          <p class="hint">Period lists are comma-separated numbers; leave blank for none. These are soft rules except the exam continuity, which is hard.</p></fieldset>
         <fieldset><legend>Site limits (ortho residents per period)</legend><div class="admin-form">${Object.entries(o.sites).map(([s, v]) => `<label>${h(s)} min / pref / max<span><input class="si" data-s="${h(s)}" data-k="min" type="number" min="0" max="30" value="${v.min}" style="width:56px"> <input class="si" data-s="${h(s)}" data-k="pref" type="number" min="0" max="30" value="${v.pref}" style="width:56px"> <input class="si" data-s="${h(s)}" data-k="max" type="number" min="0" max="30" value="${v.max}" style="width:56px"></span></label>`).join("")}</div></fieldset>
         <fieldset><legend>Research blocks (R${rc.pgy.join(", R")})</legend><div class="admin-form">
           <label>Preferred max at once<input name="rsoft" type="number" min="0" max="6" value="${rc.soft_max_concurrent}"></label>
@@ -322,6 +351,7 @@
       const pers = (tr, cls) => [...tr.querySelectorAll("." + cls + ":checked")].map(x => Number(x.dataset.p));
       const residents = [...f.querySelectorAll("#ro-t tbody tr")].map(tr => ({ id:tr.querySelector(".ro-id").value.trim(), name:tr.querySelector(".ro-n").value.trim(), surname:tr.querySelector(".ro-s").value.trim(), pgy:Number(tr.querySelector(".ro-g").value), _in:tr.querySelector(".ro-in").checked }));
       const sites = {}; f.querySelectorAll(".si").forEach(i => { (sites[i.dataset.s] = sites[i.dataset.s] || {})[i.dataset.k] = Number(i.value); });
+      const plist = v => [...new Set(v.split(/[\s,]+/).filter(Boolean).map(Number))].filter(n => Number.isInteger(n) && n >= 1 && n <= P.length);
       const applied = new Set([...f.querySelectorAll(".ra:checked")].map(x => x.value));
       const options = {
         residents: residents.map(({ _in, ...r }) => r), exclude_ids: residents.filter(r => !r._in).map(r => r.id),
@@ -330,6 +360,10 @@
         research: { soft_max_concurrent: Number(f.rsoft.value), hard_max_concurrent: Number(f.rhard.value), counts_toward_site: f.rsite.value === "1",
           released: researchers.map(r => r.id).filter(id => !applied.has(id) && residents.some(x => x.id === id)) },
         unavailable: [...f.querySelectorAll("#lv-t tbody tr")].map(tr => ({ id:tr.querySelector(".lv-id").value, periods:pers(tr, "lv-p"), reason:tr.querySelector(".lv-r").value })).filter(u => u.periods.length),
+        study_mode: f.smode.value, written_leave_period: Number(f.wlp.value), oral_period: Number(f.oral.value), r1_p3_ortho: f.r1p3.value,
+        r1_allow_spine: f.r1sp.value === "1", r1_spine_counts_junior: f.r1spj.value === "1", r3_nonclinical_max: f.r3nc.value === "" ? null : 1,
+        senior_trauma_cap: f.stc.value === "" ? null : Number(f.stc.value), hand_catchup_r5: f.hcu.value === "1",
+        no_nonclinical_periods: plist(f.nnc.value), vp_periods: plist(f.vpp.value), oite_periods: plist(f.oite.value),
         visitors: [...f.querySelectorAll("#vi-t tbody tr")].map(tr => ({ group:tr.querySelector(".vi-g").value || "Other visiting residents", name:tr.querySelector(".vi-n").value, rotation:tr.querySelector(".vi-r").value, periods:pers(tr, "vi-p") })).filter(v => v.name),
       };
       document.getElementById("gen").disabled = true;
