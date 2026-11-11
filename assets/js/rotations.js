@@ -182,6 +182,8 @@
       ["R1 targets (soft)", Object.keys(r1.soft_min || {}).join(", ") || "none"],
       ["Overflow", o.rules.overflow_site ? `${o.rules.overflow_site} in ${(o.rules.overflow_periods || []).map(p => "P"+p).join(", ") || "—"} (+${o.rules.overflow_extra ?? 1})` : "none"],
       ["R4s finish Hand this year", o.rules.r4_finish_hand ? "hard" : "off"], ["J Trauma in R3", o.rules.jt_r3_hard ? "2–3 blocks, hard" : "soft / graduation only"],
+      ["MGH Trauma staffing target", o.rules.mt_staff_target ?? "off"], ["SMH max R4s / seniors per period", `${o.rules.smh_r4_max ?? "off"} / ${o.rules.smh_senior_max ?? "off"} (soft)`],
+      ["R5 MGH Trauma min this year", o.rules.r5_mt_min==null ? "off" : `${o.rules.r5_mt_min} (${o.rules.r5_mt_min_hard===false ? "soft" : "hard"})`],
       ["Electives banned (hard)", (o.rules.elective_blackout || []).map(p => "P" + p).join(", ") || "none"], ["MGH Trauma 2-3/yr", o.rules.mt_per_year_hard === false ? "soft (2-3 total R2-R5)" : "hard"],
       ["R2 partial-leave periods", ((o.rules.r2_partial || {}).periods || []).map(p => "P" + p).join(", ") || "none"],
       ["R5 oral exam", o.rules.oral_period ? `P${o.rules.oral_period}, rotation continuous with P${o.rules.oral_period - 1} or P${o.rules.oral_period + 1}` : "–"],
@@ -339,6 +341,11 @@
           <label>Overflow extra residents allowed<input name="ovx" type="number" min="0" max="3" value="${o.rules.overflow_extra ?? 1}"></label>
           <label>R4s finish Hand this year<select name="r4h"><option value="1">Hard</option><option value="0" ${o.rules.r4_finish_hand ? "" : "selected"}>Off</option></select></label>
           <label>J Trauma 2–3 blocks in R3<select name="jt3"><option value="1">Hard</option><option value="0" ${o.rules.jt_r3_hard ? "" : "selected"}>Off</option></select></label>
+          <label>MGH Trauma staffing target (soft)<input name="mtt" type="number" min="0" max="8" value="${o.rules.mt_staff_target ?? 4}" placeholder="off"></label>
+          <label>Max R4s at SMH per period (soft)<input name="smh4" type="number" min="0" max="8" value="${o.rules.smh_r4_max ?? 2}" placeholder="off"></label>
+          <label>Max seniors (R4+R5) at SMH per period (soft)<input name="smhs" type="number" min="0" max="8" value="${o.rules.smh_senior_max ?? 2}" placeholder="off"></label>
+          <label>Min MGH Trauma blocks per R5 this year<input name="r5mt" type="number" min="0" max="3" value="${o.rules.r5_mt_min ?? 3}" placeholder="off"></label>
+          <label>R5 Trauma minimum is<select name="r5mth"><option value="1">Hard (if the solver can)</option><option value="0" ${o.rules.r5_mt_min_hard ? "" : "selected"}>Soft, high weight</option></select></label>
           <label>Electives banned (hard) in periods<input name="elb" value="${(o.rules.elective_blackout || []).join(",")}" size="8"></label>
           <label>MGH Trauma 2-3 per year<select name="mth"><option value="0">Soft target (2-3 total over R2-R5)</option><option value="1" ${o.rules.mt_per_year_hard !== false ? "selected" : ""}>Hard (2-3 every year)</option></select></label>
           <label>R2 partial-leave periods (0.75 coverage)<input name="r2p" value="${((o.rules.r2_partial || {}).periods || []).join(",")}" size="8"></label>
@@ -392,6 +399,8 @@
         senior_trauma_cap: f.stc.value === "" ? null : Number(f.stc.value), hand_catchup_r5: f.hcu.value === "1",
         no_nonclinical_periods: plist(f.nnc.value), elective_blackout: plist(f.elb.value), mt_per_year_hard: f.mth.value === "1", r2_partial_periods: plist(f.r2p.value),
         overflow_site: f.ovsite.value || null, overflow_periods: plist(f.ovp.value), overflow_extra: Number(f.ovx.value), r4_finish_hand: f.r4h.value === "1", jt_r3_hard: f.jt3.value === "1",
+        mt_staff_target: f.mtt.value === "" ? null : Number(f.mtt.value), smh_r4_max: f.smh4.value === "" ? null : Number(f.smh4.value), smh_senior_max: f.smhs.value === "" ? null : Number(f.smhs.value),
+        r5_mt_min: f.r5mt.value === "" ? null : Number(f.r5mt.value), r5_mt_min_hard: f.r5mth.value === "1",
         vp_periods: plist(f.vpp.value), oite_periods: plist(f.oite.value),
         visitors: [...f.querySelectorAll("#vi-t tbody tr")].map(tr => ({ group:tr.querySelector(".vi-g").value || "Other visiting residents", name:tr.querySelector(".vi-n").value, rotation:tr.querySelector(".vi-r").value, periods:pers(tr, "vi-p") })).filter(v => v.name),
       };
