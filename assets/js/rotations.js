@@ -41,7 +41,7 @@
   }
   function staffingTable(summary, periods){
     const rows = Object.entries(summary.staffing).map(([s, v]) => `<tr><td class="nm">${h(s)} <span class="small muted">min ${v.min} · pref ${v.pref} · max ${v.max}</span></td>` +
-      v.counts.map((n, i) => { const e = v.effective ? v.effective[i] : n; return `<td class="${e < v.min || n > v.max ? "bad" : e < v.pref ? "warn" : "ok"}" title="effective ${e}">${n}${e !== n ? `<br><span class="small">${e}</span>` : ""}</td>`; }).join("") + "</tr>").join("");
+      v.counts.map((n, i) => { const e = v.effective ? v.effective[i] : n; const ov = v.overflow && v.overflow[i]; return `<td class="${e < v.min || (n > v.max && !ov) ? "bad" : (e < v.pref || ov) ? "warn" : "ok"}" title="effective ${e}${ov ? "; allowed overflow" : ""}">${n}${e !== n ? `<br><span class="small">${e}</span>` : ""}${ov ? `<br><span class="small">ov</span>` : ""}</td>`; }).join("") + "</tr>").join("");
     return `<div class="tbl-wrap"><table class="rot-grid"><tr><th>Site (ortho residents)</th>${periods.map((p, i) => `<th>P${i+1}</th>`).join("")}</tr>${rows}</table></div>
       <p class="small muted">Green = at or above preferred; yellow = below preferred (soft); red = outside min/max (hard). A second number = effective coverage (an R2 with a 1-week partial leave counts 0.75).</p>`;
   }
@@ -50,7 +50,7 @@
     const cc = s.call_coverage, notes = s.calendar_notes || {};
     let out = "";
     if (cc && Object.keys(cc).length) out += `<h3>Home-call coverage <span class="small muted">(informational: residents × ${s.nights_per_resident} calls vs nights; fellows cover the shortfall)</span></h3>
-      <div class="tbl-wrap"><table class="rot-grid"><tr><th>Site</th>${periods.map((p, i) => `<th>P${i+1}</th>`).join("")}</tr>${Object.entries(cc).map(([k, rows]) => `<tr><td class="nm">${h(k)}</td>${rows.map(r => `<td class="${r.fellow_nights ? "warn" : "ok"}" title="${r.residents} residents, ${r.nights} nights">${r.resident_nights}/${r.nights}${r.fellow_nights ? `<br><span class="small">F ${r.fellow_nights}</span>` : ""}</td>`).join("")}</tr>`).join("")}</table></div>`;
+      <div class="tbl-wrap"><table class="rot-grid"><tr><th>Site</th>${periods.map((p, i) => `<th>P${i+1}</th>`).join("")}</tr>${Object.entries(cc).map(([k, rows]) => `<tr><td class="nm">${h(k)}</td>${rows.map(r => `<td class="${r.fellow_nights ? "warn" : "ok"}" title="${r.residents} residents, ${r.nights} nights${r.research_nights ? `; researchers ${r.research_nights}` : ""}">${r.resident_nights}${r.research_nights ? `+${r.research_nights}R` : ""}/${r.nights}${r.fellow_nights ? `<br><span class="small">F ${r.fellow_nights}</span>` : ""}</td>`).join("")}</tr>`).join("")}</table></div>`;
     if (s.research_call_capacity && s.research_call_capacity.some(r => r.researchers)) out += `<p class="small muted">Research (partial call capacity, up to ${s.research_calls} calls each if no leave): ${s.research_call_capacity.map((r, i) => r.researchers ? `P${i+1}: ${r.researchers}` : "").filter(Boolean).join(" · ")}</p>`;
     const sdn = s.site_director_notices || [];
     if (cc) out += `<h3>Site director notices <span class="small muted">(draft text to copy; nothing is sent)</span></h3>` + (sdn.length ? `<ul class="small">${sdn.map(n => `<li>${h(n.text)}</li>`).join("")}</ul>
@@ -180,6 +180,8 @@
       ["Hand", `${o.rules.hand_blocks || 2} block(s)${o.rules.hand_consecutive_required === false ? " (2 consecutive allowed)" : ""}; ${o.rules.hand_max_concurrent_hard} at a time${o.rules.hand_next_year_capacity ? "; next-year capacity kept" : ""}`],
       ["R4 no elective/research", (o.rules.r4_no_nonclinical_periods || []).map(p => "P" + p).join(", ") || "none"], ["R1 no MGH Trauma", (r1.no_mt_periods || []).map(p => "P" + p).join(", ") || "none"],
       ["R1 targets (soft)", Object.keys(r1.soft_min || {}).join(", ") || "none"],
+      ["Overflow", o.rules.overflow_site ? `${o.rules.overflow_site} in ${(o.rules.overflow_periods || []).map(p => "P"+p).join(", ") || "—"} (+${o.rules.overflow_extra ?? 1})` : "none"],
+      ["R4s finish Hand this year", o.rules.r4_finish_hand ? "hard" : "off"], ["J Trauma in R3", o.rules.jt_r3_hard ? "2–3 blocks, hard" : "soft / graduation only"],
       ["Electives banned (hard)", (o.rules.elective_blackout || []).map(p => "P" + p).join(", ") || "none"], ["MGH Trauma 2-3/yr", o.rules.mt_per_year_hard === false ? "soft (2-3 total R2-R5)" : "hard"],
       ["R2 partial-leave periods", ((o.rules.r2_partial || {}).periods || []).map(p => "P" + p).join(", ") || "none"],
       ["R5 oral exam", o.rules.oral_period ? `P${o.rules.oral_period}, rotation continuous with P${o.rules.oral_period - 1} or P${o.rules.oral_period + 1}` : "–"],
@@ -332,6 +334,11 @@
           <label>R1: no MGH Trauma in periods<input name="r1nmt" value="${((o.rules.r1 || {}).no_mt_periods || []).join(",")}" size="8"></label>
           <label>R1 targets ≥1 Spine/Trauma/SMH Clinic<select name="r1t"><option value="1">Preferred (soft)</option><option value="0" ${Object.keys((o.rules.r1 || {}).soft_min || {}).length ? "" : "selected"}>Off</option></select></label>
           <label>R5 Hand catch-up<select name="hcu"><option value="1">On</option><option value="0" ${o.rules.hand_catchup_r5 ? "" : "selected"}>Off</option></select></label>
+          <label>P3 (or listed) overflow site<select name="ovsite"><option value="">None</option>${Object.keys(o.sites).map(s => `<option value="${h(s)}" ${(o.rules.overflow_site || "MGH") === s ? "selected" : ""}>${h(s)}</option>`).join("")}</select></label>
+          <label>Overflow periods<input name="ovp" value="${(o.rules.overflow_periods || [3]).join(",")}" size="8"></label>
+          <label>Overflow extra residents allowed<input name="ovx" type="number" min="0" max="3" value="${o.rules.overflow_extra ?? 1}"></label>
+          <label>R4s finish Hand this year<select name="r4h"><option value="1">Hard</option><option value="0" ${o.rules.r4_finish_hand ? "" : "selected"}>Off</option></select></label>
+          <label>J Trauma 2–3 blocks in R3<select name="jt3"><option value="1">Hard</option><option value="0" ${o.rules.jt_r3_hard ? "" : "selected"}>Off</option></select></label>
           <label>Electives banned (hard) in periods<input name="elb" value="${(o.rules.elective_blackout || []).join(",")}" size="8"></label>
           <label>MGH Trauma 2-3 per year<select name="mth"><option value="0">Soft target (2-3 total over R2-R5)</option><option value="1" ${o.rules.mt_per_year_hard !== false ? "selected" : ""}>Hard (2-3 every year)</option></select></label>
           <label>R2 partial-leave periods (0.75 coverage)<input name="r2p" value="${((o.rules.r2_partial || {}).periods || []).join(",")}" size="8"></label>
@@ -383,7 +390,9 @@
         hand_blocks: Number(f.hblk.value), hand_next_year_capacity: f.hnext.value === "1", r4_no_nonclinical_periods: plist(f.r4nc.value),
         r1_no_mt_periods: plist(f.r1nmt.value), r1_targets: f.r1t.value === "1",
         senior_trauma_cap: f.stc.value === "" ? null : Number(f.stc.value), hand_catchup_r5: f.hcu.value === "1",
-        no_nonclinical_periods: plist(f.nnc.value), elective_blackout: plist(f.elb.value), mt_per_year_hard: f.mth.value === "1", r2_partial_periods: plist(f.r2p.value), vp_periods: plist(f.vpp.value), oite_periods: plist(f.oite.value),
+        no_nonclinical_periods: plist(f.nnc.value), elective_blackout: plist(f.elb.value), mt_per_year_hard: f.mth.value === "1", r2_partial_periods: plist(f.r2p.value),
+        overflow_site: f.ovsite.value || null, overflow_periods: plist(f.ovp.value), overflow_extra: Number(f.ovx.value), r4_finish_hand: f.r4h.value === "1", jt_r3_hard: f.jt3.value === "1",
+        vp_periods: plist(f.vpp.value), oite_periods: plist(f.oite.value),
         visitors: [...f.querySelectorAll("#vi-t tbody tr")].map(tr => ({ group:tr.querySelector(".vi-g").value || "Other visiting residents", name:tr.querySelector(".vi-n").value, rotation:tr.querySelector(".vi-r").value, periods:pers(tr, "vi-p") })).filter(v => v.name),
       };
       document.getElementById("gen").disabled = true;
