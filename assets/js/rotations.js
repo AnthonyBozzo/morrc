@@ -184,11 +184,16 @@
       ["R4s finish Hand this year", o.rules.r4_finish_hand ? "hard" : "off"], ["J Trauma in R3", o.rules.jt_r3_hard ? "2–3 blocks, hard" : "soft / graduation only"],
       ["MGH Trauma staffing target", o.rules.mt_staff_target ?? "off"], ["SMH max R4s / seniors per period", `${o.rules.smh_r4_max ?? "off"} / ${o.rules.smh_senior_max ?? "off"} (soft)`],
       ["R5 MGH Trauma min this year", o.rules.r5_mt_min==null ? "off" : `${o.rules.r5_mt_min} (${o.rules.r5_mt_min_hard===false ? "soft" : "hard"})`],
+      ["R4 MGH Trauma min this year", o.rules.r4_mt_min==null ? "off" : `${o.rules.r4_mt_min} (${o.rules.r4_mt_min_hard===false ? "soft" : "hard"})`],
+      ["MGH Trauma min residents per period", o.rules.mt_period_min ?? (o.rotations && o.rotations.MT && o.rotations.MT.min) ?? "off"],
+      ["R4 or R5 on MGH Trauma every period", o.rules.mt_senior_required ? "hard" : "off"],
+      ["Prefer an R2 on MGH Trauma every period", o.rules.r2_mt_prefer ? "soft, high weight" : "off"],
+      ["Site seniority balance", o.rules.site_seniority_balance ? "soft (no senior / no junior / lopsided)" : "off"],
       ["Electives banned (hard)", (o.rules.elective_blackout || []).map(p => "P" + p).join(", ") || "none"], ["MGH Trauma 2-3/yr", o.rules.mt_per_year_hard === false ? "soft (2-3 total R2-R5)" : "hard"],
       ["R2 partial-leave periods", ((o.rules.r2_partial || {}).periods || []).map(p => "P" + p).join(", ") || "none"],
       ["R5 oral exam", o.rules.oral_period ? `P${o.rules.oral_period}, rotation continuous with P${o.rules.oral_period - 1} or P${o.rules.oral_period + 1}` : "–"],
       ["R1s on ortho P3", r1.p3_ortho || "off"], ["R1 Spine", r1.allow_spine ? (r1.spine_counts_junior ? "allowed, counts as junior" : "allowed (exposure)") : "no"],
-      ["Senior MGH Trauma cap", o.rules.senior_trauma_cap ?? "none"], ["R5 Hand catch-up", o.rules.hand_catchup_r5 ? "on" : "off"], ["R3 non-clinical max", o.rules.r3_nonclinical_max ?? "none"],
+      ["Senior MGH Trauma cap", o.rules.senior_trauma_cap==null ? "none" : `${o.rules.senior_trauma_cap} (${o.rules.senior_trauma_cap_hard ? "hard" : "soft"})`], ["R5 Hand catch-up", o.rules.hand_catchup_r5 ? "on" : "off"], ["R3 non-clinical max", o.rules.r3_nonclinical_max ?? "none"],
       ["No research/electives", (o.rules.no_nonclinical_periods || []).map(p => "P" + p).join(", ") || "none"], ["VP / OITE periods", `${(o.rules.vp_periods || []).map(p => "P" + p).join(",") || "–"} / ${(o.rules.oite_periods || []).map(p => "P" + p).join(",") || "–"}`], ["Research per period (preferred / max)", `${rc.soft_max_concurrent} / ${rc.hard_max_concurrent}`],
       ["Research slots released", (rc.released || []).join(", ") || "none"], ["JGH max", o.sites.JGH.max], ["R5 Trauma P12–13", (o.rules.mt_r5_periods || [12, 13]).length === 0 ? "removed" : o.rules.mt_r5_hard === false ? "soft" : "hard"],
       ["Hand at once", o.rules.hand_max_concurrent_hard], ["Single-block weight", o.weights.isolated], ["Leaves", (o.unavailable || []).map(u => `${u.id}: P${u.periods.join(",")}`).join("; ") || "none"],
@@ -329,7 +334,8 @@
           <label>R1 Spine allowed<select name="r1sp"><option value="1">Yes</option><option value="0" ${(o.rules.r1 || {}).allow_spine ? "" : "selected"}>No</option></select></label>
           <label>R1 Spine counts as R2 junior Spine<select name="r1spj"><option value="0">No (exposure only)</option><option value="1" ${(o.rules.r1 || {}).spine_counts_junior ? "selected" : ""}>Yes</option></select></label>
           <label>R3 max non-clinical blocks/yr<select name="r3nc"><option value="1" ${o.rules.r3_nonclinical_max === 1 ? "selected" : ""}>1</option><option value="" ${o.rules.r3_nonclinical_max == null ? "selected" : ""}>No limit</option></select></label>
-          <label>Seniors on MGH Trauma per period (soft cap)<input name="stc" type="number" min="1" max="8" value="${o.rules.senior_trauma_cap ?? ""}" placeholder="none"></label>
+          <label>Seniors on MGH Trauma per period (cap)<input name="stc" type="number" min="1" max="8" value="${o.rules.senior_trauma_cap ?? ""}" placeholder="none"></label>
+          <label>Senior Trauma cap is<select name="stch"><option value="1" ${o.rules.senior_trauma_cap_hard ? "selected" : ""}>Hard</option><option value="0" ${o.rules.senior_trauma_cap_hard ? "" : "selected"}>Soft</option></select></label>
           <label>Hand requirement<select name="hblk"><option value="1" ${(o.rules.hand_blocks || 2) === 1 ? "selected" : ""}>1 block (2 consecutive allowed)</option><option value="2" ${(o.rules.hand_blocks || 2) === 2 ? "selected" : ""}>2 consecutive blocks</option></select></label>
           <label>Keep next-year Hand capacity<select name="hnext"><option value="1">Yes (hard)</option><option value="0" ${o.rules.hand_next_year_capacity ? "" : "selected"}>No</option></select></label>
           <label>R4: no elective/research in periods<input name="r4nc" value="${(o.rules.r4_no_nonclinical_periods || []).join(",")}" size="8"></label>
@@ -346,6 +352,12 @@
           <label>Max seniors (R4+R5) at SMH per period (soft)<input name="smhs" type="number" min="0" max="8" value="${o.rules.smh_senior_max ?? 2}" placeholder="off"></label>
           <label>Min MGH Trauma blocks per R5 this year<input name="r5mt" type="number" min="0" max="3" value="${o.rules.r5_mt_min ?? 3}" placeholder="off"></label>
           <label>R5 Trauma minimum is<select name="r5mth"><option value="1">Hard (if the solver can)</option><option value="0" ${o.rules.r5_mt_min_hard ? "" : "selected"}>Soft, high weight</option></select></label>
+          <label>Min MGH Trauma blocks per R4 this year<input name="r4mt" type="number" min="0" max="3" value="${o.rules.r4_mt_min ?? 2}" placeholder="off"></label>
+          <label>R4 Trauma minimum is<select name="r4mth"><option value="1">Hard (if the solver can)</option><option value="0" ${o.rules.r4_mt_min_hard ? "" : "selected"}>Soft, high weight</option></select></label>
+          <label>MGH Trauma min residents per period (hard)<input name="mtmin" type="number" min="0" max="8" value="${o.rules.mt_period_min ?? ((o.rotations.MT || {}).min ?? 4)}" placeholder="off"></label>
+          <label>R4 or R5 on MGH Trauma every period<select name="mtsen"><option value="1">Hard</option><option value="0" ${o.rules.mt_senior_required ? "" : "selected"}>Off</option></select></label>
+          <label>Prefer an R2 on MGH Trauma every period<select name="r2mt"><option value="1">On (soft, high weight)</option><option value="0" ${o.rules.r2_mt_prefer ? "" : "selected"}>Off</option></select></label>
+          <label>Site seniority balance (soft)<select name="ssb"><option value="1">On (penalise no senior, no junior, or lopsided)</option><option value="0" ${o.rules.site_seniority_balance ? "" : "selected"}>Off</option></select></label>
           <label>Electives banned (hard) in periods<input name="elb" value="${(o.rules.elective_blackout || []).join(",")}" size="8"></label>
           <label>MGH Trauma 2-3 per year<select name="mth"><option value="0">Soft target (2-3 total over R2-R5)</option><option value="1" ${o.rules.mt_per_year_hard !== false ? "selected" : ""}>Hard (2-3 every year)</option></select></label>
           <label>R2 partial-leave periods (0.75 coverage)<input name="r2p" value="${((o.rules.r2_partial || {}).periods || []).join(",")}" size="8"></label>
@@ -401,6 +413,9 @@
         overflow_site: f.ovsite.value || null, overflow_periods: plist(f.ovp.value), overflow_extra: Number(f.ovx.value), r4_finish_hand: f.r4h.value === "1", jt_r3_hard: f.jt3.value === "1",
         mt_staff_target: f.mtt.value === "" ? null : Number(f.mtt.value), smh_r4_max: f.smh4.value === "" ? null : Number(f.smh4.value), smh_senior_max: f.smhs.value === "" ? null : Number(f.smhs.value),
         r5_mt_min: f.r5mt.value === "" ? null : Number(f.r5mt.value), r5_mt_min_hard: f.r5mth.value === "1",
+        r4_mt_min: f.r4mt.value === "" ? null : Number(f.r4mt.value), r4_mt_min_hard: f.r4mth.value === "1",
+        mt_period_min: f.mtmin.value === "" ? null : Number(f.mtmin.value), mt_senior_required: f.mtsen.value === "1",
+        r2_mt_prefer: f.r2mt.value === "1", senior_trauma_cap_hard: f.stch.value === "1", site_seniority_balance: f.ssb.value === "1",
         vp_periods: plist(f.vpp.value), oite_periods: plist(f.oite.value),
         visitors: [...f.querySelectorAll("#vi-t tbody tr")].map(tr => ({ group:tr.querySelector(".vi-g").value || "Other visiting residents", name:tr.querySelector(".vi-n").value, rotation:tr.querySelector(".vi-r").value, periods:pers(tr, "vi-p") })).filter(v => v.name),
       };
