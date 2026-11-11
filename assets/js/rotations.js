@@ -188,7 +188,9 @@
       ["MGH Trauma min residents per period", o.rules.mt_period_min ?? (o.rotations && o.rotations.MT && o.rotations.MT.min) ?? "off"],
       ["R4 or R5 on MGH Trauma every period", o.rules.mt_senior_required ? "hard" : "off"],
       ["Prefer an R2 on MGH Trauma every period", o.rules.r2_mt_prefer ? "soft, high weight" : "off"],
-      ["Site seniority balance", o.rules.site_seniority_balance ? "soft (no senior / no junior / lopsided)" : "off"],
+      ["Site seniority balance", o.rules.site_seniority_balance ? ((o.rules.site_seniority_hard || []).length ? "hard at " + (o.rules.site_seniority_hard || []).join(", ") + " (lopsided still soft)" : "soft (no senior / no junior / lopsided)") : "off"],
+      ["Foot & Ankle + Oncology before P3 of R4", o.rules.fa_onc_before_r4_p3 ? (o.rules.fa_onc_r3_mode || "strict") + " (J Foot + Tumor; R3 deferral cap " + (o.rules.fa_onc_next_year_p1p2_cap ?? 4) + ")" : "off"],
+      ["Electives this year (R4 / R5)", `${(o.rules.r4_electives || [2, 2])[0]}–${(o.rules.r4_electives || [2, 2])[1]} / ${(o.rules.r5_electives || [2, 2])[0]}–${(o.rules.r5_electives || [2, 2])[1]} (total ${o.rules.electives_total_r4r5 ?? 4})`],
       ["Electives banned (hard)", (o.rules.elective_blackout || []).map(p => "P" + p).join(", ") || "none"], ["MGH Trauma 2-3/yr", o.rules.mt_per_year_hard === false ? "soft (2-3 total R2-R5)" : "hard"],
       ["R2 partial-leave periods", ((o.rules.r2_partial || {}).periods || []).map(p => "P" + p).join(", ") || "none"],
       ["R5 oral exam", o.rules.oral_period ? `P${o.rules.oral_period}, rotation continuous with P${o.rules.oral_period - 1} or P${o.rules.oral_period + 1}` : "–"],
@@ -214,7 +216,7 @@
       <div class="card"><h2 style="margin-top:0">#${dr.id} ${h(dr.name)} ${dr.isFinal ? '<span class="rot-badge final">FINAL</span>' : ""} ${badge(dr)}</h2>
         <p class="small muted">${h(dr.kind)}${dr.parentId ? ` from #${dr.parentId}` : ""} · created ${fmt(dr.createdAt)} by ${h(dr.createdBy || "")}${dr.finishedAt ? ` · finished ${fmt(dr.finishedAt)}` : ""}${dr.metrics ? ` · ${dr.metrics.elapsed}s, peak ${dr.metrics.peakRssMb} MB` : ""}${dr.solverStatus ? ` · solver ${h(dr.solverStatus)}${dr.objective != null ? `, score ${dr.objective} (bound ${dr.bound})` : ""}` : ""}${dr.isFinal ? ` · FINAL since ${fmt(dr.finalizedAt)} (${h(dr.finalizedBy || "")})` : ""}</p>
         ${dr.message ? `<p class="${dr.status === "failed" ? "risk-high" : ""}">${h(dr.message)}</p>` : ""}
-        ${dr.changes ? `<p class="small">Changes: ${dr.changes.map(c => h(c.type === "swap" ? `swap ${c.a.id} P${c.a.period} ↔ ${c.b.id} P${c.b.period}` : c.type === "set" ? `${c.id} P${c.period} → ${c.code}` : `leave ${c.id} P${c.periods.join(",")}`)).join("; ")}</p>` : ""}
+        ${dr.changes ? `<p class="small">Changes: ${dr.changes.map(c => h(c.type === "import" ? "imported local grid (not re-solved on the server)" : c.type === "swap" ? `swap ${c.a.id} P${c.a.period} ↔ ${c.b.id} P${c.b.period}` : c.type === "set" ? `${c.id} P${c.period} → ${c.code}` : `leave ${c.id} P${(c.periods || []).join(",")}`)).join("; ")}</p>` : ""}
         ${actions}
         <details style="margin-top:10px"><summary class="small">Options used</summary><table class="admin-table small">${optionsSummary(o).map(([k, v]) => `<tr><td>${h(k)}</td><td>${h(String(v))}</td></tr>`).join("")}</table></details>
       </div>
@@ -358,13 +360,17 @@
           <label>R4 or R5 on MGH Trauma every period<select name="mtsen"><option value="1">Hard</option><option value="0" ${o.rules.mt_senior_required ? "" : "selected"}>Off</option></select></label>
           <label>Prefer an R2 on MGH Trauma every period<select name="r2mt"><option value="1">On (soft, high weight)</option><option value="0" ${o.rules.r2_mt_prefer ? "" : "selected"}>Off</option></select></label>
           <label>Site seniority balance (soft)<select name="ssb"><option value="1">On (penalise no senior, no junior, or lopsided)</option><option value="0" ${o.rules.site_seniority_balance ? "" : "selected"}>Off</option></select></label>
+          <label>Senior + junior presence<select name="ssh">${(() => { const h = o.rules.site_seniority_hard || []; const v = h.includes("JGH") ? "all" : (h.includes("MGH") ? "core" : ""); return `<option value="" ${v === "" ? "selected" : ""}>Soft only (penalise gaps)</option><option value="core" ${v === "core" ? "selected" : ""}>Hard at MGH, SMH, Peds and MGH Trauma</option><option value="all" ${v === "all" ? "selected" : ""}>Hard at every site including JGH</option>`; })()}</select></label>
+          <label>Foot &amp; Ankle and Oncology before P3 of R4<select name="faonc">${(() => { const v = o.rules.fa_onc_before_r4_p3 ? (o.rules.fa_onc_r3_mode || "strict") : "off"; return [["off","Off"],["lenient","Lenient (R4 deadline hard; R3s may defer, cap 4)"],["strict","Strict (every R3 completes both this year)"]].map(([k,lab]) => `<option value="${k}" ${v === k ? "selected" : ""}>${lab}</option>`).join(""); })()}</select></label>
+          <label>Electives this year in R4<input name="r4el" type="number" min="0" max="6" value="${(o.rules.r4_electives || [2, 2])[0]}"></label>
+          <label>Electives this year in R5<input name="r5el" type="number" min="0" max="6" value="${(o.rules.r5_electives || [2, 2])[0]}"></label>
           <label>Electives banned (hard) in periods<input name="elb" value="${(o.rules.elective_blackout || []).join(",")}" size="8"></label>
           <label>MGH Trauma 2-3 per year<select name="mth"><option value="0">Soft target (2-3 total over R2-R5)</option><option value="1" ${o.rules.mt_per_year_hard !== false ? "selected" : ""}>Hard (2-3 every year)</option></select></label>
           <label>R2 partial-leave periods (0.75 coverage)<input name="r2p" value="${((o.rules.r2_partial || {}).periods || []).join(",")}" size="8"></label>
           <label>No research/electives in periods<input name="nnc" value="${(o.rules.no_nonclinical_periods || []).join(",")}" size="8" placeholder="e.g. 3"></label>
           <label>Visiting-professor periods (no R4/R5 electives)<input name="vpp" value="${(o.rules.vp_periods || []).join(",")}" size="8"></label>
           <label>OITE periods (no electives)<input name="oite" value="${(o.rules.oite_periods || []).join(",")}" size="8"></label></div>
-          <p class="hint">Period lists are comma-separated numbers; leave blank for none. These are soft rules except the exam continuity, which is hard.</p></fieldset>
+          <p class="hint">Period lists are comma-separated numbers; leave blank for none. Foot &amp; Ankle is J Foot at JGH; Oncology is Tumor at MGH; the deadline is the end of P2 of R4. Elective slots may be used as research. These are soft rules except exam continuity, the elective blackout, and any rule marked hard.</p></fieldset>
         <fieldset><legend>Site limits (ortho residents per period)</legend><div class="admin-form">${Object.entries(o.sites).map(([s, v]) => `<label>${h(s)} min / pref / max<span><input class="si" data-s="${h(s)}" data-k="min" type="number" min="0" max="30" value="${v.min}" style="width:56px"> <input class="si" data-s="${h(s)}" data-k="pref" type="number" min="0" max="30" value="${v.pref}" style="width:56px"> <input class="si" data-s="${h(s)}" data-k="max" type="number" min="0" max="30" value="${v.max}" style="width:56px"></span></label>`).join("")}</div></fieldset>
         <fieldset><legend>Research blocks (R${rc.pgy.join(", R")})</legend><div class="admin-form">
           <label>Preferred max at once<input name="rsoft" type="number" min="0" max="6" value="${rc.soft_max_concurrent}"></label>
@@ -416,6 +422,11 @@
         r4_mt_min: f.r4mt.value === "" ? null : Number(f.r4mt.value), r4_mt_min_hard: f.r4mth.value === "1",
         mt_period_min: f.mtmin.value === "" ? null : Number(f.mtmin.value), mt_senior_required: f.mtsen.value === "1",
         r2_mt_prefer: f.r2mt.value === "1", senior_trauma_cap_hard: f.stch.value === "1", site_seniority_balance: f.ssb.value === "1",
+        site_seniority_hard: f.ssh.value === "all" ? ["MGH","SMH","JGH","PEDS","MT"] : f.ssh.value === "core" ? ["MGH","SMH","PEDS","MT"] : [],
+        fa_onc_mode: f.faonc.value,
+        r4_electives: [Number(f.r4el.value), Number(f.r4el.value)],
+        r5_electives: [Number(f.r5el.value), Number(f.r5el.value)],
+        electives_total_r4r5: Number(f.r4el.value) + Number(f.r5el.value),
         vp_periods: plist(f.vpp.value), oite_periods: plist(f.oite.value),
         visitors: [...f.querySelectorAll("#vi-t tbody tr")].map(tr => ({ group:tr.querySelector(".vi-g").value || "Other visiting residents", name:tr.querySelector(".vi-n").value, rotation:tr.querySelector(".vi-r").value, periods:pers(tr, "vi-p") })).filter(v => v.name),
       };
