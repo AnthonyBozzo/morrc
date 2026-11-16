@@ -384,13 +384,15 @@ pre.protocol{white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line
   .page-hero{padding:0 0 6px;border:0}.page-hero h1{font-size:20px}
   section.block{padding:0}
   .wrap.wide{max-width:none;padding:0}
-  .tr-group{box-shadow:none;border:1px solid #ccc;break-inside:avoid;page-break-inside:avoid;padding:8px}
-  .tr-row{break-inside:avoid;grid-template-columns:170px auto 70px;gap:8px;padding:4px 0}
+  .tr-group{box-shadow:none;border:1px solid #ccc;padding:8px;margin-bottom:8px}
+  .tr-gh{font-size:14px;break-after:avoid;page-break-after:avoid}
+  .tr-row.tr-head{position:static;break-after:avoid;page-break-after:avoid}
+  .tr-row{break-inside:avoid;page-break-inside:avoid;grid-template-columns:170px auto 70px;gap:8px;padding:3px 0}
   .tr-name{width:170px}.tr-name strong{font-size:12px}.rchip{font-size:8px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .tile{width:44px;height:40px;padding:3px 2px 6px;border-radius:6px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .tile .tl{font-size:8px}.tile .tc{font-size:12px}.tile .tc span,.tile .tc small{font-size:8px}
   .tr-head .th{width:44px;font-size:8px}
-  .tr-pct{width:70px}.tr-pct b{font-size:14px}
+  .tr-pct{width:70px}.tr-pct b{font-size:14px}.tr-pct .small{font-size:8px;white-space:nowrap}
   .tr-legend,.tr-kpis,.kpi,.tile,.tr-pct .mini,.pgy-badge{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .tr-scroll{overflow:visible}
   .kpi{padding:6px 10px}.kpi b{font-size:16px}
