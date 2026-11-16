@@ -113,7 +113,7 @@
   }
 
   function render(){
-    root.innerHTML = `${overview()}
+    root.innerHTML = `${isAdmin ? `<div class="callout blue no-print" style="margin:0 0 16px"><strong>Admin tools</strong><a href="training.html">Training requirements tracker</a>: rotation requirements completed and remaining for each resident · <a href="rotations.html">Rotation scheduler</a></div>` : ""}${overview()}
       <div class="card" style="margin-top:16px"><h2 style="margin-top:0">Progress by module</h2>${filters()}<div id="matrix-box">${matrix()}</div></div>
       <div class="card" style="margin-top:16px"><h2 style="margin-top:0">Residents</h2><div id="res-box">${residentsTable()}</div></div>
       ${adminTools()}

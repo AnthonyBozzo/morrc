@@ -133,7 +133,7 @@
   /* ---------- admin app ---------- */
   const TABS = [["drafts","Drafts"],["new","New schedule"],["residents","Residents"],["links","Account links"]];
   function shell(active, inner){
-    return `<nav class="rot-tabs">${TABS.map(([k, t]) => `<a href="#${k}" ${k === active ? 'aria-current="page"' : ""}>${t}</a>`).join("")}</nav><div id="rot-msg" class="form-msg"></div>${inner}`;
+    return `<nav class="rot-tabs">${TABS.map(([k, t]) => `<a href="#${k}" ${k === active ? 'aria-current="page"' : ""}>${t}</a>`).join("")}<a href="training.html">Training tracker →</a></nav><div id="rot-msg" class="form-msg"></div>${inner}`;
   }
   const badge = d => d.status !== "done" ? `<span class="rot-badge ${d.status}">${d.status === "running" ? "generating…" : d.status}</span>`
     : `<span class="rot-badge ${d.allPass ? "pass" : "fail"}">${d.allPass ? "hard rules pass" : "hard rule FAIL"}</span>`;
