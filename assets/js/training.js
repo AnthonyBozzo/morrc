@@ -9,7 +9,9 @@
   const dfmt = (s, o) => new Date(s + "T12:00:00").toLocaleDateString("en-CA", o || { month:"short", day:"numeric" });
   const STATE = { complete:"Complete", ontrack:"Will be complete this year (scheduled)", partial:"In progress", none:"Not started", nodata:"No data on file" };
   const ST_ENTRY = { done:"Completed", current:"In progress now", scheduled:"Scheduled" };
-  let data = null, ui = { pgy:"all", q:"", showSched:true, sort:"name", asOf:"" }, pinned = null;
+  const VERDICT = { on:"On track", risk:"At risk", off:"Off track", nodata:"Insufficient data" };
+  const VORDER = { off:0, nodata:1, risk:2, on:3 };
+  let data = null, ui = { pgy:"all", q:"", showSched:true, sort:"name", asOf:"", ot:"" }, pinned = null;
 
   const reqById = id => data.requirements.find(q => q.id === id);
 
@@ -41,20 +43,40 @@
     return `<div class="tr-row" data-key="${h(r.key)}">
       <div class="tr-name"><strong>${h(r.name)}</strong><span class="small muted">R${r.pgy}${now ? ` · now: ${h(now)}` : ""}</span>${notes}</div>
       <div class="tr-tiles">${core.map(t => tile(r, t)).join("")}<span class="tr-sep" aria-hidden="true"></span>${extra.map(t => tile(r, t)).join("")}</div>
-      ${pctBlock(r)}</div>`;
+      ${pctBlock(r)}${badge(r)}</div>`;
+  }
+
+  function badge(r){
+    const o = r.onTrack, v = o.verdict;
+    const sub = v === "nodata" ? "see details" : v === "off" ? (o.missed.length ? "deadline / window" : `${-o.slack} block${-o.slack === 1 ? "" : "s"} short`) : `${o.slack} spare block${o.slack === 1 ? "" : "s"}`;
+    return `<div class="tr-ot"><button type="button" class="ot-badge v-${v}" data-ot="${h(r.key)}" aria-label="${h(`On track by R5: ${VERDICT[v]}. ${o.need} core blocks still needed, ${o.open} open blocks left.`)}">
+      <span class="ot-dot" aria-hidden="true"></span>${VERDICT[v]}${o.dataCaveat && v !== "nodata" ? ' <span class="ot-warn" title="History incomplete">⚠</span>' : ""}</button><span class="small muted ot-sub">${h(sub)}</span></div>`;
+  }
+
+  function otPopHtml(r){
+    const o = r.onTrack;
+    const yrs = o.years.map(y => `R${y.level}: ${y.open} open (13 − ${h(y.nonOrtho)})`).join("; ");
+    return `<button type="button" class="pop-x" aria-label="Close">×</button>
+      <div class="pop-h"><strong>On track to complete all requirements by R5</strong><span class="small muted">${h(r.name)} · R${r.pgy}${r.base !== r.pgy ? ` (training level R${r.base} for deadlines)` : ""}</span></div>
+      <p class="ot-line v-${o.verdict}"><b>${VERDICT[o.verdict]}</b>: needs <b>${o.need}</b> more core block${o.need === 1 ? "" : "s"}, <b>${o.open}</b> open block${o.open === 1 ? "" : "s"} left through R5 → ${o.slack >= 0 ? `<b>${o.slack}</b> spare` : `<b>${-o.slack}</b> short`}.</p>
+      ${o.dataCaveat ? `<p class="small rchip-like">⚠ ${h(o.dataCaveat)}</p>` : ""}
+      ${o.missed.length ? `<p class="pop-flag high">${o.missed.map(h).join("<br>")}</p>` : ""}
+      ${o.notes.length ? `<ul class="small ot-notes">${o.notes.map(n => `<li>${h(n)}</li>`).join("")}</ul>` : ""}
+      ${o.needs.length ? `<table class="ot-tbl small"><thead><tr><th>Still needed</th><th>Blocks</th><th>Allowed in</th></tr></thead><tbody>${o.needs.map(x => `<tr><td>${h(x.label)}<div class="muted">${h(x.why)}</div></td><td>${x.need}</td><td>${h(x.window)}</td></tr>`).join("")}</tbody></table>` : `<p class="small">All core requirements are completed or scheduled.</p>`}
+      <p class="small muted pop-src">Open blocks after this year: ${h(yrs) || "none (final year)"}. This year's remaining periods are already scheduled and counted above. Max 3 blocks of one rotation per year; MGH Trauma and Peds use the yearly minimums for the remaining years.</p>`;
   }
 
   function header(){
     const core = data.requirements.filter(q => q.group !== "extra"), extra = data.requirements.filter(q => q.group === "extra");
     const th = q => `<span class="th" title="${h(q.label)}: ${q.target} block${q.target > 1 ? "s" : ""}">${h(q.short)}<em>${q.target}</em></span>`;
     return `<div class="tr-row tr-head" aria-hidden="true"><div class="tr-name small muted">Resident</div>
-      <div class="tr-tiles">${core.map(th).join("")}<span class="tr-sep"></span>${extra.map(th).join("")}</div><div class="tr-pct small muted">Core done</div></div>`;
+      <div class="tr-tiles">${core.map(th).join("")}<span class="tr-sep"></span>${extra.map(th).join("")}</div><div class="tr-pct small muted">Core done</div><div class="tr-ot small muted">On track to complete all requirements by R5</div></div>`;
   }
 
   function visible(){
     const q = ui.q.trim().toLowerCase();
-    let rs = data.residents.filter(r => (ui.pgy === "all" || String(r.pgy) === ui.pgy) && (!q || r.name.toLowerCase().includes(q)));
-    rs = rs.slice().sort((a, b) => ui.sort === "pct" ? b.pct - a.pct || a.name.localeCompare(b.name) : ui.sort === "pctasc" ? a.pct - b.pct || a.name.localeCompare(b.name) : a.name.split(" ").pop().localeCompare(b.name.split(" ").pop()));
+    let rs = data.residents.filter(r => (ui.pgy === "all" || String(r.pgy) === ui.pgy) && (!q || r.name.toLowerCase().includes(q)) && (!ui.ot || r.onTrack.verdict === ui.ot));
+    rs = rs.slice().sort((a, b) => ui.sort === "ot" ? VORDER[a.onTrack.verdict] - VORDER[b.onTrack.verdict] || a.onTrack.slack - b.onTrack.slack || a.name.localeCompare(b.name) : ui.sort === "pct" ? b.pct - a.pct || a.name.localeCompare(b.name) : ui.sort === "pctasc" ? a.pct - b.pct || a.name.localeCompare(b.name) : a.name.split(" ").pop().localeCompare(b.name.split(" ").pop()));
     return rs;
   }
 
@@ -66,7 +88,11 @@
       <div class="kpi"><span class="small muted">Residents shown</span><b>${rs.length}</b></div>
       <div class="kpi"><span class="small muted">Average core completion</span><b>${avg}%</b></div>
       <div class="kpi"><span class="small muted">Deadline flags</span><b class="${flags ? "warn-t" : ""}">${flags}</b></div>
-      <div class="kpi"><span class="small muted">Incomplete history on file</span><b>${incomplete}</b></div></div>`;
+      <div class="kpi"><span class="small muted">Incomplete history on file</span><b>${incomplete}</b></div></div>
+      <div class="ot-summary" aria-label="On track by R5 summary"><span class="small muted ot-sum-t">On track to complete all requirements by R5:</span>
+        ${["on","risk","off","nodata"].map(k => `<button type="button" class="ot-chip v-${k}" data-otf="${k}" aria-pressed="${ui.ot === k}"><span class="ot-dot"></span>${VERDICT[k]} <b>${data.residents.filter(r => (ui.pgy === "all" || String(r.pgy) === ui.pgy) && r.onTrack.verdict === k).length}</b></button>`).join("")}
+        ${ui.ot ? `<button type="button" class="ot-chip clear" data-otf="">Show all</button>` : ""}</div>
+      ${data.onTrackCohort && data.onTrackCohort.length ? `<p class="small muted ot-cohort">Next year, shared single-resident services: ${data.onTrackCohort.map(c => `${c.tight ? "⚠ " : ""}${h(c.text)}`).join(" · ")}</p>` : ""}`;
   }
 
   function legend(){
@@ -89,7 +115,7 @@
       <div class="tr-toolbar no-print">
         <div class="filters" role="group" aria-label="Filter by PGY">${[["all","All"],["1","R1"],["2","R2"],["3","R3"],["4","R4"]].map(([v, t]) => `<button type="button" data-pgy="${v}" aria-pressed="${ui.pgy === v}">${t}</button>`).join("")}</div>
         <label class="tr-ctl">Search<input id="tr-q" type="search" value="${h(ui.q)}" placeholder="Name"></label>
-        <label class="tr-ctl">Sort<select id="tr-sort">${[["name","Name"],["pct","% complete (high → low)"],["pctasc","% complete (low → high)"]].map(([v, t]) => `<option value="${v}" ${ui.sort === v ? "selected" : ""}>${t}</option>`).join("")}</select></label>
+        <label class="tr-ctl">Sort<select id="tr-sort">${[["name","Name"],["pct","% complete (high → low)"],["pctasc","% complete (low → high)"],["ot","On track by R5 (most urgent first)"]].map(([v, t]) => `<option value="${v}" ${ui.sort === v ? "selected" : ""}>${t}</option>`).join("")}</select></label>
         <label class="tr-ctl">As of<input id="tr-asof" type="date" value="${h(ui.asOf || data.today)}"></label>
         <label class="tr-chk"><input id="tr-sched" type="checkbox" ${ui.showSched ? "checked" : ""}> Show scheduled (rest of ${h(data.year)})</label>
         <button class="btn small secondary" type="button" id="tr-print">Print</button>
@@ -109,6 +135,7 @@
           <li>Off-service R1 rotations (ICU, radiology, plastics, vascular, general surgery, family sports medicine) are not tracked here.</li>
           <li>“Core complete” is the share of required core blocks completed (each tile capped at its requirement); electives and research are shown but not included. Tiles with no data are left out of the percentage.</li>
           <li>MGH Trauma and Peds are per-year rules in the scheduler; the tile shows the cumulative program expectation by graduation.</li>
+          <li><strong>On track by R5</strong>: for each core requirement, blocks still needed = required − (completed + scheduled this year); for MGH Trauma and Peds it is the yearly minimum in each remaining year (R2–R4 2, R5 3 Trauma; 2 Peds a year). Open blocks per remaining year = 13 minus research (1 in R2, R3), electives (2 in R4, 2 in R5) and the R5 P2 study block. A matching check places every needed block in a year where that rotation is allowed (J Arthro R1–R3, J Trauma R2–R3, junior Spine R1–R2, Tumour and J Foot R3–R5, MGH Arthro R2–R5, senior Spine R4–R5, Hand R3–R4 with R5 catch-up), at most 3 of one rotation per year. <em>Off track</em> = a window has passed or the blocks cannot all fit; <em>At risk</em> = fewer than 3 spare blocks, Hand only possible as R5 catch-up, or a requirement with no room left in its window; <em>Insufficient data</em> = the verdict would change if the missing R1 year had the usual R1 blocks. R1 template items (SF Intensive, SMH Clinic) and electives/research are not part of the verdict.</li>
         </ul></details>
       <div id="tr-pop" class="tr-pop" role="dialog" aria-live="polite" hidden></div>`;
     wire();
@@ -133,10 +160,10 @@
 
   function showPop(btn, pin){
     const pop = document.getElementById("tr-pop"); if(!pop) return;
-    const r = data.residents.find(x => x.key === btn.dataset.r), t = r && r.tiles.find(x => x.id === btn.dataset.t);
-    if(!t) return;
-    pop.innerHTML = popHtml(r, t); pop.hidden = false; pop.classList.toggle("pinned", !!pin);
-    const b = btn.getBoundingClientRect(), pw = Math.min(380, window.innerWidth - 24);
+    if(btn.dataset.ot){ const r = data.residents.find(x => x.key === btn.dataset.ot); if(!r) return; pop.innerHTML = otPopHtml(r); }
+    else { const r = data.residents.find(x => x.key === btn.dataset.r), t = r && r.tiles.find(x => x.id === btn.dataset.t);
+      if(!t) return; pop.innerHTML = popHtml(r, t); } pop.hidden = false; pop.classList.toggle("pinned", !!pin);
+    const b = btn.getBoundingClientRect(), pw = Math.min(btn.dataset.ot ? 440 : 380, window.innerWidth - 24);
     pop.style.width = pw + "px";
     let left = b.left + window.scrollX + b.width / 2 - pw / 2;
     left = Math.max(12 + window.scrollX, Math.min(left, window.scrollX + window.innerWidth - pw - 12));
@@ -145,7 +172,7 @@
     const below = b.bottom + window.scrollY + 8, above = b.top + window.scrollY - ph - 8;
     pop.style.top = (b.bottom + ph + 16 > window.innerHeight && above > window.scrollY ? above : below) + "px";
     pop.querySelector(".pop-x").onclick = () => hidePop(true);
-    root.querySelectorAll(".tile.sel").forEach(x => x.classList.remove("sel")); if(pin) btn.classList.add("sel");
+    root.querySelectorAll(".sel").forEach(x => x.classList.remove("sel")); if(pin) btn.classList.add("sel");
   }
   function hidePop(force){ const pop = document.getElementById("tr-pop"); if(!pop || (pinned && !force)) return; pop.hidden = true; if(force){ pinned = null; root.querySelectorAll(".tile.sel").forEach(x => x.classList.remove("sel")); } }
 
@@ -156,7 +183,8 @@
     document.getElementById("tr-sched").onchange = e => { ui.showSched = e.target.checked; render(); };
     document.getElementById("tr-print").onclick = () => window.print();
     document.getElementById("tr-asof").onchange = e => { ui.asOf = e.target.value; load(); };
-    root.querySelectorAll(".tile[data-t]").forEach(b => {
+    root.querySelectorAll("[data-otf]").forEach(b => b.onclick = () => { ui.ot = ui.ot === b.dataset.otf ? "" : b.dataset.otf; pinned = null; render(); });
+    root.querySelectorAll(".tile[data-t], .ot-badge").forEach(b => {
       b.addEventListener("mouseenter", () => { if(!pinned) showPop(b, false); });
       b.addEventListener("mouseleave", () => { if(!pinned) hidePop(); });
       b.addEventListener("focus", () => { if(!pinned) showPop(b, false); });
