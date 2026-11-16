@@ -43,7 +43,24 @@
     return `<div class="tr-row" data-key="${h(r.key)}">
       <div class="tr-name"><strong>${h(r.name)}</strong><span class="small muted">R${r.pgy}${now ? ` · now: ${h(now)}` : ""}</span>${notes}</div>
       <div class="tr-tiles">${core.map(t => tile(r, t)).join("")}<span class="tr-sep" aria-hidden="true"></span>${extra.map(t => tile(r, t)).join("")}</div>
-      ${pctBlock(r)}${badge(r)}</div>`;
+      ${pctBlock(r)}${badge(r)}${needLine(r)}</div>`;
+  }
+
+  /* Visible "still needed" strip for At risk / Off track residents (no hover needed). */
+  const NEED_NAME = { SPJ:"Spine (junior)", MT:"MGH Trauma", PE:"Peds", SM:"SMH", MS:"Sports", MA:"MGH Arthro", JA:"J Arthro", JT:"J Trauma", JF:"J Foot", TU:"Tumour", HA:"Hand", SPS:"Spine (senior)" };
+  function needLine(r){
+    const o = r.onTrack, v = o.verdict;
+    if(v !== "risk" && v !== "off" && v !== "nodata") return "";
+    const years = o.years.map(y => "R" + y.level);
+    const items = o.needs.slice().sort((a, b) => b.need - a.need).map(x => {
+      const tag = x.id === "HA" && x.window === "R5" ? " (R5 catch-up)" : x.window !== years.join(", ") ? ` (${x.window})` : "";
+      return `<span class="need-item"><b>${h(NEED_NAME[x.id] || x.label)}</b> ×${x.need}${h(tag)}</span>`;
+    });
+    const slack = o.slack >= 0 ? `${o.slack} spare` : `${-o.slack} short`;
+    const extra = o.missed.length ? `<span class="need-miss">${o.missed.map(h).join(" · ")}</span>` : "";
+    return `<div class="tr-need v-${v}"><span class="need-h">Still needed${years.length ? " in " + h(years.length > 1 ? years[0] + "–" + years[years.length - 1] : years[0]) : ""}:</span>
+      ${items.join('<span class="need-sep" aria-hidden="true">·</span>') || "nothing"}
+      <span class="need-slack">${o.need} needed / ${o.open} open → <b>${slack}</b></span>${extra}</div>`;
   }
 
   function badge(r){
